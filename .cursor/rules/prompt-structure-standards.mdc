@@ -1,0 +1,426 @@
+---
+globs: *.prompt.md, prompts/*.md
+description: Prompt structure and formatting standards for GitHub Copilot
+---
+# Prompt Structure and Formatting Standards
+
+## Mandatory Prompt File Structure
+
+### Front Matter Requirements
+You WILL include complete and properly formatted front matter:
+
+```markdown
+---
+description: "[Clear, concise description - max 150 characters]"
+mode: "[agent|ask|edit]"
+tools: ["tool1", "tool2", "tool3"]
+model: "[specific-model-only-if-required]"
+---
+```
+
+**Front Matter Field Standards**:
+- **description**: One sentence, action-oriented, under 150 characters
+- **mode**: Must be one of: `agent`, `ask`, or `edit`
+- **tools**: Array of strings, only necessary tools included
+- **model**: Optional, only specify when absolutely required
+
+### Section Organization
+You WILL structure prompts with these mandatory sections:
+
+```markdown
+---
+description: "Generate React component with TypeScript"
+mode: "agent"
+tools: ["editFiles", "search"]
+---
+
+# React Component Generator
+
+[Persona definition paragraph]
+
+## Component Generation Task
+
+[Clear task description with requirements]
+
+## Implementation Instructions
+
+[Step-by-step implementation process]
+
+## Context and Variables
+
+[Variable definitions and usage]
+
+## Output Specifications
+
+[Expected output format and structure]
+
+## Quality and Validation
+
+[Success criteria and validation steps]
+```
+
+## Section Content Standards
+
+### Title and Header Requirements
+You WILL create descriptive, action-oriented titles:
+
+**Title Standards**:
+- Use imperative verbs: Generate, Create, Analyze, Refactor
+- Include primary technology or domain
+- Keep under 60 characters
+- Match filename purpose
+
+**Header Examples**:
+```markdown
+✅ GOOD TITLES:
+# React Component Generator
+# API Documentation Creator
+# Code Performance Analyzer
+# Database Migration Assistant
+
+❌ POOR TITLES:
+# Tool
+# Helper
+# Generator Script
+# Code Thing
+```
+
+### Persona Definition Standards
+You WILL create specific, authoritative personas:
+
+**Persona Structure**:
+```markdown
+You are a [level] [role] with [experience] years of experience in [domain],
+specializing in [specific technologies] and [methodologies].
+```
+
+**Persona Examples**:
+```markdown
+✅ SPECIFIC PERSONAS:
+"You are a senior React architect with 8+ years of experience in enterprise applications, specializing in React 18, TypeScript, and scalable component design patterns."
+
+"You are a principal backend engineer with 12+ years of experience in microservices architecture, specializing in Node.js, PostgreSQL, and cloud-native development."
+
+❌ VAGUE PERSONAS:
+"You are a good developer."
+"You are an expert in coding."
+"You know how to write code."
+```
+
+### Task Description Standards
+You WILL write clear, measurable task descriptions:
+
+**Task Description Structure**:
+1. **What**: Specific task to accomplish
+2. **Why**: Purpose or business value
+3. **How**: Approach or methodology
+4. **Success Criteria**: Measurable completion indicators
+
+**Task Examples**:
+```markdown
+✅ CLEAR TASKS:
+"Generate a React functional component with TypeScript interfaces that displays user data in a responsive table format. The component should include proper error handling, loading states, and accessibility features."
+
+❌ UNCLEAR TASKS:
+"Make a component for users."
+"Create some React code."
+"Build a table or something."
+```
+
+### Instructions Section Standards
+You WILL create detailed, step-by-step instructions:
+
+**Instruction Quality Requirements**:
+- Use imperative language: "Create", "Implement", "Ensure"
+- Include measurable checkpoints
+- Provide specific file paths and names
+- Define success criteria for each step
+
+**Instructions Example**:
+```markdown
+## Implementation Instructions
+
+### Step 1: Create Component File
+Create a new file `src/components/UserTable.tsx` with the following structure:
+
+### Step 2: Define TypeScript Interfaces
+Implement the following interfaces:
+
+### Step 3: Implement Component Logic
+Create the component with these specific features:
+
+### Step 4: Add Error Handling
+Implement comprehensive error handling for:
+
+### Step 5: Add Tests
+Create unit tests in `src/components/UserTable.test.tsx`
+```
+
+### Context and Variables Standards
+You WILL properly define all variables and context:
+
+**Variable Definition Format**:
+```markdown
+## Context and Variables
+
+### Required Variables
+- `${input:componentName}`: The name of the component to generate
+- `${input:dataType}`: The TypeScript interface for the data
+- `${selection}`: Selected code to base the component on
+
+### Optional Variables
+- `${input:features}`: Additional features to include (optional)
+
+### Workspace Context
+- Uses `${workspaceFolder}/src/components/` for component location
+- References `${file}` for current file context
+```
+
+### Output Specifications Standards
+You WILL define precise output requirements:
+
+**Output Format Categories**:
+- **Code Files**: New or modified source code
+- **Documentation**: README, API docs, comments
+- **Configuration**: JSON, YAML, environment files
+- **Reports**: Analysis results, performance metrics
+
+**Output Specification Example**:
+```markdown
+## Output Specifications
+
+### Primary Output
+**File**: `src/components/${input:componentName}.tsx`
+**Format**: TypeScript React functional component
+**Structure**:
+- Named export of component
+- TypeScript interfaces
+- React hooks for state management
+- Error boundary implementation
+
+### Secondary Output
+**File**: `src/components/${input:componentName}.test.tsx`
+**Format**: Jest test suite
+**Coverage**: Unit tests for all major functionality
+
+### File Naming Convention
+- Component: PascalCase (UserTable.tsx)
+- Test: ComponentName.test.tsx
+- Style: ComponentName.module.css (if needed)
+```
+
+### Quality and Validation Standards
+You WILL include comprehensive quality criteria:
+
+**Validation Structure**:
+```markdown
+## Quality and Validation
+
+### Success Criteria
+- [ ] Component compiles without TypeScript errors
+- [ ] All props are properly typed
+- [ ] Component handles all specified edge cases
+- [ ] Performance meets 100ms render time benchmark
+
+### Validation Steps
+1. **Syntax Check**: Run `tsc --noEmit` to verify TypeScript compilation
+2. **Linting**: Execute ESLint with React and TypeScript rules
+3. **Testing**: Run Jest tests with minimum 80% coverage
+4. **Performance**: Use React DevTools Profiler for render analysis
+
+### Common Issues and Solutions
+- **Type Error**: Ensure all interfaces are properly imported
+- **Performance Issue**: Implement React.memo for expensive re-renders
+- **Accessibility**: Add ARIA labels and keyboard navigation
+```
+
+## Formatting and Style Standards
+
+### Markdown Formatting Rules
+You WILL follow consistent markdown formatting:
+
+**Code Blocks**:
+- Use fenced code blocks with language specification
+- Include proper syntax highlighting
+- Use consistent indentation (2 spaces)
+- Include line numbers for long code blocks when helpful
+
+**Lists and Structure**:
+- Use `-` for bullet points
+- Use `1.` for numbered lists
+- Maintain consistent indentation
+- Include blank lines between major sections
+
+**Emphasis and Formatting**:
+- Use **bold** for emphasis and section headers
+- Use *italic* for variable names and emphasis
+- Use `inline code` for commands, filenames, and code elements
+- Use > for important notes and warnings
+
+### Variable and Placeholder Standards
+You WILL use consistent variable formatting:
+
+**Variable Syntax**:
+- `${selection}`: User-selected code
+- `${file}`: Current file reference
+- `${input:variableName}`: User input variables
+- `${input:variableName:placeholder}`: Variables with placeholder text
+- `${workspaceFolder}`: Workspace root directory
+
+**Variable Documentation**:
+```markdown
+### Variable: ${input:componentName}
+- **Type**: string
+- **Required**: Yes
+- **Format**: PascalCase
+- **Example**: "UserProfile"
+- **Validation**: Must be valid TypeScript identifier
+```
+
+## Best Practices Integration
+
+### AI-Optimized Prompt Design
+You WILL optimize prompts for AI consumption:
+
+**Token Efficiency**:
+- Use concise, clear language without redundancy
+- Structure information hierarchically for easy parsing
+- Include only relevant context and examples
+- Minimize verbose explanations and filler text
+
+**Structured Content**:
+- Use clear headings and sections for navigation
+- Implement consistent formatting and structure
+- Include metadata for better AI understanding
+- Use standard templates and patterns
+
+**Context Management**:
+- Provide complete but focused context
+- Include relevant background information
+- Reference related files and dependencies
+- Use variables for dynamic content
+
+### Few-Shot Learning Implementation
+You WILL include effective examples:
+
+**Example Structure**:
+```markdown
+### Example 1: Basic Component
+**Input Variables:**
+- componentName: "UserCard"
+- dataType: "User"
+
+**Expected Output:**
+```typescript
+interface User {
+  id: number;
+  name: string;
+  email: string;
+}
+
+export const UserCard: React.FC<{ user: User }> = ({ user }) => {
+  return (
+    <div className="user-card">
+      <h3>{user.name}</h3>
+      <p>{user.email}</p>
+    </div>
+  );
+};
+```
+
+**Example 2: Advanced Component**
+**Input Variables:**
+- componentName: "UserList"
+- dataType: "User"
+- features: "search,filter,pagination"
+
+**Expected Output:**
+[More complex example with additional features]
+```
+
+**Example Quality Standards**:
+- Use real-world, production-quality examples
+- Include edge cases and error handling
+- Demonstrate best practices and patterns
+- Show proper formatting and structure
+- Include comments explaining complex logic
+
+## Tool Integration Patterns
+
+### Tool Selection and Configuration
+You WILL select and configure tools appropriately:
+
+**Tool Grouping Examples**:
+```markdown
+tools: ["editFiles", "search", "runCommands"]
+# For component generation requiring file creation, code search, and build execution
+
+tools: ["codebase", "usages", "problems"]
+# For code analysis and refactoring requiring comprehensive project understanding
+
+tools: ["fetch", "githubRepo", "runTests"]
+# For integration with external APIs and repository analysis
+```
+
+### Tool Usage Documentation
+You WILL document tool usage and integration:
+
+**Tool Integration Examples**:
+```markdown
+### Tool Usage: editFiles
+**Purpose**: Create and modify component files
+**Usage Pattern**: Generate component files with proper TypeScript interfaces
+**Integration**: Used in Step 3 of implementation process
+
+### Tool Usage: search
+**Purpose**: Find existing patterns and interfaces
+**Usage Pattern**: Search for similar components to maintain consistency
+**Integration**: Used in Step 1 to analyze existing codebase
+```
+
+## Quality Assurance and Validation
+
+### Prompt Quality Checklist
+You WILL validate prompts against this comprehensive checklist:
+
+**Structure and Format**:
+- [ ] Front matter complete and properly formatted
+- [ ] All mandatory sections present and properly structured
+- [ ] Title is descriptive and action-oriented
+- [ ] Persona definition is specific and authoritative
+
+**Content Quality**:
+- [ ] Instructions are clear, actionable, and measurable
+- [ ] All variables are properly defined with placeholders
+- [ ] Examples are realistic and demonstrate best practices
+- [ ] Error handling and edge cases are addressed
+
+**Technical Accuracy**:
+- [ ] Tool selections are appropriate for the task
+- [ ] Code examples are syntactically correct
+- [ ] File paths and naming conventions are consistent
+- [ ] Performance and security considerations included
+
+**AI Optimization**:
+- [ ] Content is structured for easy AI parsing
+- [ ] Token usage is optimized for efficiency
+- [ ] Context is complete but focused
+- [ ] Few-shot learning examples are effective
+
+### Template Compliance Verification
+You WILL ensure generated prompts follow established patterns:
+
+**High-Quality Prompt Patterns**:
+- **Blueprint Generators**: Comprehensive system architecture planning
+- **Specification Creators**: Detailed technical requirement documents
+- **Best Practice Guides**: Industry standard implementation patterns
+- **Implementation Plans**: Step-by-step execution strategies
+- **Code Generators**: Production-ready code with proper structure
+
+**Pattern Consistency**:
+- Follow established section structures
+- Use consistent variable naming conventions
+- Maintain standard formatting patterns
+- Include required quality and validation sections
+
+This comprehensive prompt structure and formatting system ensures the creation of high-quality, effective GitHub Copilot prompts that are optimized for AI consumption while maintaining professional standards and best practices for AI-assisted development.

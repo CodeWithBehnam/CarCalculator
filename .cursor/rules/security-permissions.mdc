@@ -1,0 +1,364 @@
+---
+globs: manifest.json, src/**/*.js, src/**/*.jsx
+description: Security best practices and permission management for Chrome extensions
+---
+# Security and Permissions Guide
+
+## Chrome Permissions Strategy
+
+### Minimal Permission Principle
+- **Request Only Necessary Permissions**: Each permission should have clear justification
+- **Progressive Disclosure**: Request permissions when user performs related action
+- **Regular Audits**: Review and remove unused permissions
+
+### Current Permission Analysis
+```json
+{
+  "permissions": [
+    "storage",           // ✅ Justified: User settings and translation cache
+    "activeTab",         // ✅ Justified: Current tab interaction for translation
+    "contextMenus"       // ✅ Justified: Right-click translation menu
+  ],
+  "host_permissions": [
+    "<all_urls>"         // ⚠️  Broad permission - consider narrowing to specific domains
+  ]
+}
+```
+
+### Permission Justification
+- **storage**: Required for API keys, user settings, and translation cache
+- **activeTab**: Enables translation of selected text and image descriptions
+- **contextMenus**: Provides right-click translation functionality
+- **<all_urls>**: Universal access for translation across all websites
+
+## API Key Security
+
+### Storage Best Practices
+```javascript
+// ✅ Secure: Store in local storage only
+await chrome.storage.local.set({
+  OPENAI_API_KEY: apiKey  // Never use sync storage for sensitive data
+});
+
+// ❌ Insecure: Never expose in console logs
+console.log('API Key:', apiKey);  // Remove all debug logs with sensitive data
+```
+
+### Key Validation
+```javascript
+function validateApiKey(key) {
+  // Check format without exposing key
+  if (!key || typeof key !== 'string') return false;
+  if (key.length < 20) return false;  // Minimum length check
+  if (!key.startsWith('sk-')) return false;  // OpenAI format check
+  return true;
+}
+```
+
+### Key Rotation Support
+```javascript
+// Provide UI for key updates
+function updateApiKey(newKey) {
+  if (!validateApiKey(newKey)) {
+    throw new Error('Invalid API key format');
+  }
+  return chrome.storage.local.set({
+    OPENAI_API_KEY: newKey
+  });
+}
+```
+
+## Content Security Policy (CSP)
+
+### CSP Configuration
+```json
+{
+  "content_security_policy": {
+    "extension_pages": "
+      script-src 'self';
+      object-src 'self';
+      connect-src 'self' https://api.openai.com;
+      style-src 'self' 'unsafe-inline';
+    "
+  }
+}
+```
+
+### CSP Best Practices
+- **No unsafe-inline**: Use Shadow DOM for dynamic styling
+- **Limited connect-src**: Only allow necessary API endpoints
+- **No eval()**: Never use eval() or Function constructor
+- **Strict script-src**: Only allow extension's own scripts
+
+## Data Protection
+
+### User Data Minimization
+```javascript
+// ✅ Good: Only store necessary data
+const cacheEntry = {
+  t: translatedText,    // Translation only
+  ts: Date.now(),       // Timestamp for expiration
+  o: originalText       // Original for cache key only
+};
+
+// ❌ Avoid: Don't store unnecessary metadata
+const badCacheEntry = {
+  url: window.location.href,     // Privacy concern
+  userAgent: navigator.userAgent, // Unnecessary
+  ipAddress: '...'               // Never store IP addresses
+};
+```
+
+### Cache Cleanup
+```javascript
+// Implement automatic cache expiration
+function cleanupExpiredCache() {
+  const expirationTime = Date.now() - (30 * 24 * 60 * 60 * 1000); // 30 days
+
+  chrome.storage.local.get(null, (items) => {
+    const toRemove = [];
+
+    for (const [key, value] of Object.entries(items)) {
+      if (key.startsWith('CACHE_T_') && value.ts < expirationTime) {
+        toRemove.push(key);
+      }
+    }
+
+    if (toRemove.length > 0) {
+      chrome.storage.local.remove(toRemove);
+    }
+  });
+}
+```
+
+## Secure Communication
+
+### Message Passing Security
+```javascript
+// ✅ Secure: Validate message structure
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (!message || typeof message !== 'object') {
+    sendResponse({ error: 'Invalid message format' });
+    return false;
+  }
+
+  // Validate sender (optional but recommended)
+  if (sender.id !== chrome.runtime.id) {
+    sendResponse({ error: 'Unauthorized sender' });
+    return false;
+  }
+
+  // Handle validated messages
+  switch (message.type) {
+    case 'TRANSLATE_TEXT':
+      handleTranslation(message.payload, sendResponse);
+      return true;  // Keep channel open for async response
+    default:
+      sendResponse({ error: 'Unknown message type' });
+      return false;
+  }
+});
+```
+
+### External API Security
+```javascript
+// ✅ Secure: Use HTTPS and validate responses
+async function callOpenAI(text, apiKey) {
+  const response = await fetch('https://api.openai.com/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${apiKey}`
+    },
+    body: JSON.stringify({
+      model: 'gpt-4',
+      messages: [{ role: 'user', content: text }]
+    })
+  });
+
+  if (!response.ok) {
+    throw new Error(`API request failed: ${response.status}`);
+  }
+
+  const data = await response.json();
+  return data.choices[0]?.message?.content;
+}
+```
+
+## Input Validation and Sanitization
+
+### Text Input Validation
+```javascript
+function sanitizeTranslationInput(text) {
+  if (!text || typeof text !== 'string') {
+    return '';
+  }
+
+  // Remove potential injection attempts
+  text = text.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
+  text = text.replace(/javascript:/gi, '');
+
+  // Limit length to prevent abuse
+  if (text.length > 50000) {
+    text = text.substring(0, 50000) + '...';
+  }
+
+  return text.trim();
+}
+```
+
+### URL Validation for Images
+```javascript
+function validateImageUrl(url) {
+  try {
+    const parsedUrl = new URL(url);
+
+    // Only allow HTTP/HTTPS protocols
+    if (!['http:', 'https:'].includes(parsedUrl.protocol)) {
+      return false;
+    }
+
+    // Check for reasonable URL length
+    if (url.length > 2048) {
+      return false;
+    }
+
+    // Basic XSS prevention
+    if (parsedUrl.href !== url) {
+      return false;  // URL normalization changed the URL
+    }
+
+    return true;
+  } catch {
+    return false;
+  }
+}
+```
+
+## Error Handling Security
+
+### Safe Error Messages
+```javascript
+// ✅ Secure: Generic error messages
+function handleApiError(error) {
+  console.error('API Error:', error);  // Log full error for debugging
+
+  // Return generic message to user
+  return {
+    error: 'Translation service is temporarily unavailable. Please try again later.',
+    code: 'SERVICE_UNAVAILABLE'
+  };
+}
+
+// ❌ Insecure: Exposing internal details
+function badErrorHandling(error) {
+  return {
+    error: `OpenAI API Error: ${error.message}`,  // Exposes internal details
+    stack: error.stack  // Never expose stack traces to users
+  };
+}
+```
+
+### Rate Limiting
+```javascript
+// Implement client-side rate limiting
+class RateLimiter {
+  constructor(maxRequests = 10, windowMs = 60000) {
+    this.requests = [];
+    this.maxRequests = maxRequests;
+    this.windowMs = windowMs;
+  }
+
+  isAllowed() {
+    const now = Date.now();
+    this.requests = this.requests.filter(time => now - time < this.windowMs);
+
+    if (this.requests.length >= this.maxRequests) {
+      return false;
+    }
+
+    this.requests.push(now);
+    return true;
+  }
+}
+```
+
+## Privacy Protection
+
+### Data Collection Minimization
+```javascript
+// ✅ Minimal data collection
+const analyticsData = {
+  timestamp: Date.now(),
+  action: 'translation_completed',
+  text_length: text.length,
+  target_language: 'fa'
+  // No personal data, URLs, or content
+};
+
+// ❌ Avoid collecting sensitive data
+const badAnalyticsData = {
+  url: window.location.href,
+  user_ip: await getUserIP(),     // Never collect IP
+  user_agent: navigator.userAgent, // Unnecessary
+  content: originalText           // Privacy concern
+};
+```
+
+### User Consent and Control
+```javascript
+// Provide clear data control options
+function getUserConsentSettings() {
+  return chrome.storage.local.get([
+    'analytics_enabled',
+    'cache_enabled',
+    'error_reporting_enabled'
+  ]);
+}
+
+// Allow users to clear all data
+async function clearUserData() {
+  await chrome.storage.local.clear();
+  await chrome.storage.sync.clear();
+
+  // Reset to default settings
+  await initializeDefaultSettings();
+}
+```
+
+## Security Testing Checklist
+
+### Pre-Deployment Security Review
+- [ ] All console.log statements with sensitive data removed
+- [ ] API keys never exposed in source code
+- [ ] CSP properly configured
+- [ ] Input validation implemented for all user inputs
+- [ ] Error messages don't expose internal details
+- [ ] Rate limiting implemented for API calls
+- [ ] Cache data doesn't contain sensitive information
+- [ ] Permissions justified and minimal
+- [ ] External dependencies security audited
+
+### Runtime Security Monitoring
+- [ ] Monitor for unusual API usage patterns
+- [ ] Implement automatic cache cleanup
+- [ ] Log security events without exposing data
+- [ ] Regular permission and CSP audits
+- [ ] User data export/clear functionality
+- [ ] Privacy policy compliance
+
+## Compliance Considerations
+
+### Chrome Web Store Requirements
+- **Privacy Policy**: Must be provided if collecting user data
+- **Data Usage**: Clearly disclose what data is collected
+- **User Control**: Provide data deletion and export options
+- **Security**: Implement reasonable security measures
+
+### GDPR Considerations (if applicable)
+- **Data Minimization**: Only collect necessary data
+- **User Consent**: Clear consent for data collection
+- **Right to Deletion**: Allow users to delete their data
+- **Data Portability**: Provide data export functionality
+
+This security guide ensures the extension follows Chrome extension best practices while protecting user privacy and maintaining a secure translation service.

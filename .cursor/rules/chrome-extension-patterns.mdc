@@ -1,0 +1,233 @@
+---
+globs: manifest.json, src/**/*.js, src/**/*.jsx
+description: Chrome extension development patterns and best practices
+---
+# Chrome Extension Development Patterns
+
+## Manifest Configuration (v3)
+
+### Required Fields
+```json
+{
+  "manifest_version": 3,
+  "name": "Extension Name",
+  "version": "1.0.0",           // Semantic versioning
+  "description": "Brief description",
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": { "16": "icon16.png", "48": "icon48.png", "128": "icon128.png" }
+  }
+}
+```
+
+### Permissions Strategy
+- **Minimal Permissions**: Only request necessary permissions
+- **Justification**: Each permission should have clear purpose
+- **Documentation**: Comment why each permission is needed
+
+### Content Script Matching
+- **Specific Patterns**: Use precise URL patterns when possible
+- **Exclude Overrides**: Use `exclude_matches` to avoid conflicts
+- **Run Timing**: Use `document_start` for early injection
+
+## Service Worker Best Practices
+
+### Background Script Organization
+```javascript
+// Installation handler
+chrome.runtime.onInstalled.addListener(() => {
+  // One-time setup tasks
+  chrome.contextMenus.create(/* menu config */);
+});
+
+// Message handling
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  // Async operations must return true
+  return true;
+});
+```
+
+### Message Passing Patterns
+- **Async Responses**: Always return true for async operations
+- **Error Handling**: Send error responses with proper structure
+- **Sender Validation**: Check sender.tab, sender.frameId when needed
+- **Response Format**: Consistent { success, data, error } structure
+
+### Context Menu Implementation
+```javascript
+chrome.contextMenus.create({
+  id: 'unique-id',
+  title: 'Menu Title',
+  contexts: ['selection', 'page'],
+  documentUrlPatterns: ['https://*/*']  // Optional URL filtering
+});
+```
+
+## Content Script Patterns
+
+### DOM Manipulation Best Practices
+- **Shadow DOM Usage**: Isolate UI from page styles
+- **Event Delegation**: Use event bubbling for dynamic content
+- **Cleanup**: Remove event listeners and DOM elements
+- **Performance**: Use IntersectionObserver for lazy loading
+
+### Button Attachment Strategy
+```javascript
+// Check if element should get translation button
+function shouldAttach(element) {
+  // Size validation
+  if (element.offsetWidth < 120 || element.offsetHeight < 24) return false;
+
+  // Content validation
+  if (element.innerText.trim().length < 20) return false;
+
+  // Context validation
+  const blocker = element.closest('a, button, input, nav, header, footer');
+  if (blocker) return false;
+
+  return true;
+}
+```
+
+### UI Isolation Techniques
+- **Shadow Root Creation**: `element.attachShadow({ mode: 'open' })`
+- **Style Encapsulation**: Include styles in shadow DOM
+- **Event Isolation**: Handle events within shadow boundary
+- **CSS Reset**: Use `all: initial` for consistent styling
+
+## React Integration in Extensions
+
+### Component Structure
+```jsx
+// Popup App Structure
+export default function App() {
+  const [state, setState] = useState(initialState);
+
+  useEffect(() => {
+    // Load initial data
+    loadSettings();
+  }, []);
+
+  return (
+    <div className="container">
+      {/* UI components */}
+    </div>
+  );
+}
+```
+
+### State Management Patterns
+- **Local State**: Use React state for UI-specific data
+- **Storage Integration**: Sync with Chrome storage API
+- **Optimistic Updates**: Update UI immediately, handle failures
+- **Error Boundaries**: Wrap components for graceful error handling
+
+### Extension-Specific Hooks
+```jsx
+// Custom hook for storage
+function useStorage(key, defaultValue) {
+  const [value, setValue] = useState(defaultValue);
+
+  useEffect(() => {
+    chrome.storage.local.get([key], (result) => {
+      setValue(result[key] ?? defaultValue);
+    });
+  }, [key, defaultValue]);
+
+  const updateValue = (newValue) => {
+    setValue(newValue);
+    chrome.storage.local.set({ [key]: newValue });
+  };
+
+  return [value, updateValue];
+}
+```
+
+## Build and Development
+
+### Vite Configuration Patterns
+```javascript
+// vite.config.js structure
+export default defineConfig({
+  plugins: [
+    react(),
+    viteStaticCopy({
+      targets: [
+        { src: 'manifest.json', dest: '.' },
+        { src: 'src/assets/*', dest: 'assets' }
+      ]
+    })
+  ],
+  build: {
+    rollupOptions: {
+      input: {
+        popup: 'src/popup/index.html',
+        options: 'src/options/index.html',
+        background: 'src/background/index.js'
+      }
+    }
+  }
+});
+```
+
+### Asset Management
+- **Icon Requirements**: 16px, 48px, 128px PNG formats
+- **Static Copy**: Use vite-plugin-static-copy for manifest and assets
+- **Path Resolution**: Ensure correct paths in manifest.json
+- **Optimization**: Compress images and minify CSS
+
+## Security and Privacy
+
+### Content Security Policy
+- **Script Restrictions**: Only allow extension's own scripts
+- **Style Limitations**: Use inline styles in shadow DOM
+- **Connection Limits**: Restrict external API calls to known domains
+- **Eval Prevention**: Never use eval() or unsafe-inline
+
+### Permission Justification
+```json
+{
+  "permissions": [
+    "storage",           // User settings and cache
+    "activeTab",         // Current tab interaction
+    "contextMenus"       // Right-click translation
+  ],
+  "host_permissions": [
+    "<all_urls>"         // Universal page access for translation
+  ]
+}
+```
+
+### Data Handling Best Practices
+- **API Key Security**: Store in local storage only
+- **User Data Protection**: Minimize data collection
+- **Cache Cleanup**: Implement automatic cache expiration
+- **Error Sanitization**: Don't expose sensitive data in errors
+
+## Testing and Debugging
+
+### Extension Testing Patterns
+- **Unit Tests**: Test utility functions and React components
+- **Integration Tests**: Test message passing and storage operations
+- **E2E Tests**: Test full user workflows
+- **Manual Testing**: Test in different browsers and scenarios
+
+### Debugging Techniques
+- **Console Logging**: Use structured logging with prefixes
+- **Extension DevTools**: Use chrome://extensions/ for debugging
+- **Storage Inspection**: Check chrome://settings/cookies for storage
+- **Message Monitoring**: Log all message passing for debugging
+
+## Performance Optimization
+
+### Loading Performance
+- **Lazy Loading**: Load content scripts only when needed
+- **Code Splitting**: Split large bundles by functionality
+- **Resource Hints**: Use preload/prefetch for critical resources
+- **Caching Strategy**: Implement intelligent caching for translations
+
+### Runtime Performance
+- **DOM Observation**: Use MutationObserver for dynamic content
+- **Event Throttling**: Debounce rapid events
+- **Memory Management**: Clean up event listeners and DOM elements
+- **Network Optimization**: Batch API requests when possible

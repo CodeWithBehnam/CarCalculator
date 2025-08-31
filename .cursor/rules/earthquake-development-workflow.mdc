@@ -1,0 +1,358 @@
+---
+alwaysApply: true
+description: Development workflow and tooling patterns for the earthquake monitoring project
+---
+
+# Earthquake Project Development Workflow
+
+## Project Setup and Dependencies
+
+### Bun Runtime Configuration
+```json
+// package.json configuration
+{
+  "name": "earthq",
+  "module": "index.ts",
+  "type": "module",         // Enable ES modules
+  "private": true,
+  "scripts": {
+    "start": "bun run index.ts",  // Production start
+    "dev": "bun run index.ts"     // Development (same as start for this project)
+  },
+  "devDependencies": {
+    "@types/bun": "latest"        // Bun TypeScript definitions
+  },
+  "peerDependencies": {
+    "typescript": "^5"            // TypeScript 5.x required
+  },
+  "dependencies": {
+    "csv-parse": "^6.1.0",       // USGS CSV data parsing
+    "three": "^0.179.1"          // 3D visualization library
+  }
+}
+```
+
+### TypeScript Configuration
+```json
+// tsconfig.json - Standard configuration for Bun + TypeScript
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext", 
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "noEmit": true,
+    "strict": true
+  }
+}
+```
+
+## Development Commands
+
+### Local Development
+```bash
+# Start development server (uses Bun runtime)
+bun run dev
+
+# Alternative direct execution
+bun run index.ts
+
+# Install dependencies
+bun install
+
+# Add new dependencies
+bun add <package-name>
+bun add --dev <dev-package>
+```
+
+### Environment Configuration
+```typescript
+// Environment variable patterns
+const port = Number(process.env.PORT || 8080);        // Server port
+const DB_PATH = `${process.cwd()}/data/earthq.db`;    // Database location
+
+// Use process.cwd() for consistent path resolution
+const PUBLIC_DIR = join(process.cwd(), "public");
+```
+
+## File Structure Conventions
+
+### Entry Point Pattern
+```typescript
+// index.ts - Single entry point for the entire application
+import { startServer } from "./src/backend/server";
+import { startScheduler } from "./src/backend/ingest";
+import "./src/backend/db";  // Initialize database on import
+
+// Start both server and data ingestion
+const port = Number(process.env.PORT || 8080);
+startServer(port);
+startScheduler();
+console.log(`Server running at http://localhost:${port}`);
+```
+
+### Backend Organization
+```
+src/backend/
+├── db.ts      - Database connection, schema, and prepared statements
+├── server.ts  - HTTP server, API routes, and static file serving
+└── ingest.ts  - USGS data fetching and processing logic
+```
+
+### Frontend Organization  
+```
+public/
+├── index.html - 2D canvas visualization (main page)
+├── 3d.html    - 3D Three.js visualization page
+└── main.js    - Three.js application logic
+```
+
+## Import and Module Patterns
+
+### Backend Imports (Node.js style)
+```typescript
+// Use Node.js built-in modules with explicit namespace
+import { createServer } from "node:http";
+import { readFile, stat } from "node:fs/promises";
+import { join, extname } from "node:path";
+
+// Bun-specific imports
+import { Database } from "bun:sqlite";
+
+// Local module imports
+import { selectAll, selectRecent, db } from "./db";
+import { ingestOnce } from "./ingest";
+```
+
+### Frontend Imports (ES modules)
+```javascript
+// Three.js import via module proxy
+import * as THREE from "/three.mjs";
+
+// The server provides Three.js at /three.mjs endpoint:
+// Proxies from node_modules/three/build/three.module.js
+```
+
+## API Development Patterns
+
+### REST Endpoint Structure
+```typescript
+export function startServer(port = 3000) {
+  const server = createServer(async (req, res) => {
+    if (!req.url) {
+      res.statusCode = 400;
+      res.end("Bad Request");
+      return;
+    }
+
+    // Pattern: API endpoints with URL parsing
+    if (req.url.startsWith("/api/quakes")) {
+      const url = new URL(req.url, `http://${req.headers.host}`);
+      const sinceHours = Number(url.searchParams.get("sinceHours") ?? "48");
+      const limit = Number(url.searchParams.get("limit") ?? "2000");
+      
+      // Database query with prepared statement
+      const since = Date.now() - sinceHours * 3600 * 1000;
+      const rows = selectRecent.all(since, limit);
+      
+      res.setHeader("content-type", "application/json; charset=utf-8");
+      res.end(JSON.stringify(rows));
+      return;
+    }
+
+    // Pattern: Static file serving with content type detection
+    let filePath = join(PUBLIC_DIR, req.url === "/" ? "index.html" : req.url);
+    try {
+      const st = await stat(filePath);
+      if (st.isDirectory()) filePath = join(filePath, "index.html");
+      const buf = await readFile(filePath);
+      res.setHeader("content-type", contentType(filePath));
+      res.end(buf);
+    } catch {
+      res.statusCode = 404;
+      res.end("Not Found");
+    }
+  });
+  
+  server.listen(port);
+  return server;
+}
+```
+
+### Content Type Handling
+```typescript
+function contentType(filePath: string): string {
+  const ext = extname(filePath).toLowerCase();
+  switch (ext) {
+    case ".html": return "text/html; charset=utf-8";
+    case ".js": return "text/javascript; charset=utf-8";
+    case ".css": return "text/css; charset=utf-8";
+    case ".json": return "application/json; charset=utf-8";
+    case ".png": return "image/png";
+    case ".svg": return "image/svg+xml";
+    default: return "application/octet-stream";
+  }
+}
+```
+
+## Database Development Patterns
+
+### Database Initialization
+```typescript
+// Auto-create data directory and database
+import { mkdirSync } from "node:fs";
+import { dirname } from "node:path";
+
+const DB_PATH = `${process.cwd()}/data/earthq.db`;
+mkdirSync(dirname(DB_PATH), { recursive: true });
+
+export const db = new Database(DB_PATH);
+
+// Configure SQLite for optimal performance
+db.run(`PRAGMA journal_mode = WAL;`);
+db.run(`PRAGMA synchronous = NORMAL;`);
+```
+
+### Schema Migrations (Manual)
+```typescript
+// Create tables with IF NOT EXISTS for idempotent setup
+db.run(`
+  CREATE TABLE IF NOT EXISTS earthquakes (
+    eqid TEXT PRIMARY KEY,
+    time_ms INTEGER NOT NULL,
+    latitude REAL NOT NULL,
+    longitude REAL NOT NULL,
+    depth_km REAL,
+    magnitude REAL,
+    place TEXT
+  );
+`);
+
+// Create indexes separately
+db.run(`CREATE INDEX IF NOT EXISTS idx_quakes_time ON earthquakes(time_ms);`);
+```
+
+## Error Handling and Logging
+
+### Server Error Handling
+```typescript
+// API error responses
+if (req.url === "/api/ingest" && req.method === "POST") {
+  try {
+    const inserted = await ingestOnce();
+    res.setHeader("content-type", "application/json; charset=utf-8");
+    res.end(JSON.stringify({ inserted }));
+  } catch (e: any) {
+    res.statusCode = 500;
+    res.end(JSON.stringify({ error: String(e?.message || e) }));
+  }
+  return;
+}
+```
+
+### Frontend Error Handling
+```javascript
+// Global error handlers
+window.addEventListener("error", (e) => showError(e.message));
+window.addEventListener("unhandledrejection", (e) => showError(`Promise rejection: ${e.reason}`));
+
+// Function-specific error handling
+async function loadEarthquakes() {
+  try {
+    const response = await fetch('/api/quakes?sinceHours=48&limit=2000');
+    earthquakes = await response.json();
+    draw();
+  } catch (error) {
+    info.textContent = `Error loading data: ${error.message}`;
+    console.error('Load error:', error);
+  }
+}
+```
+
+## Performance and Monitoring
+
+### Console Logging Patterns
+```typescript
+// Structured logging with context
+console.log(`Server running at http://localhost:${port}`);
+console.log(`Ingested ${n} new earthquakes`);
+console.error("Ingest failed", e);
+
+// Debug logging during development
+if (debugPrinted < 5) {
+  console.log("ingest insert", { eqid, time_ms, lat, lon, magnitude, changes: (info as any).changes });
+  debugPrinted++;
+}
+```
+
+### Performance Monitoring
+```javascript
+// FPS monitoring for frontend
+let frames = 0, lastReport = performance.now();
+function animate() {
+  requestAnimationFrame(animate);
+  frames++;
+  const now = performance.now();
+  if (now - lastReport > 1000) {
+    lastReport = now;
+    const hud = document.getElementById("hud");
+    if (hud && !hud.textContent?.startsWith("Error")) {
+      hud.textContent = `Rendering... ${frames} fps-ish`;
+    }
+    frames = 0;
+  }
+  renderer.render(scene, camera);
+}
+```
+
+## Production Deployment
+
+### Environment Variables
+```bash
+# Production environment settings
+PORT=8080                    # Server port
+NODE_ENV=production          # Environment flag
+```
+
+### Data Persistence
+```
+data/
+├── earthq.db              # SQLite database file
+├── earthq.db-shm          # Shared memory file (WAL mode)
+└── earthq.db-wal          # Write-ahead log file
+```
+
+### Process Management
+```bash
+# Direct Bun execution for production
+bun run index.ts
+
+# Or with environment variables
+PORT=3000 bun run index.ts
+
+# Background execution
+nohup bun run index.ts > earthquake.log 2>&1 &
+```
+
+## Development Best Practices
+
+### Code Style Conventions
+- Use TypeScript with strict mode enabled
+- Prefer async/await over Promise chains
+- Use prepared statements for all database operations
+- Handle errors gracefully with try-catch blocks
+- Use console logging for monitoring and debugging
+
+### Testing Considerations
+- Test API endpoints with curl or similar tools
+- Verify database operations with SQLite CLI
+- Test frontend in multiple browsers
+- Monitor performance with browser DevTools
+- Validate USGS data parsing with sample CSV files
+
+### Security Guidelines
+- Use prepared statements to prevent SQL injection
+- Validate and sanitize external data inputs
+- Serve static files safely with proper content types
+- Handle CORS appropriately for API access
+- Keep dependencies updated for security patches

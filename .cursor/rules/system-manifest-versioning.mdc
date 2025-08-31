@@ -1,0 +1,40 @@
+---
+alwaysApply: true
+description: VERY IMPORTANT system reminder to track changes and bump manifest.json version for any user-visible or behavioral change
+---
+# System Reminder VERY IMPORTANT
+
+Always track your edits and update the extension version in [manifest.json](mdc:manifest.json).
+
+## When to bump version
+- Any user-visible change to UI, text, behavior, or output
+- Any change to background, content scripts, popup, options, or permissions
+- Any new file in `src/**`, or changes to build output naming in `vite.config.js`
+
+## Versioning rule (SemVer)
+- MAJOR.MINOR.PATCH
+- Default bump: PATCH for fixes and small UI tweaks
+- MINOR for new features or new UI sections
+- MAJOR for breaking changes or permission scope changes
+
+## Required steps per change
+1. Update `version` in [manifest.json](mdc:manifest.json)
+2. Build with Bun: `bun run build`
+3. Verify `dist/manifest.json` contains the new version
+4. Load/Reload unpacked extension and sanity-check
+5. Note the change in [README.md](mdc:README.md) and/or `Docs/Guide.md`
+
+## Additional checks
+- Ensure `manifest_version` remains 3
+- Check `content_scripts` matches/run_at after edits
+- Keep permissions minimal and consistent with code
+- Confirm Vite static copy includes [manifest.json](mdc:manifest.json)
+
+## Commit template
+```
+chore(release): bump manifest version to X.Y.Z
+
+- Brief: what changed
+- Impact: user-facing? permissions? build?
+```
+

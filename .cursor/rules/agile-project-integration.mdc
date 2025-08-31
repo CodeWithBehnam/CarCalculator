@@ -1,0 +1,379 @@
+---
+alwaysApply: false
+description: Integration of agile project management with existing planning systems
+---
+# Agile Project Integration
+
+## System Integration Overview
+
+### Existing Planning Systems Integration
+You WILL integrate agile work item hierarchy and GitHub project management with existing planning systems:
+
+**Implementation Plan Generation Integration**:
+- Map implementation phases to Epic → Feature → Story → Enabler → Test → Task hierarchy
+- Include GitHub issue creation automation in implementation plans
+- Add Definition of Ready (DoR) and Definition of Done (DoD) validation
+- Ensure task specifications include GitHub issue mapping
+
+**Strategic Planning Architecture Integration**:
+- Align architecture decisions with epic-level business objectives
+- Include GitHub project board configuration in planning phases
+- Add automated tracking and monitoring capabilities
+- Integrate dependency management with issue linking
+
+**Planning Workflow Methodology Integration**:
+- Incorporate agile work item templates into planning processes
+- Add sprint planning and capacity management
+- Include milestone tracking and release planning
+- Integrate quality gates with DoR/DoD criteria
+
+**Comprehensive Planning System Integration**:
+- Create unified planning approach combining all methodologies
+- Ensure seamless workflow between different planning phases
+- Maintain consistency across all planning artifacts
+- Provide end-to-end traceability from epic to implementation
+
+## Enhanced Planning Workflow
+
+### Phase 1: Strategic Planning with Agile Context
+You WILL start planning with agile work item hierarchy in mind:
+
+1. **Epic Definition**: Create business-focused epics with clear success metrics
+2. **Feature Identification**: Break epics into user-facing features
+3. **Story Mapping**: Create INVEST-compliant user stories
+4. **Enabler Planning**: Identify technical infrastructure requirements
+5. **Dependency Mapping**: Establish blocking and dependent relationships
+
+### Phase 2: Implementation Planning with GitHub Integration
+You WILL create implementation plans that support automated issue creation:
+
+1. **Work Item Breakdown**: Map implementation tasks to agile hierarchy
+2. **Issue Template Preparation**: Design issues for each work item type
+3. **Dependency Linking**: Define GitHub issue relationships and blocking dependencies
+4. **Label Strategy**: Plan priority, value, component, and status labels
+5. **Automation Planning**: Design GitHub Actions for issue management
+
+### Phase 3: Project Tracking Setup
+You WILL configure comprehensive project tracking:
+
+1. **Project Board Configuration**: Set up Kanban columns and workflows
+2. **Custom Field Definition**: Configure priority, value, component tracking
+3. **Automation Rules**: Create GitHub Actions for status updates
+4. **Sprint Planning**: Define sprint capacity and goal setting
+5. **Metrics Collection**: Set up tracking for key performance indicators
+
+## Enhanced Implementation Plan Template
+
+### Updated Implementation Plan Structure
+You WILL use this enhanced template that integrates agile work item hierarchy:
+
+```markdown
+---
+goal: [Concise Title Describing Implementation Goal]
+version: [Optional: e.g., 1.0, Date]
+date_created: [YYYY-MM-DD]
+last_updated: [Optional: YYYY-MM-DD]
+owner: [Optional: Team/Individual responsible]
+status: 'Completed'|'In progress'|'Planned'|'Deprecated'|'On Hold'
+tags: [Optional: feature, upgrade, chore, architecture, migration, bug]
+epic: [Epic name or identifier]
+feature: [Feature name or identifier]
+---
+
+# Introduction
+![Status: ](https://img.shields.io/badge/status-Planned-blue)
+[A short concise introduction to the plan and goal]
+
+## 1. Requirements & Constraints
+[Explicitly list all requirements & constraints]
+- **REQ-001**: Requirement 1 description
+- **SEC-001**: Security requirement 1
+- **CON-001**: Constraint 1
+- **GUD-001**: Guideline 1
+- **PAT-001**: Pattern to follow 1
+
+## 2. Work Item Hierarchy
+### Epic Context
+- **Epic**: [Epic name]
+- **Business Value**: [Primary business objective]
+- **Success Metrics**: [KPIs and measurable outcomes]
+
+### Feature Definition
+- **Feature**: [Feature name]
+- **User Stories**: [List of user stories in this feature]
+- **Technical Enablers**: [Infrastructure and technical requirements]
+
+## 3. Implementation Steps
+### Implementation Phase 1 - GOAL-001: [Phase goal description]
+| Task | Description | Story | Enabler | Test | Completed | Date |
+|------|-------------|-------|---------|------|-----------|------|
+| TASK-001 | [Specific task with file paths] | [Story ID] | [Enabler ID] | [Test ID] | ✅ | 2025-04-25 |
+
+## 4. GitHub Issue Mapping
+### Epic Issues
+- **Epic Issue**: #{epic-issue-number} - [Epic name]
+
+### Feature Issues
+- **Feature Issue**: #{feature-issue-number} - [Feature name]
+
+### Story and Enabler Issues
+- **User Stories**: [List of story issue numbers and titles]
+- **Technical Enablers**: [List of enabler issue numbers and titles]
+- **Test Cases**: [List of test issue numbers and titles]
+
+## 5. Dependencies
+[Dependencies that need addressing]
+- **DEP-001**: [External dependency with version]
+- **BLOCKS-001**: #{issue-number} - [Blocking relationship]
+- **BLOCKED-BY-001**: #{issue-number} - [Blocked by relationship]
+
+## 6. Files
+[Files affected by implementation]
+- **FILE-001**: [Affected file with description]
+- **STORY-001**: [Stories that modify this file]
+- **ENABLER-001**: [Enablers that affect this file]
+
+## 7. Testing
+[Tests needed for verification]
+- **TEST-001**: [Test specification with criteria]
+- **AUTOMATION**: [Automation status and framework]
+- **COVERAGE**: [Code coverage requirements]
+
+## 8. Definition of Ready & Done
+### Definition of Ready (DoR)
+- [ ] Business value clearly identified
+- [ ] Acceptance criteria defined and testable
+- [ ] Dependencies identified and resolved
+- [ ] Estimated and sized appropriately
+- [ ] Technical approach agreed upon
+- [ ] UX/design requirements complete
+
+### Definition of Done (DoD)
+- [ ] Code implemented and functional
+- [ ] Unit tests written and passing
+- [ ] Integration tests passing
+- [ ] Code review approved
+- [ ] Documentation updated
+- [ ] UX requirements implemented
+- [ ] Accessibility requirements met
+- [ ] Performance requirements met
+
+## 9. Risks & Assumptions
+[Risks and assumptions related to implementation]
+- **RISK-001**: [Risk with mitigation strategy and owner]
+- **ASSUMPTION-001**: [Assumption with validation plan]
+
+## 10. Sprint Planning
+### Sprint Capacity
+- **Team Velocity**: [Average story points per sprint]
+- **Sprint Duration**: [2-week sprints recommended]
+- **Buffer Allocation**: [20% for unexpected work]
+
+### Sprint Goals
+- **Sprint {N} Goal**: [Main deliverable for this sprint]
+- **Stories in Sprint**: [List of stories with point estimates]
+- **Total Commitment**: [Story points committed]
+
+## 11. Related Specifications / Further Reading
+[Link to related spec 1]
+[Link to relevant external documentation]
+[Link to epic documentation]
+[Link to feature requirements]
+```
+
+## GitHub Integration Enhancements
+
+### Automated Issue Creation Workflow
+You WILL design comprehensive issue creation automation:
+
+1. **Epic Creation Automation**:
+   - Create parent epic with business objectives
+   - Set up milestone and release tracking
+   - Configure acceptance criteria validation
+
+2. **Feature Issue Creation**:
+   - Link features to parent epics
+   - Include user story references
+   - Set up dependency tracking
+
+3. **Story and Enabler Breakdown**:
+   - Create INVEST-compliant user stories
+   - Identify technical enabler requirements
+   - Plan testing and quality assurance tasks
+
+4. **Task Creation**:
+   - Break down stories into specific implementation tasks
+   - Include file paths and technical specifications
+   - Set up automated task completion tracking
+
+### Project Board Automation
+You WILL implement comprehensive project board automation:
+
+```yaml
+name: Enhanced Project Management
+on:
+  issues:
+    types: [opened, labeled, closed, edited]
+  pull_request:
+    types: [opened, closed]
+
+jobs:
+  project-management:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Epic Management
+        if: contains(github.event.issue.labels.*.name, 'epic')
+        uses: actions/github-script@v7
+        # Manage epic relationships and milestones
+
+      - name: Feature Tracking
+        if: contains(github.event.issue.labels.*.name, 'feature')
+        uses: actions/github-script@v7
+        # Track feature progress and dependencies
+
+      - name: Story Validation
+        if: contains(github.event.issue.labels.*.name, 'user-story')
+        uses: actions/github-script@v7
+        # Validate story completeness and criteria
+
+      - name: Status Updates
+        uses: actions/github-script@v7
+        # Automated board column movement
+```
+
+## Quality Assurance Integration
+
+### DoR/DoD Automation
+You WILL implement automated quality gate checking:
+
+1. **DoR Validation**:
+   - Check for required fields and criteria
+   - Validate acceptance criteria completeness
+   - Ensure dependency resolution
+   - Verify estimation and sizing
+
+2. **DoD Validation**:
+   - Automate code review completion checking
+   - Validate test coverage requirements
+   - Check documentation update status
+   - Verify performance and accessibility requirements
+
+### Testing Integration
+You WILL enhance testing integration with agile workflow:
+
+1. **Test Planning**:
+   - Create comprehensive test strategies
+   - Plan testing resources and timelines
+   - Define automation requirements
+   - Set up quality gates
+
+2. **Test Execution Tracking**:
+   - Monitor test execution progress
+   - Track defect discovery and resolution
+   - Measure test coverage and effectiveness
+   - Report on testing quality metrics
+
+## Metrics and Reporting Enhancement
+
+### Enhanced KPI Tracking
+You WILL track comprehensive project metrics:
+
+**Delivery Metrics**:
+- Sprint predictability (>80% completion rate)
+- Cycle time (time from "In Progress" to "Done")
+- Lead time (time from "Backlog" to "Done")
+- Defect escape rate (<5% post-release fixes)
+
+**Quality Metrics**:
+- Definition of Done compliance (100% criteria met)
+- Acceptance criteria coverage (100% validated)
+- Code review completion rate
+- Test automation coverage
+
+**Planning Metrics**:
+- Story point estimation accuracy
+- Sprint planning accuracy
+- Dependency resolution time
+- Issue creation to completion time
+
+### Automated Reporting
+You WILL implement automated project reporting:
+
+```yaml
+name: Project Metrics Report
+on:
+  schedule:
+    - cron: '0 9 * * MON'  # Weekly on Monday
+  workflow_dispatch:
+
+jobs:
+  metrics-report:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Generate Sprint Report
+        uses: actions/github-script@v7
+        # Generate comprehensive sprint metrics
+
+      - name: Quality Metrics Report
+        uses: actions/github-script@v7
+        # Generate quality and testing metrics
+
+      - name: Planning Accuracy Report
+        uses: actions/github-script@v7
+        # Generate planning and estimation metrics
+```
+
+## Team Collaboration Enhancement
+
+### Enhanced Communication Workflows
+You WILL improve team communication and collaboration:
+
+1. **Sprint Planning Communication**:
+   - Automated sprint goal notifications
+   - Team capacity and availability tracking
+   - Dependency and blocker visibility
+
+2. **Daily Standup Automation**:
+   - Automated progress updates
+   - Blocker identification and escalation
+   - Team velocity tracking
+
+3. **Sprint Review Preparation**:
+   - Automated demo preparation
+   - Stakeholder notification system
+   - Feedback collection automation
+
+### Knowledge Management Integration
+You WILL enhance knowledge sharing and documentation:
+
+1. **Sprint Retrospective Automation**:
+   - Collect team feedback systematically
+   - Track improvement action items
+   - Monitor follow-through on commitments
+
+2. **Documentation Updates**:
+   - Automated documentation status tracking
+   - Technical debt identification
+   - Knowledge base updates
+
+## Continuous Improvement Integration
+
+### Process Refinement
+You WILL implement continuous process improvement:
+
+1. **Sprint Retrospective Analysis**:
+   - Collect quantitative and qualitative feedback
+   - Identify process bottlenecks and inefficiencies
+   - Track improvement initiative progress
+
+2. **Metrics-Driven Optimization**:
+   - Use collected metrics to identify improvement areas
+   - Implement data-driven process changes
+   - Monitor the impact of process improvements
+
+3. **Team Learning Integration**:
+   - Share lessons learned across sprints
+   - Document best practices and anti-patterns
+   - Create reusable process templates
+
+This comprehensive agile project integration system combines the power of agile work item hierarchy, GitHub project management automation, and existing planning methodologies to create a unified, efficient, and highly automated development workflow that ensures traceability, quality, and successful project delivery.

@@ -1,0 +1,324 @@
+---
+alwaysApply: false
+description: Research and analysis requirements for prompt building and improvement
+---
+# Prompt Research and Analysis Requirements
+
+## Information Research Requirements
+
+### Source Analysis Standards
+You WILL research and integrate information from user-provided sources using appropriate tools:
+
+**README.md Files:**
+- You WILL use `read_file` to analyze deployment, build, or usage instructions
+- You MUST extract key requirements, dependencies, and step-by-step processes
+- You WILL identify patterns and common command sequences
+- You MUST transform documentation into actionable prompt instructions
+
+**GitHub Repositories:**
+- You WILL use `github_repo` to search for coding conventions, standards, and best practices
+- You MUST analyze popular repositories in the target technology domain
+- You WILL identify common patterns and implementation approaches
+- You MUST prioritize well-maintained, high-star repositories
+
+**Code Files and Folders:**
+- You WILL use `file_search` and `semantic_search` to understand implementation patterns
+- You MUST analyze existing codebase structure and conventions
+- You WILL identify recurring patterns and architectural decisions
+- You MUST extract working examples from existing implementations
+
+**Web Documentation:**
+- You WILL use `fetch_webpage` to gather latest documentation and standards
+- You MUST prioritize official documentation over community tutorials
+- You WILL check for version-specific information and breaking changes
+- You MUST validate information currency and accuracy
+
+**Updated Instructions:**
+- You WILL use `context7` to gather latest instructions and examples
+- You MUST integrate current best practices and recent updates
+- You WILL identify deprecated approaches and modern alternatives
+- You MUST ensure compliance with latest standards
+
+## Research Integration Process
+
+### Information Gathering Workflow
+You WILL follow this systematic research process:
+
+1. **Source Identification**
+   - Identify all relevant source materials
+   - Prioritize authoritative sources
+   - Consider multiple perspectives and implementations
+
+2. **Information Extraction**
+   - Extract key requirements and constraints
+   - Identify common patterns and solutions
+   - Note version-specific considerations
+   - Document dependencies and prerequisites
+
+3. **Pattern Analysis**
+   - Identify recurring implementation patterns
+   - Analyze successful vs unsuccessful approaches
+   - Extract common command sequences and workflows
+   - Document best practices and conventions
+
+4. **Integration Planning**
+   - Transform research into specific, actionable instructions
+   - Cross-reference findings for accuracy
+   - Prioritize authoritative sources
+   - Plan how to incorporate findings into prompts
+
+### Cross-Referencing Requirements
+You MUST verify findings across multiple sources:
+- **Consistency Check**: Ensure recommendations align across sources
+- **Authority Assessment**: Prioritize official documentation
+- **Version Alignment**: Verify compatibility with target versions
+- **Context Validation**: Ensure recommendations fit project context
+
+## Research Documentation Standards
+
+### Research Summary Format
+You WILL document research findings using this structure:
+```markdown
+### Research Summary: [Topic/Technology]
+
+**Sources Analyzed:**
+- [Source 1]: [Key findings and relevance]
+- [Source 2]: [Key findings and relevance]
+- [Source 3]: [Key findings and relevance]
+
+**Key Standards Identified:**
+- **[Standard 1]**: [Description and rationale]
+- **[Standard 2]**: [Description and rationale]
+- **[Standard 3]**: [Description and rationale]
+
+**Common Patterns:**
+- **[Pattern 1]**: [Description with examples]
+- **[Pattern 2]**: [Description with examples]
+
+**Integration Plan:**
+- [How findings will be incorporated into prompt]
+- [Specific examples to include]
+- [Version considerations]
+- [Migration paths if applicable]
+```
+
+### Source Authority Hierarchy
+You WILL prioritize sources in this order:
+
+1. **Official Documentation** (highest priority)
+   - Official project documentation
+   - Standards organization guidelines
+   - Vendor documentation
+   - RFCs and specifications
+
+2. **Well-Maintained Repositories**
+   - High-star GitHub repositories
+   - Official organization repositories
+   - Actively maintained projects
+   - Well-documented codebases
+
+3. **Expert Community Sources**
+   - Recognized expert blog posts
+   - Conference presentations
+   - Technical book excerpts
+   - Reputable technical sites
+
+4. **Community Contributions** (lowest priority)
+   - Stack Overflow answers
+   - Blog posts from unknown authors
+   - Community forum discussions
+   - Unverified tutorials
+
+## Prompt Creation and Update Processes
+
+### New Prompt Creation Requirements
+You WILL follow this process for creating new prompts:
+
+1. **Comprehensive Research**
+   - Gather information from ALL provided sources
+   - Research additional authoritative sources as needed
+   - Identify common patterns across successful implementations
+   - Document findings using research summary format
+
+2. **Pattern Transformation**
+   - Transform research findings into specific, actionable instructions
+   - Ensure instructions align with existing codebase patterns
+   - Include concrete examples from research sources
+   - Provide version-specific guidance when applicable
+
+3. **Standards Integration**
+   - Incorporate current best practices and conventions
+   - Include security and performance considerations
+   - Add error handling and validation steps
+   - Provide troubleshooting guidance
+
+### Existing Prompt Update Requirements
+You WILL follow this process for updating existing prompts:
+
+1. **Current State Analysis**
+   - Compare existing prompt against current best practices
+   - Identify outdated, deprecated, or suboptimal guidance
+   - Analyze gaps between current prompt and research findings
+   - Document specific areas needing improvement
+
+2. **Targeted Updates**
+   - Preserve working elements while updating outdated sections
+   - Integrate new research findings appropriately
+   - Ensure updated instructions don't conflict with existing guidance
+   - Maintain consistency with overall prompt structure
+
+3. **Version Compatibility**
+   - Update version-specific information
+   - Include migration guidance for breaking changes
+   - Document deprecated features and alternatives
+   - Provide backward compatibility considerations
+
+## Tool Integration and Usage
+
+### Available Research Tools
+You WILL use ANY available tools to enhance research:
+
+**File Analysis Tools:**
+- `read_file`: Analyze specific files and documentation
+- `file_search`: Find patterns across codebase
+- `semantic_search`: Understand context and relationships
+- `search_replace`: Implement research-based improvements
+
+**External Research Tools:**
+- `github_repo`: Research repository conventions and patterns
+- `fetch_webpage`: Gather latest official documentation
+- `context7`: Access current instructions and examples
+
+**Development Tools:**
+- `run_terminal_cmd`: Test implementations and commands
+- `list_dir`: Understand project structure
+- `grep`: Find specific patterns and implementations
+
+### Tool Selection Guidelines
+You WILL choose tools based on research needs:
+
+**For Code Pattern Analysis:**
+```markdown
+You WILL use file_search to find implementation patterns:
+- Search for specific function names or patterns
+- Analyze how different teams solve similar problems
+- Identify common error handling approaches
+- Extract working code examples
+```
+
+**For Documentation Research:**
+```markdown
+You WILL use fetch_webpage for official documentation:
+- Prioritize official project documentation
+- Check for version-specific information
+- Validate information against multiple sources
+- Extract practical examples and code snippets
+```
+
+**For Repository Standards:**
+```markdown
+You WILL use github_repo to research conventions:
+- Analyze popular repository structures
+- Identify common configuration patterns
+- Study contribution guidelines and standards
+- Extract best practices from README files
+```
+
+## Quality Standards for Research
+
+### Research Quality Criteria
+You MUST ensure research meets these standards:
+
+**Authority and Reliability:**
+- Sources are authoritative and trustworthy
+- Information is current and up-to-date
+- Recommendations are widely accepted
+- Evidence supports claims made
+
+**Completeness and Coverage:**
+- All relevant aspects are addressed
+- Multiple perspectives are considered
+- Edge cases and exceptions are covered
+- Practical examples are included
+
+**Context Appropriateness:**
+- Recommendations fit the specific project context
+- Version requirements are specified
+- Platform considerations are addressed
+- Resource constraints are considered
+
+**Implementation Feasibility:**
+- Research can be practically applied
+- Required tools and dependencies are available
+- Skills and knowledge requirements are reasonable
+- Timeline and effort estimates are realistic
+
+### Research Validation Process
+You WILL validate research quality:
+
+1. **Cross-Source Verification**
+   - Verify findings across multiple independent sources
+   - Check for consistency in recommendations
+   - Resolve conflicts between sources
+   - Document rationale for source selection
+
+2. **Practical Testing**
+   - Test key recommendations in practice
+   - Verify examples work as documented
+   - Check for version compatibility issues
+   - Validate performance and security claims
+
+3. **Community Feedback Integration**
+   - Consider community experiences and feedback
+   - Check for known issues or limitations
+   - Balance expert recommendations with practical experience
+   - Document any deviations from standard practices
+
+## Research Integration Best Practices
+
+### Information Synthesis
+You WILL synthesize research into coherent guidance:
+
+**Pattern Extraction:**
+- Identify common approaches across sources
+- Extract the most effective patterns
+- Eliminate outliers and unusual approaches
+- Focus on proven, widely-used solutions
+
+**Contextual Adaptation:**
+- Adapt general guidance to specific project needs
+- Consider team skills and available resources
+- Account for existing codebase and architecture
+- Balance ideal practices with practical constraints
+
+**Progressive Enhancement:**
+- Start with basic, widely-supported approaches
+- Provide advanced options for experienced users
+- Include migration paths for future improvements
+- Allow for incremental adoption of best practices
+
+### Documentation of Research Process
+You WILL document the research process for transparency:
+
+```markdown
+## Research Methodology
+
+**Research Question:** [What was being investigated]
+
+**Sources Consulted:**
+1. [Official Documentation] - [Date accessed] - [Key findings]
+2. [GitHub Repository] - [Stars/forks] - [Key findings]
+3. [Expert Blog/Article] - [Author credentials] - [Key findings]
+
+**Analysis Method:**
+- [How information was collected and analyzed]
+- [Criteria for source selection]
+- [Process for resolving conflicting information]
+
+**Limitations:**
+- [Any constraints or limitations in the research]
+- [Areas where information was incomplete]
+- [Assumptions made during analysis]
+```
+
+This comprehensive research framework ensures prompts are built on solid, well-researched foundations with practical, actionable guidance that reflects current best practices and standards.

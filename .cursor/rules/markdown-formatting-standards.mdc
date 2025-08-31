@@ -1,0 +1,128 @@
+---
+globs: *.md
+description: Markdown formatting and content creation standards
+---
+# Markdown Formatting Standards
+
+## Headings Hierarchy
+- **H1 (#)**: Reserved for document title - DO NOT use H1 headings in content
+- **H2 (##)**: Main section headings
+- **H3 (###)**: Subsection headings
+- **H4 and below**: Avoid when possible, restructure content instead
+
+## Content Structure Rules
+
+### Lists
+- **Bullet Points**: Use `-` for unordered lists
+- **Numbered Lists**: Use `1.` for ordered lists
+- **Nested Lists**: Indent with exactly 2 spaces
+- **Consistent Style**: Don't mix bullet and numbered in same list
+
+### Code Blocks
+- **Fenced Code Blocks**: Always use triple backticks (```)
+- **Language Specification**: Include language after opening backticks
+  ```javascript
+  // Correct
+  console.log('Hello World');
+  ```
+- **Inline Code**: Use single backticks for `inline code`
+- **No Indentation**: Use fenced blocks instead of indented code
+
+### Links and Images
+- **Descriptive Links**: `[Click here to learn more](https://example.com)`
+- **Accessible Images**: `![Alt text describing the image](image-url)`
+- **Reference Links**: Place URLs at bottom for long links
+- **Internal References**: Use `[file.ext](mdc:file.ext)` for workspace files
+
+### Tables
+- **Proper Alignment**: Use `|` for table columns
+- **Headers**: Include header row with separators
+- **Consistent Spacing**: Align columns properly
+```markdown
+| Column 1 | Column 2 | Column 3 |
+|----------|----------|----------|
+| Data     | Data     | Data     |
+```
+
+## Formatting Guidelines
+
+### Whitespace and Line Length
+- **Line Length Limit**: 400 characters maximum per line
+- **Section Separation**: Use blank lines between sections
+- **List Spacing**: One blank line before and after lists
+- **Code Block Spacing**: Blank lines around code blocks
+
+### Text Formatting
+- **Bold**: Use `**text**` for strong emphasis
+- **Italic**: Use `*text*` for emphasis
+- **Strikethrough**: Use `~~text~~` for deletions
+- **Consistent Style**: Choose one emphasis style and stick to it
+
+### Blockquotes and Callouts
+- **Blockquotes**: Use `>` for quoted content
+- **Nested Quotes**: Use `>>` for nested blockquotes
+- **Callout Boxes**: Use blockquotes with emoji or labels
+  > 📝 **Note**: This is an important note
+  > ⚠️ **Warning**: Be careful with this
+
+## File Organization
+
+### Front Matter
+Always include YAML front matter at the beginning:
+```yaml
+---
+title: Document Title
+description: Brief description
+author: Author Name
+date: YYYY-MM-DD
+tags: [tag1, tag2]
+---
+```
+
+### Document Structure
+1. Front matter (if required)
+2. Title (as H1, if not in front matter)
+3. Introduction/summary
+4. Main content sections
+5. Conclusion (if needed)
+6. References/links
+
+## Content Quality Standards
+
+### Readability
+- **Clear Language**: Use simple, direct language
+- **Active Voice**: Prefer active over passive voice
+- **Consistent Terminology**: Use same terms for same concepts
+- **Logical Flow**: Ensure content flows logically
+
+### Accessibility
+- **Alt Text**: Include descriptive alt text for images
+- **Link Context**: Make link text descriptive
+- **Color Independence**: Don't rely on color alone
+- **Screen Reader Friendly**: Test with screen readers
+
+### Technical Accuracy
+- **Fact Checking**: Verify technical information
+- **Version Consistency**: Keep version numbers current
+- **Code Examples**: Test all code examples
+- **Link Verification**: Check all links are working
+
+## Documentation Types
+
+### API Documentation
+- Method signatures with parameter types
+- Return value descriptions
+- Example usage code blocks
+- Error handling examples
+
+### Tutorial Documentation
+- Step-by-step instructions
+- Code examples at each step
+- Expected output/results
+- Troubleshooting section
+
+### Reference Documentation
+- Alphabetical organization
+- Cross-references to related topics
+- Version information
+- Change history

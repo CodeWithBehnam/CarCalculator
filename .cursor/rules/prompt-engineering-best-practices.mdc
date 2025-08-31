@@ -1,0 +1,360 @@
+---
+globs: *.md, *.txt, prompts/*
+description: Prompt engineering best practices and imperative language standards
+---
+# Prompt Engineering Best Practices
+
+## Imperative Language Standards
+
+### Required Imperative Terms
+You WILL use these prompting terms consistently and correctly:
+
+- **You WILL**: Indicates a required action
+- **You MUST**: Indicates a critical requirement
+- **You ALWAYS**: Indicates a consistent behavior
+- **You NEVER**: Indicates a prohibited action
+- **AVOID**: Indicates examples or instructions to avoid
+- **CRITICAL**: Marks extremely important instructions
+- **MANDATORY**: Marks required steps that cannot be skipped
+
+### Proper Usage Examples
+```markdown
+✅ CORRECT:
+You WILL follow these steps in order.
+You MUST validate all inputs before processing.
+You ALWAYS include error handling in your code.
+You NEVER use deprecated APIs.
+CRITICAL: Backup data before making changes.
+MANDATORY: Complete all validation steps before deployment.
+
+❌ INCORRECT:
+You should follow these steps. (Too weak)
+You might want to validate inputs. (Not imperative)
+Try to include error handling. (Suggestive, not required)
+Please avoid deprecated APIs. (Polite, not directive)
+Important: Backup data. (Not strong enough)
+```
+
+## Prompt Structure and Organization
+
+### Standard Prompt Structure
+```markdown
+---
+title: "Prompt Title"
+description: "Brief description of prompt purpose"
+author: "Author Name"
+date: "YYYY-MM-DD"
+version: "1.0.0"
+---
+
+# [Prompt Title]
+
+## Overview
+Brief description of what this prompt accomplishes.
+
+## Prerequisites
+- Required tools, knowledge, or setup
+- Software versions or dependencies
+- System requirements
+
+## Instructions
+
+### Step 1: [Action Name]
+You WILL perform this specific action.
+You MUST ensure these conditions are met.
+You ALWAYS follow this pattern.
+
+### Step 2: [Next Action]
+Continue with logical next steps...
+
+## Examples
+
+### Example 1: Basic Usage
+```language
+// Code example showing basic usage
+```
+
+### Example 2: Advanced Usage
+```language
+// Code example showing advanced features
+```
+
+## Error Handling
+You WILL handle these common error scenarios:
+- **Error Type**: How to identify and resolve
+- **Prevention**: How to avoid the error
+- **Recovery**: Steps to recover if error occurs
+
+## Validation
+You MUST verify these success criteria:
+- [ ] Specific measurable outcome
+- [ ] Another success indicator
+- [ ] Final validation step
+
+## Best Practices
+You WILL follow these guidelines:
+- **Standard 1**: Description and rationale
+- **Standard 2**: Description and rationale
+
+## Troubleshooting
+Common issues and their solutions:
+- **Issue**: Description of problem
+- **Solution**: Step-by-step resolution
+```
+
+## Content Organization Principles
+
+### Logical Flow Requirements
+You WILL organize prompts in execution order:
+1. **Prerequisites** (what's needed)
+2. **Setup** (initial configuration)
+3. **Main Instructions** (step-by-step actions)
+4. **Examples** (concrete demonstrations)
+5. **Error Handling** (what to do when things go wrong)
+6. **Validation** (how to verify success)
+7. **Best Practices** (optimization and standards)
+8. **Troubleshooting** (common issues and solutions)
+
+### Information Hierarchy
+You MUST use proper heading levels:
+- **H1 (#)**: Prompt title only
+- **H2 (##)**: Major sections (Overview, Instructions, Examples)
+- **H3 (###)**: Subsections within major sections
+- **H4 and below**: Avoid unless absolutely necessary
+
+### Section Consistency
+You WILL maintain consistent section naming:
+- Use "Prerequisites" not "Requirements" or "Pre-reqs"
+- Use "Instructions" not "Steps" or "Process"
+- Use "Examples" not "Sample Code" or "Demos"
+- Use "Error Handling" not "Errors" or "Issues"
+
+## Specificity and Clarity Standards
+
+### Avoid Ambiguity
+```markdown
+❌ VAGUE:
+Create a good user interface.
+Handle errors properly.
+Write efficient code.
+
+✅ SPECIFIC:
+You WILL create a responsive user interface using React components.
+You MUST implement comprehensive error handling with try-catch blocks.
+You WILL optimize database queries by adding appropriate indexes.
+```
+
+### Provide Concrete Examples
+```markdown
+❌ ABSTRACT:
+Use modern JavaScript features.
+
+✅ CONCRETE:
+You WILL use arrow functions, template literals, and async/await:
+```javascript
+// Arrow function example
+const processData = async (data) => {
+  const result = await fetch(`/api/data/${data.id}`);
+  return `Processing complete for ${result.name}`;
+};
+```
+```
+
+### Define Success Criteria
+```markdown
+❌ UNCLEAR SUCCESS:
+The task should be completed successfully.
+
+✅ CLEAR SUCCESS CRITERIA:
+You MUST verify these completion indicators:
+- [ ] All tests pass with 100% coverage
+- [ ] Code builds without errors or warnings
+- [ ] Performance benchmarks meet requirements (>50 requests/second)
+- [ ] Documentation is updated and accurate
+```
+
+## Research Integration Guidelines
+
+### Source Citation Requirements
+You WILL cite authoritative sources:
+```markdown
+## Research Integration
+
+**Sources Analyzed:**
+- [Official Documentation](https://official-site.com/docs)
+- [GitHub Repository Standards](https://github.com/authoritative/repo)
+- [Industry Best Practices](https://standards.org/guidelines)
+
+**Key Standards Identified:**
+- **Security Standard**: Use HTTPS for all external requests
+- **Performance Standard**: Implement caching for API responses
+- **Accessibility Standard**: Follow WCAG 2.1 AA compliance
+```
+
+### Version-Specific Guidance
+You MUST specify version requirements:
+```markdown
+## Version Requirements
+
+**Supported Versions:**
+- Node.js: 18.0.0 or higher
+- React: 18.0.0 - 19.x.x
+- TypeScript: 5.0.0+
+
+**Deprecated Versions:**
+- Node.js < 16.0.0 (security vulnerabilities)
+- React < 17.0.0 (no longer supported)
+```
+
+### Migration Path Guidance
+You WILL provide transition instructions:
+```markdown
+## Migration Guide
+
+### From Legacy Version
+1. You WILL update package.json dependencies
+2. You MUST run the migration script:
+   ```bash
+   npm run migrate-legacy
+   ```
+3. You WILL update import statements to use new API
+4. You MUST verify all tests pass after migration
+
+### Breaking Changes
+- **API Change**: `oldMethod()` → `newMethod()`
+- **Configuration**: JSON config → YAML config
+- **Authentication**: API keys → OAuth tokens
+```
+
+## Error Prevention and Handling
+
+### Common Error Patterns
+You WILL anticipate and prevent these issues:
+
+**Configuration Errors:**
+```markdown
+You MUST validate configuration before starting:
+- Required fields present and valid
+- File paths exist and accessible
+- Network endpoints reachable
+```
+
+**Input Validation:**
+```markdown
+You WILL validate all user inputs:
+- Sanitize file paths to prevent directory traversal
+- Validate email formats and lengths
+- Check numeric ranges and constraints
+```
+
+**Resource Management:**
+```markdown
+You MUST properly manage resources:
+- Close database connections after use
+- Release file handles immediately
+- Cancel pending network requests on component unmount
+```
+
+### Error Recovery Patterns
+```markdown
+## Error Recovery Procedures
+
+### Network Timeout
+You WILL implement retry logic:
+```javascript
+let attempts = 0;
+const maxAttempts = 3;
+
+while (attempts < maxAttempts) {
+  try {
+    const result = await fetchWithTimeout(url, { timeout: 5000 });
+    return result;
+  } catch (error) {
+    attempts++;
+    if (attempts >= maxAttempts) throw error;
+    await delay(Math.pow(2, attempts) * 1000); // Exponential backoff
+  }
+}
+```
+
+### Invalid Configuration
+You WILL provide clear error messages and recovery steps:
+```javascript
+if (!config.apiKey) {
+  throw new Error(
+    'API key is required. Please set API_KEY environment variable.\n' +
+    'Visit https://platform.example.com/keys to generate a key.'
+  );
+}
+```
+
+## Validation and Testing Standards
+
+### Self-Validation Requirements
+You WILL include validation steps within prompts:
+```markdown
+## Validation Steps
+
+You MUST verify the implementation:
+1. **Unit Tests**: All tests pass
+2. **Integration Tests**: End-to-end functionality works
+3. **Performance Tests**: Meets performance requirements
+4. **Security Tests**: No vulnerabilities detected
+```
+
+### Cross-Platform Considerations
+You WILL address platform differences:
+```markdown
+## Platform-Specific Instructions
+
+### Windows Environment
+You WILL use Windows-specific paths:
+```powershell
+$env:PATH = "C:\Program Files\Tool\bin;$env:PATH"
+```
+
+### macOS/Linux Environment
+You WILL use Unix-style paths:
+```bash
+export PATH="/usr/local/bin:$PATH"
+```
+
+### Docker Environment
+You WILL handle container-specific requirements:
+```dockerfile
+FROM node:18-alpine
+RUN apk add --no-cache git curl
+```
+```
+
+## Documentation and Maintenance
+
+### Prompt Metadata Requirements
+You WILL include comprehensive metadata:
+```yaml
+---
+title: "Complete Prompt Title"
+description: "Detailed description of prompt purpose and scope"
+author: "Author Name or Team"
+date: "YYYY-MM-DD"
+version: "1.0.0"
+last_updated: "YYYY-MM-DD"
+status: "draft|review|published|deprecated"
+tags: ["category1", "category2", "technology"]
+category: "development|deployment|testing"
+compatibility: "Node.js 18+, React 18+"
+dependencies: ["library1", "library2"]
+estimated_time: "30 minutes"
+difficulty: "beginner|intermediate|advanced"
+---
+```
+
+### Update and Maintenance Guidelines
+You WILL follow these maintenance practices:
+- **Regular Reviews**: Review prompts every 6 months for updates
+- **Version Tracking**: Increment version numbers for significant changes
+- **Changelog**: Document what changed and why
+- **Deprecation Notices**: Clearly mark deprecated prompts
+- **Feedback Integration**: Incorporate user feedback into improvements
+
+This comprehensive prompt engineering system ensures high-quality, specific, and effective instructions that produce consistent results across different execution contexts.

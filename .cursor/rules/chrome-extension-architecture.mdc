@@ -1,0 +1,87 @@
+---
+alwaysApply: true
+description: Chrome extension architecture and component relationships
+---
+# Chrome Extension Architecture Guide
+
+## Core Components
+
+### Background Service Worker
+- **File**: [src/background/index.js](mdc:src/background/index.js)
+- **Purpose**: Handles context menus, message routing, and API coordination
+- **Key Features**:
+  - Context menu creation for text selection
+  - Translation request processing
+  - Image description handling
+  - Settings and enabled state management
+
+### Content Scripts
+- **General Content Script**: [src/content/general.js](mdc:src/content/general.js)
+  - Universal page support
+  - Paragraph detection and button attachment
+  - Shadow DOM isolation for UI injection
+- **Twitter Content Script**: [src/content/twitter.js](mdc:src/content/twitter.js)
+  - Social media optimized functionality
+
+### UI Components
+- **Popup Interface**: [src/popup/App.jsx](mdc:src/popup/App.jsx)
+  - Master toggle for extension state
+  - Quick access to settings
+- **Options Page**: [src/options/App.jsx](mdc:src/options/App.jsx)
+  - API configuration and model selection
+  - Translation history and usage analytics
+  - Settings management with validation
+
+## Message Passing System
+
+### Background ↔ Content Script Communication
+- **GET_ENABLED**: Check if extension is active
+- **GET_SETTINGS**: Retrieve user configuration
+- **TRANSLATE_TEXT**: Standard translation requests
+- **TRANSLATE_TEXT_STREAM**: Real-time streaming translation
+- **DESCRIBE_IMAGE**: AI-powered image description
+- **CACHE_GET/SET**: Translation caching operations
+
+### Data Flow Patterns
+1. User interaction → Content script detection
+2. Content script → Background service request
+3. Background service → OpenAI API call
+4. Response → Cache storage → UI update
+
+## File Organization
+
+### Source Structure (`src/`)
+- `background/` - Service worker and background processing
+- `content/` - Page content scripts and DOM manipulation
+- `popup/` - Extension popup interface
+- `options/` - Settings and configuration page
+- `utils/` - Shared utilities and services
+- `assets/` - Icons, styles, and static resources
+
+### Build Output (`dist/`)
+- Compiled JavaScript bundles
+- HTML pages for popup and options
+- Manifest file with extension configuration
+- Optimized assets and resources
+
+## Key Patterns
+
+### Shadow DOM Usage
+- All UI elements use Shadow DOM for isolation
+- Prevents CSS conflicts with target websites
+- Maintains consistent styling across domains
+
+### Translation Caching
+- Hash-based cache keys for text content
+- LRU eviction with 1000 entry limit
+- Persistent storage across browser sessions
+
+### Error Handling
+- Graceful degradation on API failures
+- Fallback to cached responses when available
+- User-friendly error messages in UI
+
+### RTL Text Support
+- Automatic RTL/LTR detection for Persian content
+- Proper text direction handling in UI components
+- Font stack optimized for Persian text rendering

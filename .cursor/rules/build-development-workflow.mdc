@@ -1,0 +1,355 @@
+---
+globs: vite.config.js, package.json, manifest.json, src/**/*.js, src/**/*.jsx
+description: Build process, development workflow, and deployment patterns
+---
+# Build and Development Workflow Guide
+
+## Vite Build Configuration
+
+### Core Configuration Structure
+```javascript
+// vite.config.js
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+import { viteStaticCopy } from 'vite-plugin-static-copy';
+
+export default defineConfig({
+  plugins: [
+    react(),
+    viteStaticCopy({
+      targets: [
+        { src: 'manifest.json', dest: '.' },
+        { src: 'src/assets/*', dest: 'assets' }
+      ]
+    })
+  ],
+  build: {
+    rollupOptions: {
+      input: {
+        popup: 'src/popup/index.html',
+        options: 'src/options/index.html',
+        background: 'src/background/index.js',
+        content_twitter: 'src/content/twitter.js',
+        content_general: 'src/content/general.js'
+      }
+    }
+  }
+});
+```
+
+### Build Optimization Features
+- **Multi-entry Build**: Separate bundles for popup, options, background, and content scripts
+- **Asset Copying**: Automatic copying of manifest.json and static assets
+- **React Integration**: JSX compilation and React Fast Refresh
+- **ESBuild**: Fast JavaScript minification and bundling
+
+## Development Commands
+
+### Package.json Scripts
+```json
+{
+  "scripts": {
+    "dev": "bunx vite",                    // Development server with hot reload
+    "build": "bunx vite build",            // Production build
+    "watch": "bunx vite build --watch",    // Watch mode for development
+    "preview": "bunx vite preview",        // Preview built extension
+    "lint": "bunx eslint src --ext .js,.jsx,.ts,.tsx"  // Code quality checks
+  }
+}
+```
+
+### Development Workflow
+1. **Start Development**: `bun run dev` or `bunx vite`
+2. **Watch Changes**: `bun run watch` for continuous builds
+3. **Build Production**: `bun run build`
+4. **Lint Code**: `bun run lint` before commits
+
+## File Structure and Build Outputs
+
+### Source to Build Mapping
+```
+src/
+├── background/index.js          → dist/background.js
+├── popup/index.html             → dist/popup.html
+├── options/index.html           → dist/options.html
+├── content/general.js           → dist/content_general.js
+├── content/twitter.js           → dist/content_twitter.js
+└── assets/*                     → dist/assets/*
+```
+
+### Manifest.json Integration
+```json
+{
+  "manifest_version": 3,
+  "action": {
+    "default_popup": "popup.html"      // Built from src/popup/index.html
+  },
+  "options_ui": {
+    "page": "options.html"             // Built from src/options/index.html
+  },
+  "background": {
+    "service_worker": "background.js"  // Built from src/background/index.js
+  },
+  "content_scripts": [
+    {
+      "js": ["content_general.js"],     // Built from src/content/general.js
+      "matches": ["<all_urls>"]
+    },
+    {
+      "js": ["content_twitter.js"],     // Built from src/content/twitter.js
+      "matches": ["https://twitter.com/*", "https://x.com/*"]
+    }
+  ]
+}
+```
+
+## Development Environment Setup
+
+### Required Dependencies
+```json
+{
+  "devDependencies": {
+    "@types/react": "^19.1.9",                    // React TypeScript definitions
+    "@types/react-dom": "^19.1.7",                // React DOM types
+    "@vitejs/plugin-react": "^5.0.0",             // React plugin for Vite
+    "vite": "^7.1.1",                             // Build tool
+    "vite-plugin-static-copy": "^1.0.6",          // Asset copying
+    "eslint": "^9.33.0",                          // Code linting
+    "eslint-plugin-react": "^7.37.5"              // React ESLint rules
+  },
+  "dependencies": {
+    "@langchain/core": "^0.3.68",                 // LangChain core
+    "@langchain/openai": "^0.6.7",                // OpenAI integration
+    "react": "^19.1.1",                           // React framework
+    "react-dom": "^19.1.1"                        // React DOM
+  }
+}
+```
+
+### Bun Runtime Benefits
+- **Fast Installation**: `bun install` is significantly faster than npm
+- **Native TypeScript**: Built-in TypeScript support
+- **Better Performance**: Optimized JavaScript runtime
+- **Drop-in Replacement**: Compatible with existing package.json
+
+## Build Optimization Techniques
+
+### Code Splitting Strategy
+```javascript
+// Automatic code splitting by entry point
+rollupOptions: {
+  input: {
+    popup: 'src/popup/index.html',        // Separate bundle for popup
+    options: 'src/options/index.html',    // Separate bundle for options
+    background: 'src/background/index.js', // Background script bundle
+    content_general: 'src/content/general.js', // General content script
+    content_twitter: 'src/content/twitter.js'   // Twitter-specific content script
+  }
+}
+```
+
+### Asset Optimization
+```javascript
+// Vite automatically optimizes:
+- JavaScript minification (ESBuild)
+- CSS optimization and minification
+- Image compression and optimization
+- Tree shaking of unused code
+- Dead code elimination
+```
+
+### Bundle Size Management
+```javascript
+// Analyze bundle size
+import { visualizer } from 'rollup-plugin-visualizer';
+
+export default defineConfig({
+  plugins: [
+    // Add to analyze bundle size
+    visualizer({
+      filename: 'dist/stats.html',
+      open: true
+    })
+  ]
+});
+```
+
+## Extension Loading and Performance
+
+### Content Script Injection Timing
+```json
+{
+  "content_scripts": [
+    {
+      "matches": ["https://twitter.com/*"],
+      "js": ["content_twitter.js"],
+      "run_at": "document_start"          // Early injection for Twitter
+    },
+    {
+      "matches": ["<all_urls>"],
+      "exclude_matches": ["https://twitter.com/*"],
+      "js": ["content_general.js"],
+      "run_at": "document_start"          // Early injection for general sites
+    }
+  ]
+}
+```
+
+### Lazy Loading Optimization
+```javascript
+// Use requestIdleCallback for non-critical initialization
+const kickOff = () => startObserving();
+if ('requestIdleCallback' in window) {
+  requestIdleCallback(kickOff, { timeout: 2000 });
+} else {
+  setTimeout(kickOff, 120);
+}
+```
+
+## Development Debugging
+
+### Chrome Extension Debugging
+1. **Load Unpacked Extension**: 
+   - Go to `chrome://extensions/`
+   - Enable "Developer mode"
+   - Click "Load unpacked" and select `dist/` folder
+
+2. **Debug Background Script**:
+   - Click "service worker" link in extension card
+   - Use Chrome DevTools for background script debugging
+
+3. **Debug Content Scripts**:
+   - Open target website
+   - Open Chrome DevTools
+   - Content scripts appear in Sources tab
+
+4. **Debug Popup/Options**:
+   - Right-click extension icon → "Inspect popup"
+   - Use Chrome DevTools for popup debugging
+
+### Console Logging Strategy
+```javascript
+// Structured logging for debugging
+const logger = {
+  info: (message, data) => console.log(`[Extension] ${message}`, data),
+  warn: (message, data) => console.warn(`[Extension] ${message}`, data),
+  error: (message, error) => console.error(`[Extension] ${message}`, error)
+};
+
+// Usage
+logger.info('Translation started', { textLength: text.length });
+logger.error('API request failed', error);
+```
+
+## Testing and Quality Assurance
+
+### ESLint Configuration
+```javascript
+// eslint.config.js
+import js from '@eslint/js';
+import react from 'eslint-plugin-react';
+
+export default [
+  js.configs.recommended,
+  {
+    files: ['src/**/*.{js,jsx}'],
+    languageOptions: {
+      ecmaVersion: 2022,
+      sourceType: 'module',
+      parserOptions: {
+        ecmaFeatures: {
+          jsx: true
+        }
+      }
+    },
+    plugins: {
+      react
+    },
+    rules: {
+      // Custom rules for extension development
+      'no-console': 'warn',
+      'react/prop-types': 'off'
+    }
+  }
+];
+```
+
+### Build Verification Checklist
+- [ ] All entry points build successfully
+- [ ] Manifest.json is copied correctly
+- [ ] Assets are copied to correct locations
+- [ ] Bundle sizes are reasonable (< 5MB total)
+- [ ] No console errors in built extension
+- [ ] Extension loads without warnings
+
+## Deployment Process
+
+### Chrome Web Store Preparation
+1. **Build Production Version**: `bun run build`
+2. **Verify Build Output**: Check `dist/` directory structure
+3. **Test Extension**: Load unpacked and verify functionality
+4. **Create ZIP Package**: `zip -r extension.zip dist/`
+5. **Upload to Chrome Web Store**: Developer dashboard
+
+### Version Management
+```json
+// manifest.json versioning
+{
+  "version": "1.0.46",              // Semantic versioning
+  "version_name": "1.0.46-beta"     // Optional version name
+}
+```
+
+### Release Checklist
+- [ ] Update version in manifest.json
+- [ ] Update version in package.json
+- [ ] Test all functionality in production build
+- [ ] Verify permissions are minimal and justified
+- [ ] Check CSP and security settings
+- [ ] Update release notes and changelog
+- [ ] Create git tag for version
+
+## Performance Monitoring
+
+### Build Performance Tracking
+```javascript
+// Measure build times
+const startTime = Date.now();
+
+export default defineConfig({
+  build: {
+    rollupOptions: {
+      // ... build configuration
+    }
+  },
+  plugins: [
+    {
+      name: 'build-timer',
+      buildStart() {
+        console.log('Build started...');
+      },
+      buildEnd() {
+        const buildTime = Date.now() - startTime;
+        console.log(`Build completed in ${buildTime}ms`);
+      }
+    }
+  ]
+});
+```
+
+### Bundle Analysis
+```javascript
+// Analyze bundle composition
+import { visualizer } from 'rollup-plugin-visualizer';
+
+export default defineConfig({
+  plugins: [
+    visualizer({
+      filename: 'dist/bundle-analysis.html',
+      title: 'Extension Bundle Analysis'
+    })
+  ]
+});
+```
+
+This build and development guide ensures consistent, optimized, and maintainable extension development with proper tooling, debugging, and deployment processes.

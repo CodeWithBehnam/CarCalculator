@@ -1,0 +1,242 @@
+---
+globs: *.md
+description: Content validation and quality requirements for documentation
+---
+# Content Validation Requirements
+
+## Core Validation Rules
+
+### 1. Headings Structure
+- **H1 Usage**: Reserved for document title only - DO NOT use # in content
+- **Hierarchy**: Use ## (H2) and ### (H3) primarily
+- **Avoid Deep Nesting**: Restructure content instead of using H4, H5, H6
+- **Consistency**: Use sentence case for all headings
+
+### 2. List Formatting
+- **Bullet Points**: Use `-` for all unordered lists
+- **Numbered Lists**: Use `1.` for ordered lists (numbers auto-increment)
+- **Nested Indentation**: Exactly 2 spaces for nested lists
+- **Spacing**: One blank line before and after lists
+
+### 3. Code Block Standards
+- **Fenced Blocks**: Always use ``` (triple backticks)
+- **Language Tags**: Specify language for syntax highlighting
+- **No Indented Code**: Use fenced blocks instead of indentation
+- **Consistent Style**: Same code style across all examples
+
+### 4. Link and Image Standards
+- **Descriptive Text**: Link text should describe destination
+- **Accessible Images**: Include meaningful alt text
+- **URL Format**: Use HTTPS when possible
+- **Internal Links**: Use `[file.ext](mdc:file.ext)` for workspace files
+
+### 5. Table Formatting
+- **Markdown Tables**: Use `|` for column separators
+- **Header Row**: Include headers with separator line
+- **Alignment**: Align columns properly with spaces
+- **Consistency**: Same table style across documents
+
+### 6. Line Length and Whitespace
+- **Maximum Length**: 400 characters per line
+- **Soft Breaks**: Use for long paragraphs
+- **Section Spacing**: Blank lines between sections
+- **List Spacing**: Blank lines around lists
+
+### 7. Front Matter Requirements
+- **YAML Format**: Valid YAML syntax
+- **Required Fields**: title, description, author, date
+- **Optional Fields**: tags, category, version, status
+- **Field Types**: Correct data types for each field
+
+## Content Quality Standards
+
+### Readability Guidelines
+- **Clear Language**: Use simple, direct language
+- **Active Voice**: Prefer active over passive voice
+- **Consistent Terminology**: Use same terms for same concepts
+- **Logical Flow**: Ensure content flows logically
+- **Audience Awareness**: Write for intended audience level
+
+### Technical Accuracy
+- **Fact Verification**: Verify all technical claims
+- **Version Information**: Keep version numbers current
+- **Code Testing**: Test all code examples
+- **Link Verification**: Ensure all links are working
+- **Date Currency**: Update dates when content changes
+
+### Accessibility Standards
+- **Alt Text**: Descriptive alternative text for images
+- **Link Context**: Make link text meaningful out of context
+- **Color Independence**: Don't rely solely on color for information
+- **Screen Reader Testing**: Content should work with screen readers
+- **Keyboard Navigation**: All interactive elements accessible
+
+## Documentation Structure
+
+### Standard Document Layout
+```markdown
+---
+title: "Document Title"
+description: "Brief description"
+author: "Author Name"
+date: "YYYY-MM-DD"
+tags: ["tag1", "tag2"]
+---
+
+## Introduction
+
+Brief introduction paragraph.
+
+## Main Section
+
+### Subsection
+
+Content with proper hierarchy.
+
+## Another Section
+
+Additional content sections.
+
+## Conclusion
+
+Summary or next steps.
+
+## References
+
+- [Link to related documentation](mdc:related.md)
+- [External reference](https://example.com)
+```
+
+### Section Organization
+- **Introduction**: Brief overview of topic
+- **Main Content**: Detailed information organized by topic
+- **Examples**: Code examples and practical demonstrations
+- **Best Practices**: Recommended approaches and patterns
+- **Troubleshooting**: Common issues and solutions
+- **References**: Links to related documentation
+
+## Content Types and Guidelines
+
+### API Documentation
+```markdown
+## Method Name
+
+### Signature
+```typescript
+methodName(param1: Type, param2: Type): ReturnType
+```
+
+### Parameters
+- **param1**: Description of parameter
+- **param2**: Description of parameter
+
+### Returns
+Description of return value
+
+### Example
+```typescript
+const result = methodName(value1, value2);
+```
+
+### Error Handling
+- **ErrorType**: Description of when this error occurs
+- **Solution**: How to handle or prevent the error
+```
+
+### Tutorial Documentation
+```markdown
+## Tutorial Title
+
+### Prerequisites
+- Required knowledge or tools
+- Software versions needed
+- System requirements
+
+### Step 1: Description
+Detailed instructions for first step.
+
+```bash
+# Command to run
+example command
+```
+
+### Step 2: Description
+Continue with next step...
+
+### Expected Result
+What should happen after completing the step.
+
+### Troubleshooting
+- **Issue**: Common problem description
+- **Solution**: How to resolve the issue
+```
+
+### Reference Documentation
+```markdown
+## Reference Title
+
+### Overview
+Brief description of the reference topic.
+
+### Categories
+Organize by logical categories.
+
+#### Category Name
+- **Item 1**: Description of item 1
+- **Item 2**: Description of item 2
+
+### Alphabetical Index
+- **Concept A**: Link to detailed explanation
+- **Concept B**: Link to detailed explanation
+
+### Version History
+- **v1.0.0**: Initial release
+- **v1.1.0**: Added new features
+```
+
+## Validation Tools and Automation
+
+### Manual Validation Checklist
+- [ ] Front matter includes all required fields
+- [ ] Headings follow proper hierarchy
+- [ ] Lists use consistent formatting
+- [ ] Code blocks have language tags
+- [ ] Links are descriptive and working
+- [ ] Images have alt text
+- [ ] Tables are properly formatted
+- [ ] Line length under 400 characters
+- [ ] Content is accessible and readable
+
+### Automated Validation
+```bash
+# Example validation script
+#!/bin/bash
+echo "Validating markdown files..."
+
+for file in *.md; do
+  echo "Checking $file..."
+
+  # Check front matter
+  if ! head -n 10 "$file" | grep -q "^---$"; then
+    echo "ERROR: $file missing front matter"
+  fi
+
+  # Check line length
+  if grep -n ".\{401,\}" "$file"; then
+    echo "WARNING: $file has lines longer than 400 characters"
+  fi
+
+  # Check for H1 in content
+  if grep -q "^# " "$file" && ! head -n 5 "$file" | grep -q "^title:"; then
+    echo "ERROR: $file contains H1 heading in content"
+  fi
+done
+```
+
+### Editor Integration
+- **Linting**: Use markdown linting tools
+- **Previews**: Enable live preview for formatting
+- **Snippets**: Create templates for common patterns
+- **Extensions**: Install markdown-specific extensions
+
+This comprehensive validation system ensures high-quality, consistent, and accessible documentation across the project.

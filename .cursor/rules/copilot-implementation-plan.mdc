@@ -1,0 +1,411 @@
+---
+alwaysApply: false
+description: GitHub Copilot-specific implementation plan generation with enhanced AI optimization
+---
+# GitHub Copilot Implementation Plan Generation
+
+## Copilot-Optimized Plan Creation
+
+### Primary Directive Implementation
+You WILL create implementation plans that are fully executable by AI agents or humans, following the exact specifications from the Create Implementation Plan prompt:
+
+**Machine-Readable Output**:
+- Generate plans with zero ambiguity and deterministic language
+- Structure content for automated parsing and execution
+- Ensure complete self-containment with no external dependencies
+- Use explicit, unambiguous language requiring no interpretation
+
+**AI-to-AI Communication**:
+- Design plans for autonomous execution by other AI systems
+- Include all necessary context within each task description
+- Use standardized prefixes for identifiers (REQ-, TASK-, GOAL-, etc.)
+- Provide validation criteria that can be automatically verified
+
+### Copilot Integration Standards
+You WILL implement plans specifically optimized for GitHub Copilot execution:
+
+**Agent Mode Optimization**:
+```markdown
+---
+mode: 'agent'
+description: "[Specific, measurable task description]"
+tools: ["[exact tools needed for execution]"]
+---
+```
+
+**Variable Integration**:
+- Use `${input:PlanPurpose}` for dynamic plan purpose specification
+- Implement `${selection}` for code-based context when applicable
+- Include `${file}` references for current file context
+- Add workspace variables as needed
+
+## Enhanced Template Structure
+
+### Copilot-Specific Template Implementation
+You WILL use this enhanced template structure that includes status badges and Copilot optimization:
+
+```markdown
+---
+goal: [Concise Title Describing Implementation Goal]
+version: [Optional: e.g., 1.0, Date]
+date_created: [YYYY-MM-DD]
+last_updated: [Optional: YYYY-MM-DD]
+owner: [Optional: Team/Individual responsible]
+status: 'Completed'|'In progress'|'Planned'|'Deprecated'|'On Hold'
+tags: [Optional: feature, upgrade, chore, architecture, migration, bug]
+mode: 'agent'
+description: "[Copilot-optimized description]"
+tools: ["[Copilot tools for execution]"]
+---
+
+# Introduction
+![Status: Completed](https://img.shields.io/badge/status-Completed-brightgreen)
+[A short concise introduction to the plan and the goal it is intended to achieve.]
+
+## 1. Requirements & Constraints
+[Explicitly list all requirements & constraints]
+- **REQ-001**: [Specific requirement with measurable criteria]
+- **SEC-001**: [Security requirement with validation method]
+- **[3 LETTERS]-001**: [Other requirement with clear success criteria]
+- **CON-001**: [Constraint with specific limitation]
+- **GUD-001**: [Guideline with compliance method]
+- **PAT-001**: [Pattern with implementation standard]
+
+## 2. Implementation Steps
+### Implementation Phase 1 - GOAL-001: [Measurable phase goal]
+| Task | Description | Completed | Date |
+|------|-------------|-----------|------|
+| TASK-001 | [Task with specific file paths, function names, line numbers] | ✅ | 2025-04-25 |
+| TASK-002 | [Task with exact implementation details] | | |
+| TASK-003 | [Task with validation criteria] | | |
+
+## 3. Alternatives
+[A bullet point list of alternatives considered]
+- **ALT-001**: [Alternative with specific comparison criteria]
+- **ALT-002**: [Alternative with rationale for rejection]
+
+## 4. Dependencies
+[List dependencies with version specifications]
+- **DEP-001**: [Dependency with exact version and source]
+- **DEP-002**: [Dependency with compatibility requirements]
+
+## 5. Files
+[List files with specific impact descriptions]
+- **FILE-001**: [File with exact path and modification scope]
+- **FILE-002**: [File with creation/modification requirements]
+
+## 6. Testing
+[List tests with automated verification methods]
+- **TEST-001**: [Test with specific success criteria and automation]
+- **TEST-002**: [Test with measurable outcomes]
+
+## 7. Risks & Assumptions
+[List risks with mitigation and validation]
+- **RISK-001**: [Risk with probability, impact, and mitigation plan]
+- **ASSUMPTION-001**: [Assumption with validation method]
+
+## 8. Related Specifications / Further Reading
+[Link to related specifications with context]
+[Link to external documentation with relevance]
+```
+
+### Status Badge Implementation
+You WILL implement status badges according to the specification:
+
+**Status Badge Formats**:
+- **Completed**: `![Status: Completed](https://img.shields.io/badge/status-Completed-brightgreen)`
+- **In progress**: `![Status: In progress](https://img.shields.io/badge/status-In%20progress-yellow)`
+- **Planned**: `![Status: Planned](https://img.shields.io/badge/status-Planned-blue)`
+- **Deprecated**: `![Status: Deprecated](https://img.shields.io/badge/status-Deprecated-red)`
+- **On Hold**: `![Status: On Hold](https://img.shields.io/badge/status-On%20Hold-orange)`
+
+**Status Field Requirements**:
+- Must match exactly: 'Completed'|'In progress'|'Planned'|'Deprecated'|'On Hold'
+- Status must be reflected in both front matter and introduction badge
+- Status must accurately reflect current plan state
+- Status changes must be tracked in version history
+
+## Advanced Tool Integration
+
+### Copilot-Optimized Tool Selection
+You WILL select tools specifically optimized for GitHub Copilot execution:
+
+**Core Implementation Tools**:
+```markdown
+tools: ["editFiles", "search", "codebase", "changes"]
+# For comprehensive code analysis and modification
+```
+
+**Testing and Validation Tools**:
+```markdown
+tools: ["runTasks", "testFailure", "findTestFiles", "problems"]
+# For automated testing and quality assurance
+```
+
+**External Integration Tools**:
+```markdown
+tools: ["fetch", "githubRepo", "openSimpleBrowser", "extensions"]
+# For external data and repository integration
+```
+
+**Advanced Analysis Tools**:
+```markdown
+tools: ["usages", "searchResults", "vscodeAPI", "terminalLastCommand"]
+# For deep code analysis and system integration
+```
+
+### Tool Usage Patterns
+You WILL implement specific tool usage patterns for Copilot execution:
+
+**Code Analysis Pattern**:
+```markdown
+1. Use `codebase` to understand overall project structure
+2. Use `search` to find specific patterns and implementations
+3. Use `usages` to understand component dependencies
+4. Use `changes` to track modifications and evolution
+```
+
+**Implementation Pattern**:
+```markdown
+1. Use `editFiles` to create and modify specific files
+2. Use `search` to locate insertion points and existing code
+3. Use `problems` to validate syntax and catch errors
+4. Use `runTasks` to execute build and test processes
+```
+
+**Validation Pattern**:
+```markdown
+1. Use `findTestFiles` to locate relevant test suites
+2. Use `testFailure` to analyze and resolve test failures
+3. Use `runTasks` to execute automated test suites
+4. Use `problems` to identify and resolve code issues
+```
+
+## AI-Optimized Implementation Standards
+
+### Deterministic Language Requirements
+You WILL use language specifically optimized for AI interpretation:
+
+**Zero Ambiguity Standards**:
+- Use exact file paths: `src/components/UserTable.tsx` not "the component file"
+- Specify exact line numbers: `lines 45-67` not "around line 50"
+- Name exact functions: `handleTranslationClick()` not "the click handler"
+- Define specific values: `const TIMEOUT = 5000` not "a reasonable timeout"
+
+**Structured Data Formats**:
+```markdown
+| Task | Description | Completed | Date |
+|------|-------------|-----------|------|
+| TASK-001 | Create UserTable.tsx component with TypeScript interfaces | ✅ | 2025-04-25 |
+```
+
+**Standardized Identifiers**:
+- **REQ-xxx**: Requirements with measurable criteria
+- **SEC-xxx**: Security requirements with validation methods
+- **CON-xxx**: Constraints with specific limitations
+- **GUD-xxx**: Guidelines with compliance methods
+- **PAT-xxx**: Patterns with implementation standards
+- **TASK-xxx**: Tasks with exact implementation details
+- **GOAL-xxx**: Phase goals with measurable outcomes
+- **ALT-xxx**: Alternatives with comparison criteria
+- **DEP-xxx**: Dependencies with version specifications
+- **FILE-xxx**: Files with exact paths and modification scope
+- **TEST-xxx**: Tests with automated verification methods
+- **RISK-xxx**: Risks with probability, impact, mitigation
+- **ASSUMPTION-xxx**: Assumptions with validation methods
+
+### Validation Criteria Implementation
+You WILL include automatically verifiable validation criteria:
+
+**File Validation**:
+```markdown
+**Validation**: Verify file exists at `src/components/UserTable.tsx`
+**Criteria**: File contains TypeScript interfaces and React component
+**Automation**: Use `search` to confirm interface definitions exist
+```
+
+**Functionality Validation**:
+```markdown
+**Validation**: Component renders without errors
+**Criteria**: No console errors, proper TypeScript compilation
+**Automation**: Use `runTasks` to execute build process
+```
+
+**Integration Validation**:
+```markdown
+**Validation**: Component integrates with existing app structure
+**Criteria**: No import errors, proper prop types
+**Automation**: Use `problems` to check for compilation issues
+```
+
+## Plan Execution Optimization
+
+### Phase Architecture Standards
+You WILL design phases for optimal Copilot execution:
+
+**Atomic Phase Design**:
+- Each phase independently executable without cross-phase dependencies
+- Clear measurable completion criteria for each phase
+- Parallel execution capabilities unless explicit dependencies
+- No human interpretation required for any task
+
+**Task Granularity**:
+- Tasks should be executable in 15-30 minutes
+- Each task has single, clear responsibility
+- Tasks include all necessary context and prerequisites
+- Tasks have binary success/failure states
+
+### Error Handling and Recovery
+You WILL implement comprehensive error handling for AI execution:
+
+**Tool Failure Recovery**:
+```markdown
+**If `editFiles` fails**: Use `runCommands` with sed/awk for file modification
+**If `search` returns no results**: Use `codebase` for broader pattern matching
+**If `runTasks` fails**: Use `terminalLastCommand` to execute individual commands
+```
+
+**Validation Failure Recovery**:
+```markdown
+**If syntax validation fails**: Use `problems` to identify specific errors
+**If test execution fails**: Use `testFailure` to analyze and provide fixes
+**If integration fails**: Use `usages` to check dependency issues
+```
+
+## Template Validation and Compliance
+
+### Mandatory Template Compliance
+You WILL ensure strict adherence to the template structure:
+
+**Front Matter Validation**:
+- [ ] All fields present: goal, version, date_created, owner, status, tags
+- [ ] Mode field: Must be 'agent' for Copilot execution
+- [ ] Description: Clear, measurable task description
+- [ ] Tools: Array of exact tool names needed
+- [ ] Status: Exact match with badge color requirements
+
+**Section Header Compliance**:
+- [ ] "Introduction" with status badge
+- [ ] "1. Requirements & Constraints" with proper formatting
+- [ ] "2. Implementation Steps" with phase structure
+- [ ] "3. Alternatives" as bullet points
+- [ ] "4. Dependencies" with version specifications
+- [ ] "5. Files" with exact paths
+- [ ] "6. Testing" with automation methods
+- [ ] "7. Risks & Assumptions" with mitigation plans
+- [ ] "8. Related Specifications / Further Reading" with links
+
+**Table Structure Compliance**:
+- [ ] Exact column headers: Task, Description, Completed, Date
+- [ ] Proper markdown table formatting
+- [ ] TASK-xxx identifiers for all tasks
+- [ ] Specific, actionable task descriptions
+- [ ] Measurable completion criteria
+
+### Output File Specifications
+You WILL follow exact file naming and location requirements:
+
+**Directory Structure**:
+```
+/plan/
+├── upgrade-system-command-4.md
+├── feature-auth-module-1.md
+├── refactor-translation-service-2.md
+└── architecture-extension-structure-1.md
+```
+
+**Naming Convention Compliance**:
+- `[purpose]-[component]-[version].md`
+- Purpose prefixes: upgrade, refactor, feature, data, infrastructure, process, architecture, design
+- Version format: semantic (1.0, 2.1) or date (2025-01-15)
+- No spaces or special characters in filenames
+
+**File Format Requirements**:
+- Valid Markdown with proper front matter
+- UTF-8 encoding
+- Unix line endings (LF)
+- No trailing whitespace
+- Consistent indentation (2 spaces)
+
+## Enhanced Status Management
+
+### Status Lifecycle Management
+You WILL implement comprehensive status tracking:
+
+**Status Transition Rules**:
+- **Planned** → **In progress**: When work begins on first task
+- **In progress** → **Completed**: When all tasks finished and validated
+- **In progress** → **On Hold**: When blocked by external factors
+- **Completed** → **Deprecated**: When plan becomes obsolete
+- Any status → **Deprecated**: When better approach identified
+
+**Status Update Automation**:
+```markdown
+## Status Update Triggers
+- **Task Completion**: Automatically update based on task completion markers
+- **Phase Completion**: Update when all tasks in phase are complete
+- **Validation Success**: Update when all validation criteria are met
+- **External Factors**: Manual updates for blocking issues
+```
+
+### Version Management
+You WILL implement proper version tracking:
+
+**Version Update Requirements**:
+- Increment version for significant changes
+- Update date_created for new plans
+- Update last_updated for all modifications
+- Document version changes in plan content
+
+**Version History Tracking**:
+```markdown
+---
+goal: Translation API Upgrade
+version: 2.1
+date_created: 2025-01-15
+last_updated: 2025-01-20
+---
+```
+
+## Quality Assurance Integration
+
+### Automated Validation Implementation
+You WILL integrate automated validation throughout the plan:
+
+**Syntax Validation**:
+- Use `problems` to check for compilation errors
+- Use `runTasks` to execute linting and formatting
+- Use `search` to verify code pattern compliance
+
+**Functional Validation**:
+- Use `runTasks` to execute test suites
+- Use `testFailure` to analyze and resolve issues
+- Use `findTestFiles` to ensure test coverage
+
+**Integration Validation**:
+- Use `usages` to verify proper integration
+- Use `changes` to track and validate modifications
+- Use `searchResults` to confirm implementation completeness
+
+### Success Criteria Definition
+You WILL define clear, measurable success criteria:
+
+**Task-Level Success**:
+- Specific completion indicators for each task
+- Validation methods that can be automated
+- Clear pass/fail criteria
+- Error tolerance thresholds
+
+**Phase-Level Success**:
+- All tasks completed successfully
+- Phase goals achieved
+- No critical issues remaining
+- Ready for next phase
+
+**Plan-Level Success**:
+- All phases completed
+- Overall goal achieved
+- Quality standards met
+- Integration successful
+
+This GitHub Copilot-optimized implementation plan generation system ensures the creation of high-quality, executable plans that leverage Copilot's full capabilities while maintaining strict standards for AI-to-AI communication and automated execution.

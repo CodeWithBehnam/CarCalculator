@@ -1,0 +1,445 @@
+---
+alwaysApply: false
+description: Plan execution and validation patterns for GitHub Copilot implementation
+---
+# GitHub Copilot Plan Execution and Validation
+
+## Execution Context Standards
+
+### AI-to-AI Communication Protocol
+You WILL design plans for autonomous AI agent execution:
+
+**Deterministic Execution**:
+- Instructions interpreted literally without human clarification
+- Zero ambiguity in task descriptions and requirements
+- Complete context provided within each task
+- No external dependencies for understanding
+
+**Autonomous Processing**:
+- Plans consist of discrete, atomic phases
+- Each phase independently processable by AI agents
+- Tasks executable in parallel unless dependencies specified
+- No human interpretation required for any task
+
+### Execution Environment Setup
+You WILL specify the execution environment for Copilot:
+
+**Copilot Configuration**:
+```markdown
+---
+mode: 'agent'
+description: 'Generate implementation plan for new feature'
+tools: ['editFiles', 'search', 'codebase', 'runTasks']
+---
+```
+
+**Environment Variables**:
+```markdown
+## Execution Environment
+- **Workspace**: Current project workspace
+- **File Context**: `${file}` - Current active file
+- **Selection Context**: `${selection}` - Selected code (if applicable)
+- **Input Variables**: `${input:variableName}` - User-provided inputs
+```
+
+## Task Execution Standards
+
+### Task Granularity and Design
+You WILL design tasks for optimal AI execution:
+
+**15-30 Minute Execution Windows**:
+- Tasks completable within 15-30 minutes of AI processing time
+- Single, clear responsibility per task
+- All necessary context included within task description
+- Binary success/failure completion states
+
+**Task Context Requirements**:
+```markdown
+## Task Context: TASK-001
+**Objective**: Create UserTable component with TypeScript interfaces
+**File Path**: src/components/UserTable.tsx
+**Dependencies**: None
+**Prerequisites**: Node.js environment with TypeScript
+**Expected Duration**: 20 minutes
+**Success Criteria**: Component compiles and exports correctly
+```
+
+### Parallel Execution Management
+You WILL manage task dependencies for parallel processing:
+
+**Dependency Declaration**:
+```markdown
+## Task Dependencies
+### Sequential Dependencies
+- TASK-002 → TASK-001 (Database schema required first)
+- TASK-004 → TASK-003 (API endpoint required first)
+
+### Parallel Execution
+- TASK-005 ↔ TASK-006 (No dependencies, can run simultaneously)
+- TASK-007 ↔ TASK-008 (Independent implementation tasks)
+```
+
+**Phase-Level Dependencies**:
+```markdown
+### Phase Dependencies
+- Phase 2 depends on Phase 1 completion
+- Phase 3 can start after Phase 1 completion
+- Phase 4 requires both Phase 2 and Phase 3 completion
+```
+
+## Validation and Verification
+
+### Automated Validation Implementation
+You WILL implement validation that can be automatically verified:
+
+**File Validation**:
+```markdown
+**Validation Method**: Use `search` tool
+**Validation Criteria**: File exists and contains "export const"
+**Success Indicator**: Pattern found in target file
+**Error Handling**: Create file if not found
+```
+
+**Code Compilation Validation**:
+```markdown
+**Validation Method**: Use `runTasks` tool
+**Validation Criteria**: TypeScript compilation succeeds (exit code 0)
+**Success Indicator**: No compilation errors
+**Error Handling**: Use `problems` to identify and report errors
+```
+
+**Test Execution Validation**:
+```markdown
+**Validation Method**: Use `runTasks` tool
+**Validation Criteria**: All tests pass (0 failures)
+**Success Indicator**: Test suite completion with success
+**Error Handling**: Use `testFailure` to analyze failures
+```
+
+### Phase Completion Validation
+You WILL define clear phase completion criteria:
+
+**Foundation Phase Validation**:
+- [ ] All database schemas created and validated
+- [ ] API endpoints responding correctly
+- [ ] Authentication system functional
+- [ ] Logging system capturing events
+- [ ] Configuration files properly set
+
+**Implementation Phase Validation**:
+- [ ] All user stories implemented and tested
+- [ ] Code review completed with no critical issues
+- [ ] Integration tests passing
+- [ ] Performance benchmarks met
+- [ ] Documentation updated
+
+**Deployment Phase Validation**:
+- [ ] Build process completes successfully
+- [ ] Deployment to target environment succeeds
+- [ ] Smoke tests pass in production
+- [ ] Monitoring systems reporting correctly
+- [ ] Rollback procedures tested and ready
+
+## Error Handling and Recovery
+
+### Tool Failure Recovery Patterns
+You WILL implement comprehensive error recovery for all tools:
+
+**editFiles Tool Recovery**:
+```markdown
+### Primary Failure: File Not Found
+**Detection**: Tool returns "file not found" error
+**Recovery Strategy**: Use `runCommands` to create parent directories
+**Alternative Strategy**: Use `terminalLastCommand` with touch command
+**Fallback Strategy**: Create file manually with basic structure
+
+### Secondary Failure: Permission Denied
+**Detection**: Tool returns permission error
+**Recovery Strategy**: Check file permissions and ownership
+**Alternative Strategy**: Use `runCommands` with sudo (if appropriate)
+**Fallback Strategy**: Request user to resolve permissions
+```
+
+**search Tool Recovery**:
+```markdown
+### Primary Failure: No Results Found
+**Detection**: Search returns empty results
+**Recovery Strategy**: Broaden search pattern or scope
+**Alternative Strategy**: Use `codebase` for broader analysis
+**Fallback Strategy**: Manual file inspection
+```
+
+**runTasks Tool Recovery**:
+```markdown
+### Primary Failure: Command Execution Error
+**Detection**: Non-zero exit code from command
+**Recovery Strategy**: Use `problems` to identify specific errors
+**Alternative Strategy**: Use `terminalLastCommand` for debugging
+**Fallback Strategy**: Manual command execution
+```
+
+### Validation Failure Recovery
+You WILL handle validation failures systematically:
+
+**Compilation Failure Recovery**:
+```markdown
+### TypeScript Compilation Errors
+**Detection**: `runTasks` returns compilation errors
+**Recovery**: Use `problems` to get detailed error information
+**Resolution**: Use `editFiles` to fix specific syntax issues
+**Verification**: Re-run compilation after fixes
+```
+
+**Test Failure Recovery**:
+```markdown
+### Unit Test Failures
+**Detection**: `runTasks` shows test failures
+**Recovery**: Use `testFailure` to analyze failure details
+**Resolution**: Use `editFiles` to fix test or implementation issues
+**Verification**: Re-run test suite after fixes
+```
+
+**Integration Failure Recovery**:
+```markdown
+### API Integration Issues
+**Detection**: Integration tests fail
+**Recovery**: Use `usages` to check dependency issues
+**Resolution**: Use `editFiles` to fix integration problems
+**Verification**: Re-run integration tests
+```
+
+## Tool Integration Patterns
+
+### Sequential Tool Execution
+You WILL design tool usage patterns for reliable execution:
+
+**Code Generation Pattern**:
+```markdown
+1. `codebase` - Understand project structure and existing patterns
+2. `search` - Find similar existing implementations
+3. `editFiles` - Create new files with proper structure
+4. `problems` - Validate implementation and catch errors
+5. `runTasks` - Execute build process to verify compilation
+6. `runTasks` - Run tests to ensure functionality
+```
+
+**Refactoring Pattern**:
+```markdown
+1. `usages` - Analyze current usage patterns and dependencies
+2. `search` - Find all instances that need refactoring
+3. `codebase` - Understand broader system impact
+4. `editFiles` - Apply refactoring changes systematically
+5. `problems` - Validate refactoring didn't introduce errors
+6. `runTasks` - Execute full test suite
+```
+
+**Integration Pattern**:
+```markdown
+1. `fetch` - Retrieve external API specifications
+2. `githubRepo` - Check for existing integration examples
+3. `editFiles` - Implement integration code
+4. `runCommands` - Test integration endpoints
+5. `runTasks` - Execute integration tests
+```
+
+### Tool Resource Management
+You WILL manage tool resources efficiently:
+
+**Memory Management**:
+- Keep tool operations under 1GB memory usage
+- Process large files in chunks when necessary
+- Clean up temporary files and resources
+- Monitor resource usage during execution
+
+**Performance Optimization**:
+- Use specific search patterns to reduce processing time
+- Cache expensive tool results when possible
+- Limit scope of analysis to relevant directories
+- Batch related operations for efficiency
+
+**Network Optimization**:
+- Use compressed data transfers for large payloads
+- Implement retry logic for network-dependent tools
+- Cache external API responses when appropriate
+- Handle network timeouts gracefully
+
+## Progress Tracking and Reporting
+
+### Task Progress Management
+You WILL implement comprehensive progress tracking:
+
+**Task Status Indicators**:
+```markdown
+| Task | Description | Status | Started | Completed | Duration |
+|------|-------------|--------|---------|-----------|----------|
+| TASK-001 | Create component | ✅ | 10:30 | 10:45 | 15min |
+| TASK-002 | Add tests | 🔄 | 10:45 | - | - |
+| TASK-003 | Update docs | ⏳ | - | - | - |
+```
+
+**Status Icons**:
+- ✅ Completed successfully
+- 🔄 In progress
+- ⏳ Pending/queued
+- ❌ Failed/error
+- ⏸️ Paused/on hold
+- 🔄 Retrying
+
+### Phase Progress Reporting
+You WILL provide phase-level progress reporting:
+
+**Phase Status Summary**:
+```markdown
+## Phase 1: Foundation - COMPLETED ✅
+**Progress**: 4/4 tasks completed
+**Duration**: 45 minutes
+**Issues**: 0 blocking issues
+**Quality Gates**: All passed
+
+## Phase 2: Implementation - IN PROGRESS 🔄
+**Progress**: 2/5 tasks completed
+**Duration**: 30 minutes (estimated 90 minutes total)
+**Issues**: 1 minor issue (non-blocking)
+**Quality Gates**: 2/3 passed
+```
+
+### Execution Metrics Collection
+You WILL collect and report execution metrics:
+
+**Performance Metrics**:
+- Task completion times
+- Tool execution durations
+- Error rates and recovery times
+- Resource usage patterns
+
+**Quality Metrics**:
+- Validation success rates
+- Error detection effectiveness
+- Recovery success rates
+- User intervention requirements
+
+**Efficiency Metrics**:
+- Tasks completed per hour
+- Tool usage optimization
+- Parallel execution efficiency
+- Overall plan completion rate
+
+## Quality Assurance Integration
+
+### Automated Quality Gates
+You WILL implement quality gates throughout execution:
+
+**Pre-Task Quality Gates**:
+- Validate prerequisites are met
+- Check required tools are available
+- Verify environment configuration
+- Confirm resource availability
+
+**Post-Task Quality Gates**:
+- Validate task completion criteria
+- Check for introduced issues
+- Verify no regressions
+- Confirm integration success
+
+**Phase Quality Gates**:
+- Validate all phase tasks completed
+- Check phase-level success criteria
+- Review quality metrics
+- Assess readiness for next phase
+
+### Continuous Validation
+You WILL implement ongoing validation during execution:
+
+**Real-time Validation**:
+- Use `problems` for continuous error checking
+- Monitor build status with `runTasks`
+- Validate code quality with linting tools
+- Check test status continuously
+
+**Automated Remediation**:
+- Auto-fix formatting issues
+- Auto-resolve simple compilation errors
+- Auto-retry failed operations
+- Auto-rollback on critical failures
+
+## Plan Evolution and Adaptation
+
+### Dynamic Plan Adjustment
+You WILL support plan evolution during execution:
+
+**Plan Modification Triggers**:
+- New requirements discovered during implementation
+- Technical challenges requiring alternative approaches
+- Scope changes from stakeholders
+- External dependency changes
+
+**Modification Process**:
+```markdown
+### Plan Modification Workflow
+1. **Assessment**: Evaluate impact of proposed change
+2. **Documentation**: Update plan with new requirements
+3. **Dependency Analysis**: Identify affected tasks and phases
+4. **Implementation**: Modify affected tasks and update validation criteria
+5. **Communication**: Update stakeholders on changes
+6. **Validation**: Test modified plan execution
+```
+
+### Version Management
+You WILL manage plan versions during evolution:
+
+**Version Update Process**:
+- Increment version number for significant changes
+- Update last_updated timestamp
+- Document changes in plan content
+- Maintain version history
+
+**Change Tracking**:
+```markdown
+## Version History
+### Version 2.1 (2025-01-20)
+- Added error handling requirements
+- Updated performance benchmarks
+- Modified testing approach
+
+### Version 2.0 (2025-01-15)
+- Major refactor of task structure
+- Added parallel execution support
+- Enhanced validation criteria
+```
+
+## Completion and Handover
+
+### Plan Completion Validation
+You WILL validate complete plan execution:
+
+**Final Validation Checklist**:
+- [ ] All tasks completed successfully
+- [ ] All phases executed and validated
+- [ ] Quality gates passed
+- [ ] Integration tests successful
+- [ ] Documentation updated
+- [ ] Code review completed
+- [ ] Deployment ready
+
+### Handover Documentation
+You WILL create comprehensive handover documentation:
+
+**Implementation Summary**:
+- What was implemented and how
+- Key technical decisions made
+- Architecture changes introduced
+- Integration points established
+
+**Operational Documentation**:
+- Deployment procedures
+- Monitoring and alerting setup
+- Troubleshooting guides
+- Maintenance procedures
+
+**Knowledge Transfer**:
+- Code walkthrough documentation
+- Architecture decision records
+- Testing and validation procedures
+- Future enhancement considerations
+
+This comprehensive plan execution and validation system ensures reliable, automated implementation of GitHub Copilot-generated plans while maintaining strict quality standards and providing robust error handling and recovery mechanisms.

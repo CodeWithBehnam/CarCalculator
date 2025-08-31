@@ -1,0 +1,197 @@
+---
+globs: *.md
+description: Front matter validation and required metadata fields
+---
+# Front Matter Validation Rules
+
+## Required Front Matter Fields
+
+### Essential Fields
+Every documentation file must include these YAML front matter fields:
+
+```yaml
+---
+title: "Clear, Descriptive Title"
+description: "Brief but comprehensive description of the document's purpose"
+author: "Author Name"
+date: "YYYY-MM-DD"
+---
+```
+
+### Optional but Recommended Fields
+```yaml
+---
+title: "Document Title"
+description: "Document description"
+author: "Author Name"
+date: "YYYY-MM-DD"
+tags: ["tag1", "tag2", "tag3"]
+category: "documentation"
+version: "1.0.0"
+last_updated: "YYYY-MM-DD"
+status: "draft|review|published"
+---
+```
+
+## Field-Specific Guidelines
+
+### Title Field
+- **Format**: Use title case
+- **Length**: 50 characters maximum
+- **Clarity**: Should clearly indicate document purpose
+- **Uniqueness**: Avoid generic titles like "Documentation"
+
+### Description Field
+- **Purpose**: Brief summary of document content
+- **Length**: 150-200 characters
+- **Keywords**: Include key terms for searchability
+- **Action-Oriented**: Focus on what readers will learn or do
+
+### Author Field
+- **Format**: Full name or recognizable identifier
+- **Consistency**: Use same format across all documents
+- **Contact**: Consider including email or alias if appropriate
+
+### Date Fields
+- **Format**: ISO 8601 (YYYY-MM-DD)
+- **Creation Date**: When document was first created
+- **Last Updated**: When document was last modified
+- **Consistency**: Use same format for all date fields
+
+### Tags and Categories
+- **Tags**: Specific keywords (3-5 maximum)
+- **Categories**: Broad classification (1-2 maximum)
+- **Consistency**: Use established vocabulary
+- **Relevance**: Tags should relate to content
+
+## Content Status Field
+
+### Status Values
+- **draft**: Work in progress, not ready for review
+- **review**: Ready for review and feedback
+- **published**: Final version, ready for public consumption
+- **archived**: No longer current but kept for reference
+- **deprecated**: Should not be used, kept for historical reasons
+
+### Status Workflow
+1. Create document with `status: draft`
+2. Set to `review` when ready for feedback
+3. Change to `published` after approval
+4. Use `archived` for outdated but useful content
+5. Use `deprecated` for content that should not be used
+
+## Validation Rules
+
+### Syntax Validation
+- **YAML Format**: Must be valid YAML syntax
+- **Indentation**: Consistent 2-space indentation
+- **Quotes**: Use quotes for strings with special characters
+- **Line Breaks**: No trailing spaces, Unix line endings
+
+### Content Validation
+- **Required Fields**: Must include title, description, author, date
+- **Field Types**: Correct data types (strings, arrays, dates)
+- **Value Constraints**: Values must meet length and format requirements
+- **No Duplicates**: No duplicate field names
+
+### Metadata Completeness
+- **Coverage**: Front matter should describe the entire document
+- **Accuracy**: Information should match document content
+- **Currency**: Dates and versions should be current
+- **Relevance**: Tags and categories should match content
+
+## Common Issues and Fixes
+
+### Missing Front Matter
+```markdown
+<!-- INCORRECT: No front matter -->
+# Document Title
+Content here...
+
+<!-- CORRECT -->
+---
+title: "Document Title"
+description: "Document description"
+author: "Author Name"
+date: "2024-01-01"
+---
+# Document Title
+Content here...
+```
+
+### Incorrect Field Names
+```yaml
+<!-- INCORRECT -->
+---
+Title: "Wrong capitalization"
+Description: "Missing quotes around description"
+author: Author Name
+Date: 2024-01-01
+---
+
+<!-- CORRECT -->
+---
+title: "Proper capitalization"
+description: "Quoted description"
+author: "Author Name"
+date: "2024-01-01"
+---
+```
+
+### Missing Required Fields
+```yaml
+<!-- INCORRECT: Missing description -->
+---
+title: "Document Title"
+author: "Author Name"
+date: "2024-01-01"
+---
+
+<!-- CORRECT -->
+---
+title: "Document Title"
+description: "Complete description of document content"
+author: "Author Name"
+date: "2024-01-01"
+---
+```
+
+## Automation and Tools
+
+### Validation Scripts
+Consider creating scripts to validate front matter:
+```bash
+# Example validation script
+#!/bin/bash
+for file in *.md; do
+  if ! head -n 10 "$file" | grep -q "^---$"; then
+    echo "ERROR: $file missing front matter"
+  fi
+done
+```
+
+### Editor Integration
+- **VS Code Extensions**: YAML syntax highlighting, front matter validation
+- **Pre-commit Hooks**: Automatic validation before commits
+- **CI/CD Integration**: Validate during build process
+
+### Templates
+Create templates for different document types:
+```yaml
+# Technical Documentation Template
+---
+title: ""
+description: ""
+author: ""
+date: ""
+tags: []
+category: "technical"
+version: ""
+last_updated: ""
+status: "draft"
+---
+
+# Template Content
+```
+
+This ensures consistent, searchable, and well-organized documentation across the project.

@@ -1,0 +1,282 @@
+---
+alwaysApply: false
+description: Quick reference guide for GitHub Copilot planning system integration
+---
+# GitHub Copilot Planning Quick Reference
+
+## System Overview
+
+### Integrated Planning Ecosystem
+The Copilot Planning System integrates multiple methodologies:
+
+**Copilot Implementation Plans**:
+- AI-optimized, deterministic plans for Copilot execution
+- Mandatory template structure with status badges
+- Comprehensive tool integration and validation
+- Automated GitHub issue creation and tracking
+
+**Strategic Planning**:
+- Business context and objective alignment
+- Architecture and scalability considerations
+- Long-term impact assessment and risk analysis
+- Team capability and resource evaluation
+
+**Agile Work Item Management**:
+- Epic → Feature → Story → Enabler → Test → Task hierarchy
+- INVEST-compliant user stories and acceptance criteria
+- Dependency management and blocking relationships
+- Story point estimation and sprint planning
+
+**GitHub Project Integration**:
+- Automated issue creation from implementation tasks
+- Kanban board configuration and status tracking
+- Sprint planning and capacity management
+- Quality gate enforcement and reporting
+
+## Quick Start Guide
+
+### When to Use Each Planning Approach
+
+**For New Feature Development**:
+1. **Strategic Planning**: Define business objectives and success metrics
+2. **Agile Planning**: Create user stories and acceptance criteria
+3. **Copilot Planning**: Generate detailed implementation plans
+4. **GitHub Integration**: Create issues and set up automation
+
+**For System Refactoring**:
+1. **Strategic Planning**: Assess architectural impact and risks
+2. **Agile Planning**: Break down into manageable enabler tasks
+3. **Copilot Planning**: Create atomic refactoring tasks
+4. **GitHub Integration**: Track progress and validate changes
+
+**For Infrastructure Changes**:
+1. **Strategic Planning**: Evaluate scalability and maintenance impact
+2. **Agile Planning**: Define technical enablers and dependencies
+3. **Copilot Planning**: Specify exact configuration and deployment steps
+4. **GitHub Integration**: Automate deployment and monitoring setup
+
+## Template Quick Reference
+
+### Copilot Implementation Plan Template
+```markdown
+---
+goal: [Goal description]
+version: [1.0]
+date_created: [YYYY-MM-DD]
+status: [Planned]
+mode: 'agent'
+description: [Copilot description]
+tools: ["editFiles", "search", "codebase"]
+epic: [Epic name]
+feature: [Feature name]
+---
+
+# Introduction
+![Status: Planned](https://img.shields.io/badge/status-Planned-blue)
+
+[Brief introduction]
+
+## 1. Strategic Context
+[Business objectives and success metrics]
+
+## 2. Agile Work Item Mapping
+[Epic, feature, story linkages]
+
+## 3. Requirements & Constraints
+- **REQ-001**: [Requirement]
+- **CON-001**: [Constraint]
+
+## 4. Implementation Steps
+### Phase 1 - GOAL-001: [Goal]
+| Task | Description | Story | Enabler | Test | Completed | Date |
+|------|-------------|-------|---------|------|-----------|------|
+| TASK-001 | [Task description] | #{story} | #{enabler} | #{test} | | |
+
+## 5. GitHub Issue Mapping
+[Issue creation and tracking setup]
+
+[Additional sections...]
+```
+
+### Status Badge Reference
+- **Completed**: `![Status: Completed](https://img.shields.io/badge/status-Completed-brightgreen)`
+- **In progress**: `![Status: In progress](https://img.shields.io/badge/status-In%20progress-yellow)`
+- **Planned**: `![Status: Planned](https://img.shields.io/badge/status-Planned-blue)`
+- **Deprecated**: `![Status: Deprecated](https://img.shields.io/badge/status-Deprecated-red)`
+- **On Hold**: `![Status: On Hold](https://img.shields.io/badge/status-On%20Hold-orange)`
+
+## File Naming and Organization
+
+### Implementation Plan Files
+```
+/plan/
+├── upgrade-system-command-4.md
+├── feature-auth-module-1.md
+├── refactor-translation-service-2.md
+└── architecture-extension-structure-1.md
+```
+
+**Naming Convention**: `[purpose]-[component]-[version].md`
+**Purpose Categories**:
+- `upgrade`: System/component upgrades
+- `refactor`: Code restructuring and improvements
+- `feature`: New functionality implementation
+- `data`: Data structure and migration changes
+- `infrastructure`: Infrastructure and deployment changes
+- `process`: Process improvement and automation
+- `architecture`: System architecture changes
+- `design`: Design system and UI updates
+
+## Tool Selection Quick Reference
+
+### Task-Based Tool Selection
+
+**Code Generation Tasks**:
+```markdown
+tools: ["editFiles", "search", "codebase", "changes"]
+# Create new files, find patterns, track modifications
+```
+
+**Testing and Quality**:
+```markdown
+tools: ["runTasks", "findTestFiles", "testFailure", "problems", "runTests"]
+# Execute tests, find test files, analyze failures
+```
+
+**Analysis and Refactoring**:
+```markdown
+tools: ["codebase", "search", "usages", "problems", "vscodeAPI"]
+# Comprehensive analysis, dependency tracking, refactoring
+```
+
+**Integration and Deployment**:
+```markdown
+tools: ["runCommands", "runTasks", "githubRepo", "fetch", "extensions"]
+# Build, deploy, integrate with external services
+```
+
+## Identifier Standards
+
+### Standardized Prefixes
+- **REQ-xxx**: Functional requirements
+- **SEC-xxx**: Security requirements
+- **PERF-xxx**: Performance requirements
+- **CON-xxx**: Constraints and limitations
+- **TASK-xxx**: Implementation tasks
+- **GOAL-xxx**: Phase-level goals
+- **ALT-xxx**: Alternative approaches
+- **DEP-xxx**: Dependencies and prerequisites
+- **FILE-xxx**: Files and resources
+- **TEST-xxx**: Testing and validation
+- **RISK-xxx**: Risks and mitigation
+- **ASSUMPTION-xxx**: Assumptions and validation
+
+## Quality Standards Checklist
+
+### Pre-Plan Validation
+- [ ] Front matter complete with all required fields
+- [ ] Mode set to 'agent' for Copilot execution
+- [ ] Tools array contains appropriate tools for the task
+- [ ] Epic and feature linkages established
+- [ ] Status badge matches status field
+
+### Content Validation
+- [ ] All sections present with proper headers
+- [ ] Tasks include specific file paths and descriptions
+- [ ] Dependencies clearly identified with blocking relationships
+- [ ] Validation criteria defined for each task
+- [ ] GitHub issue mapping specified
+
+### Template Compliance
+- [ ] Exact template structure followed
+- [ ] All identifier prefixes used correctly
+- [ ] Status badge properly formatted
+- [ ] Table structures complete with all columns
+- [ ] No placeholder text remaining
+
+## Common Implementation Patterns
+
+### New Component Creation
+1. **Strategic**: Define component purpose and business value
+2. **Agile**: Create user story with acceptance criteria
+3. **Copilot**: Generate component with TypeScript interfaces
+4. **GitHub**: Create issues for implementation and testing
+
+### API Integration
+1. **Strategic**: Assess API requirements and constraints
+2. **Agile**: Define enabler for API integration work
+3. **Copilot**: Implement API client with error handling
+4. **GitHub**: Track API testing and documentation
+
+### Database Schema Changes
+1. **Strategic**: Evaluate data architecture impact
+2. **Agile**: Create enabler for database migration
+3. **Copilot**: Generate migration scripts and validation
+4. **GitHub**: Manage deployment and rollback planning
+
+## Error Handling and Recovery
+
+### Common Tool Failures
+- **editFiles**: File not found → Create parent directories
+- **search**: No results → Broaden search pattern
+- **runTasks**: Command failed → Use `problems` for diagnosis
+- **codebase**: Large project → Limit scope to relevant directories
+
+### Validation Failures
+- **Compilation errors**: Use `problems` to identify issues
+- **Test failures**: Use `testFailure` to analyze root cause
+- **Integration issues**: Use `usages` to check dependencies
+
+### Recovery Strategies
+1. **Retry with different approach**
+2. **Use alternative tools for same task**
+3. **Break complex tasks into smaller steps**
+4. **Request additional context or clarification**
+
+## Metrics and Success Indicators
+
+### Planning Success Metrics
+- **Task Completion Rate**: Percentage of tasks completed successfully
+- **Tool Effectiveness**: Average time per tool operation
+- **Validation Success**: Percentage of automated validations passing
+- **GitHub Integration**: Percentage of issues created and tracked
+
+### Quality Metrics
+- **Template Compliance**: Percentage of plans following standards
+- **Identifier Accuracy**: Correct prefix usage rate
+- **Link Completeness**: Percentage of issues properly linked
+- **Documentation Quality**: Completeness of plan documentation
+
+### Process Efficiency Metrics
+- **Plan Creation Time**: Average time to create complete plans
+- **Review Cycle Time**: Time from creation to approval
+- **Implementation Time**: Time from plan approval to completion
+- **Issue Resolution Time**: Average time to resolve blocking issues
+
+## Integration Points Reference
+
+### Strategic Planning Integration
+- **Business Context**: Epic objectives and success metrics
+- **Architecture Review**: Scalability and performance considerations
+- **Risk Assessment**: Long-term impact and mitigation strategies
+- **Resource Planning**: Team capability and capacity assessment
+
+### Agile Integration
+- **Work Item Hierarchy**: Epic → Feature → Story → Enabler → Test → Task
+- **Story Mapping**: User story creation with INVEST criteria
+- **Dependency Management**: Blocking and dependent relationships
+- **Sprint Planning**: Capacity and velocity-based planning
+
+### GitHub Integration
+- **Issue Creation**: Automated issue generation from tasks
+- **Board Configuration**: Kanban column and workflow setup
+- **Status Automation**: GitHub Actions for status updates
+- **Sprint Tracking**: Issue assignment and progress monitoring
+
+### Quality Integration
+- **DoR/DoD**: Definition of Ready and Done criteria
+- **Quality Gates**: Automated validation checkpoints
+- **Testing Integration**: Test creation and execution automation
+- **Review Process**: Code review and approval workflows
+
+This quick reference guide provides essential information for effectively using the integrated GitHub Copilot planning system, ensuring consistent, high-quality implementation plans with full traceability and automation support.

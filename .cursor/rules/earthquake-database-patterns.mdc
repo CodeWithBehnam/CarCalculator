@@ -1,0 +1,212 @@
+---
+globs: src/backend/*.ts,*.ts
+description: Database patterns and USGS earthquake data handling
+---
+
+# Earthquake Database and Data Integration Patterns
+
+## Database Configuration
+
+### SQLite Setup with Bun
+```typescript
+import { Database } from "bun:sqlite";
+
+// Standard configuration for earthquake data
+const db = new Database(DB_PATH);
+db.run(`PRAGMA journal_mode = WAL;`);      // Write-Ahead Logging for performance
+db.run(`PRAGMA synchronous = NORMAL;`);    // Balanced durability vs performance
+```
+
+### Schema Design
+```sql
+CREATE TABLE IF NOT EXISTS earthquakes (
+  eqid TEXT PRIMARY KEY,        -- Unique earthquake identifier from USGS
+  time_ms INTEGER NOT NULL,     -- Unix timestamp for efficient time queries
+  latitude REAL NOT NULL,       -- WGS84 coordinate system
+  longitude REAL NOT NULL,      -- WGS84 coordinate system  
+  depth_km REAL,               -- Nullable depth in kilometers
+  magnitude REAL,              -- Nullable Richter scale magnitude
+  place TEXT                   -- Nullable human-readable location
+);
+
+-- Critical index for time-based queries
+CREATE INDEX IF NOT EXISTS idx_quakes_time ON earthquakes(time_ms);
+```
+
+## Prepared Statements Pattern
+
+### Insert Operations
+```typescript
+// Use prepared statements for performance and security
+export const insertEarthquake = db.prepare(
+  `INSERT OR IGNORE INTO earthquakes (eqid, time_ms, latitude, longitude, depth_km, magnitude, place)
+   VALUES (@eqid, @time_ms, @latitude, @longitude, @depth_km, @magnitude, @place)`
+);
+
+// Positional parameters for bulk operations
+export const insertEarthquakePositional = db.prepare(
+  `INSERT OR IGNORE INTO earthquakes (eqid, time_ms, latitude, longitude, depth_km, magnitude, place)
+   VALUES (?, ?, ?, ?, ?, ?, ?)`
+);
+```
+
+### Query Operations
+```typescript
+// Time-based filtering with proper indexing
+export const selectRecent = db.query(
+  `SELECT eqid, time_ms, latitude, longitude, depth_km, magnitude, place
+   FROM earthquakes
+   WHERE time_ms >= ?
+   ORDER BY time_ms DESC
+   LIMIT ?`
+);
+
+// General queries with result limiting
+export const selectAll = db.query(
+  `SELECT eqid, time_ms, latitude, longitude, depth_km, magnitude, place
+   FROM earthquakes
+   ORDER BY time_ms DESC
+   LIMIT ?`
+);
+```
+
+## USGS Data Integration
+
+### CSV Feed Processing
+```typescript
+import { parse } from "csv-parse/sync";
+
+const FEED_URL = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/2.5_day.csv";
+
+// USGS CSV structure mapping
+type CsvRow = {
+  time: string;      // ISO 8601 timestamp
+  latitude: string;  // String representation of float
+  longitude: string; // String representation of float
+  depth: string;     // String representation of float (can be empty)
+  mag: string;       // String representation of float (can be empty)
+  id: string;        // Unique earthquake identifier
+  place?: string;    // Optional location description
+};
+```
+
+### Data Transformation Pipeline
+```typescript
+export async function ingestOnce(): Promise<number> {
+  // 1. Fetch external data with error handling
+  const res = await fetch(FEED_URL, { redirect: "follow" });
+  if (!res.ok) throw new Error(`Failed to fetch CSV: ${res.status}`);
+  
+  // 2. Parse CSV with proper configuration
+  const records: CsvRow[] = parse(csvText, {
+    columns: (header: string[]) => header.map((h) => h.trim()),
+    skip_empty_lines: true,
+    trim: true,
+  });
+  
+  // 3. Transform and validate data
+  for (const r of rows) {
+    const eqid = (r.id || "").trim();
+    const time_ms = new Date(r.time.trim()).getTime();
+    
+    // Validate required fields
+    if (!eqid || !Number.isFinite(time_ms)) continue;
+    
+    const lat = parseFloat(String(r.latitude).trim());
+    const lon = parseFloat(String(r.longitude).trim());
+    if (!Number.isFinite(lat) || !Number.isFinite(lon)) continue;
+    
+    // Handle nullable fields properly
+    const depth_km = r.depth === "" || r.depth == null ? null : parseFloat(String(r.depth).trim());
+    const magnitude = r.mag === "" || r.mag == null ? null : parseFloat(String(r.mag).trim());
+    const place = r.place?.trim() ?? null;
+    
+    // 4. Insert with transaction safety
+    const info = insertEarthquakePositional.run(eqid, time_ms, lat, lon, depth_km, magnitude, place);
+  }
+}
+```
+
+## Transaction Patterns
+
+### Bulk Insert with Transactions
+```typescript
+// Use transactions for bulk operations
+let inserted = 0;
+db.transaction((rows: CsvRow[]) => {
+  for (const r of rows) {
+    // Process each row
+    const info = insertEarthquakePositional.run(...data);
+    if ((info as any).changes > 0) inserted += 1;
+  }
+})(records);
+```
+
+### Deduplication Strategy
+- Use `INSERT OR IGNORE` to handle duplicate earthquake IDs
+- USGS data may contain updates for the same earthquake
+- Primary key constraint on `eqid` ensures data integrity
+
+## API Query Patterns
+
+### Time-Based Filtering
+```typescript
+// Calculate time window for recent earthquakes
+const sinceHours = Number(url.searchParams.get("sinceHours") ?? "48");
+const limit = Number(url.searchParams.get("limit") ?? "2000");
+const since = Date.now() - sinceHours * 3600 * 1000;
+
+// Use prepared query with time filter
+const rows = selectRecent.all(since, limit);
+```
+
+### Performance Considerations
+- Always use LIMIT clauses to prevent unbounded result sets
+- Time-based indexing enables efficient recent data queries
+- WAL mode allows concurrent reads during data ingestion
+- Consider result caching for frequently accessed endpoints
+
+## Error Handling Best Practices
+
+### Database Operations
+```typescript
+try {
+  const info = insertEarthquakePositional.run(eqid, time_ms, lat, lon, depth_km, magnitude, place);
+  // Check insertion success
+  if ((info as any).changes > 0) inserted += 1;
+} catch {
+  // Silent failure for individual records - continue processing
+  // Log errors in production environments
+}
+```
+
+### Data Validation
+- Validate coordinates are within valid ranges (-90 to 90 for latitude, -180 to 180 for longitude)
+- Check timestamp validity before database insertion
+- Handle null/empty values consistently across the pipeline
+- Sanitize place names and other text fields
+
+## Monitoring and Maintenance
+
+### Scheduled Data Updates
+```typescript
+export function startScheduler(intervalMs = 1000 * 60 * 60 * 2) {
+  // Initial ingestion
+  ingestOnce()
+    .then((n) => console.log(`Ingested ${n} new earthquakes`))
+    .catch((e) => console.error("Ingest failed", e));
+    
+  // Recurring updates every 2 hours (configurable)
+  return setInterval(() => {
+    ingestOnce()
+      .then((n) => console.log(`Ingested ${n} new earthquakes`))
+      .catch((e) => console.error("Ingest failed", e));
+  }, intervalMs);
+}
+```
+
+### Database Maintenance
+- Monitor database size growth over time
+- Consider archiving old earthquake data beyond reasonable time windows
+- Use `PRAGMA optimize;` periodically for query plan optimization
+- Monitor WAL file size and checkpoint frequency

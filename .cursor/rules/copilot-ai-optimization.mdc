@@ -1,0 +1,425 @@
+---
+alwaysApply: false
+description: AI-optimized implementation standards for GitHub Copilot execution
+---
+# GitHub Copilot AI-Optimization Standards
+
+## Machine-Readable Plan Generation
+
+### Deterministic Language Standards
+You WILL use language specifically optimized for AI interpretation and execution:
+
+**Zero Ambiguity Requirements**:
+- Use exact file paths: `src/components/TranslationButton.tsx`
+- Specify exact line numbers: `lines 45-67`
+- Name exact functions: `handleTranslationClick()`
+- Define specific values: `const TIMEOUT = 5000`
+- Include exact error messages: `"API key not found"`
+
+**Prohibited Language Patterns**:
+```markdown
+❌ AMBIGUOUS:
+"Create the component file"
+"Add error handling somewhere"
+"Use a reasonable timeout value"
+"Handle the API response properly"
+
+✅ DETERMINISTIC:
+"Create new file: src/components/ErrorBoundary.tsx"
+"Add try-catch block around fetch call in handleSubmit function"
+"Set timeout to 5000ms for API requests"
+"Parse JSON response and handle error status codes"
+```
+
+### Structured Data Formats
+You WILL use machine-parseable formats for all plan elements:
+
+**Task Table Format**:
+```markdown
+| Task | Description | Completed | Date |
+|------|-------------|-----------|------|
+| TASK-001 | Create UserTable.tsx component with TypeScript interfaces | ✅ | 2025-04-25 |
+| TASK-002 | Implement data fetching logic in useUsers hook | | |
+| TASK-003 | Add error boundary for graceful error handling | | |
+```
+
+**Requirements Format**:
+```markdown
+- **REQ-001**: Component must render user data in a responsive table format
+- **SEC-001**: All user data must be encrypted in transit
+- **PERF-001**: Component must render within 100ms on standard hardware
+- **ACC-001**: Component must meet WCAG 2.1 AA accessibility standards
+```
+
+**Dependencies Format**:
+```markdown
+- **DEP-001**: React 18.0.0 or higher (npm install react@^18.0.0)
+- **DEP-002**: TypeScript 5.0.0 or higher (npm install typescript@^5.0.0)
+- **DEP-003**: Tailwind CSS 3.0.0 or higher (npm install tailwindcss@^3.0.0)
+```
+
+## AI-Optimized Task Design
+
+### Task Granularity Standards
+You WILL design tasks for optimal AI execution:
+
+**15-30 Minute Execution Windows**:
+- Tasks should be completable within 15-30 minutes
+- Each task has a single, clear responsibility
+- Tasks include all necessary context and prerequisites
+- Tasks have binary success/failure states
+
+**Context Completeness**:
+- Include all imports needed for the task
+- Specify exact file paths and locations
+- Provide necessary type definitions
+- Include relevant code snippets or patterns
+
+### Task Dependency Management
+You WILL manage dependencies to enable parallel execution:
+
+**Explicit Dependency Declaration**:
+```markdown
+## Task Dependencies
+- **TASK-002** depends on **TASK-001** (database schema required)
+- **TASK-004** depends on **TASK-003** (API endpoint required)
+- **TASK-006** can run in parallel with **TASK-005** (no dependencies)
+```
+
+**Parallel Execution Optimization**:
+- Design tasks to minimize dependencies
+- Group dependent tasks in same phase
+- Allow independent tasks to run in parallel
+- Use clear dependency chains
+
+## Validation Criteria Automation
+
+### Automated Verification Methods
+You WILL include validation criteria that can be automatically verified:
+
+**File Existence Validation**:
+```markdown
+**Validation**: Verify file exists at `src/components/UserTable.tsx`
+**Method**: Use `search` tool to check file presence
+**Criteria**: File contains "export const UserTable" pattern
+```
+
+**Code Pattern Validation**:
+```markdown
+**Validation**: Verify TypeScript interfaces are properly defined
+**Method**: Use `search` to find "interface.*Props" patterns
+**Criteria**: At least 2 interface definitions found
+```
+
+**Compilation Validation**:
+```markdown
+**Validation**: Verify code compiles without errors
+**Method**: Use `runTasks` to execute TypeScript compiler
+**Criteria**: Exit code 0 and no error messages
+```
+
+**Test Execution Validation**:
+```markdown
+**Validation**: Verify tests pass successfully
+**Method**: Use `runTasks` to execute test suite
+**Criteria**: All tests pass with 0 failures
+```
+
+## Tool Integration Optimization
+
+### Copilot Tool Selection Strategy
+You WILL select tools based on specific execution requirements:
+
+**Implementation Tools**:
+```markdown
+tools: ["editFiles", "search", "codebase", "changes"]
+# Core implementation with code analysis and modification
+```
+
+**Testing Tools**:
+```markdown
+tools: ["runTasks", "testFailure", "findTestFiles", "problems"]
+# Comprehensive testing with failure analysis
+```
+
+**Integration Tools**:
+```markdown
+tools: ["fetch", "githubRepo", "openSimpleBrowser", "extensions"]
+# External data and service integration
+```
+
+**Analysis Tools**:
+```markdown
+tools: ["usages", "searchResults", "vscodeAPI", "terminalLastCommand"]
+# Deep code analysis and system integration
+```
+
+### Tool Usage Pattern Optimization
+You WILL optimize tool usage for efficiency and reliability:
+
+**Sequential Tool Patterns**:
+```markdown
+1. `codebase` - Understand project structure and patterns
+2. `search` - Find specific implementation patterns
+3. `usages` - Analyze component dependencies and usage
+4. `editFiles` - Implement changes with full context
+5. `problems` - Validate implementation and catch errors
+6. `runTasks` - Execute build and test processes
+```
+
+**Error Recovery Patterns**:
+```markdown
+## Tool Failure Recovery
+- If `editFiles` fails: Use `runCommands` with file system operations
+- If `search` returns empty: Use `codebase` for broader analysis
+- If `runTasks` fails: Use `terminalLastCommand` for individual commands
+- If `problems` shows errors: Use `search` to locate and fix issues
+```
+
+**Performance Optimization**:
+- Cache expensive tool results when possible
+- Use specific search patterns to reduce processing time
+- Limit scope of analysis to relevant directories
+- Batch related operations when supported
+
+## Phase Architecture Optimization
+
+### Atomic Phase Design
+You WILL design phases for independent, parallel execution:
+
+**Phase Independence**:
+- Each phase independently processable without cross-phase dependencies
+- Clear measurable completion criteria for each phase
+- No shared state or resources between phases unless explicitly declared
+- Each phase can be executed by different AI agents if needed
+
+**Parallel Execution Support**:
+```markdown
+### Phase 1: Foundation (Parallel Execution Allowed)
+- TASK-001: Create database schema
+- TASK-002: Set up API endpoints
+- TASK-003: Configure authentication
+- TASK-004: Initialize logging system
+
+### Phase 2: Implementation (Sequential Dependencies)
+- TASK-005: Implement user registration (depends on TASK-003)
+- TASK-006: Create user dashboard (depends on TASK-005)
+- TASK-007: Add user settings (depends on TASK-005)
+```
+
+### Phase Validation Criteria
+You WILL define clear, automated phase completion criteria:
+
+**Foundation Phase Completion**:
+- All database tables created and validated
+- API endpoints responding correctly
+- Authentication system functional
+- Logging system capturing events
+
+**Implementation Phase Completion**:
+- All user stories implemented and tested
+- Code review completed with no critical issues
+- Integration tests passing
+- Performance benchmarks met
+
+## Error Handling and Recovery
+
+### Comprehensive Error Management
+You WILL implement robust error handling for AI execution:
+
+**Tool Failure Recovery**:
+```markdown
+### Primary Tool Failure
+**Tool**: `editFiles`
+**Failure Mode**: File not found
+**Recovery**: Create parent directories using `runCommands`
+**Fallback**: Use `terminalLastCommand` with mkdir and touch commands
+
+### Secondary Tool Failure
+**Tool**: `runTasks`
+**Failure Mode**: Build process fails
+**Recovery**: Use `problems` to identify specific compilation errors
+**Fallback**: Use `terminalLastCommand` to run individual build steps
+```
+
+**Validation Failure Recovery**:
+```markdown
+### Validation Failure Handling
+**Validation**: TypeScript compilation
+**Failure Mode**: Type errors found
+**Recovery**: Use `problems` to get detailed error information
+**Resolution**: Use `editFiles` to fix specific type issues
+**Verification**: Re-run validation after fixes
+```
+
+**Dependency Failure Recovery**:
+```markdown
+### Dependency Resolution
+**Dependency**: React 18.0.0
+**Failure Mode**: Installation fails
+**Recovery**: Check Node.js version compatibility
+**Fallback**: Use compatible React version
+**Alternative**: Use CDN version with fallback
+```
+
+## Context and Variable Management
+
+### Variable Definition Standards
+You WILL define variables with complete context:
+
+**Input Variables**:
+```markdown
+- `${input:componentName}`: The name of the component to generate
+  - **Type**: string (required)
+  - **Format**: PascalCase (e.g., "UserProfile")
+  - **Validation**: Must be valid TypeScript identifier
+  - **Example**: "DataTable", "UserForm", "NavigationMenu"
+```
+
+**Selection Variables**:
+```markdown
+- `${selection}`: Selected code to base implementation on
+  - **Type**: code (optional)
+  - **Format**: Valid TypeScript/JavaScript code
+  - **Validation**: Must be parseable code
+  - **Usage**: Used for code analysis and pattern extraction
+```
+
+**File Variables**:
+```markdown
+- `${file}`: Current file for context
+  - **Type**: file path (contextual)
+  - **Usage**: Provides workspace and file context
+  - **Scope**: Current editor file
+```
+
+### Context Provision Standards
+You WILL provide complete context for AI execution:
+
+**Workspace Context**:
+```markdown
+**Workspace**: `/Users/username/project`
+**Project Type**: React TypeScript Application
+**Framework**: Next.js 14 with Tailwind CSS
+**Language**: TypeScript 5.0 with strict mode
+```
+
+**Code Context**:
+```markdown
+**Existing Patterns**: Functional components with hooks
+**Styling Approach**: Tailwind CSS with custom components
+**State Management**: React Context with custom hooks
+**Testing Framework**: Jest with React Testing Library
+```
+
+**Architecture Context**:
+```markdown
+**Component Structure**: Atomic design (atoms, molecules, organisms)
+**Data Flow**: Props drilling with context for global state
+**API Integration**: Custom hooks with React Query
+**Error Handling**: Error boundaries with user-friendly messages
+```
+
+## Performance and Resource Optimization
+
+### Execution Time Optimization
+You WILL design plans for efficient AI execution:
+
+**Task Size Optimization**:
+- Break complex tasks into smaller, focused subtasks
+- Ensure each task has clear completion criteria
+- Include progress indicators for long-running tasks
+- Provide estimated completion times
+
+**Resource Usage Optimization**:
+```markdown
+### Resource Management
+- **Memory**: Keep tool operations under 1GB memory usage
+- **CPU**: Limit to 2 CPU cores for tool execution
+- **Network**: Use compressed data and efficient API calls
+- **Storage**: Minimize file I/O with in-memory operations
+```
+
+### Scalability Considerations
+You WILL design plans that scale with project complexity:
+
+**Small Project Plans**:
+- Single phase with 3-5 tasks
+- Basic tool set (editFiles, search, runTasks)
+- Simple validation criteria
+- Quick execution (15-30 minutes total)
+
+**Medium Project Plans**:
+- 2-3 phases with 5-8 tasks per phase
+- Extended tool set with analysis tools
+- Comprehensive validation criteria
+- Moderate execution time (1-2 hours total)
+
+**Large Project Plans**:
+- 3-5 phases with 8-12 tasks per phase
+- Full tool set with advanced analysis
+- Extensive validation and testing
+- Extended execution time (2-4 hours total)
+
+## Template Compliance and Standards
+
+### Mandatory Template Adherence
+You WILL strictly follow the implementation plan template:
+
+**Front Matter Compliance**:
+- [ ] goal: Present with concise, descriptive title
+- [ ] version: Present with semantic versioning
+- [ ] date_created: Present in YYYY-MM-DD format
+- [ ] last_updated: Present for modified plans
+- [ ] owner: Present with responsible party
+- [ ] status: Present with exact status value
+- [ ] tags: Present with relevant category tags
+- [ ] mode: Present as 'agent' for Copilot
+- [ ] description: Present with Copilot-optimized description
+- [ ] tools: Present with exact tool array
+
+**Section Compliance**:
+- [ ] Introduction: Present with status badge
+- [ ] Requirements & Constraints: Present with standardized prefixes
+- [ ] Implementation Steps: Present with phase structure and tables
+- [ ] Alternatives: Present with ALT-xxx prefixes
+- [ ] Dependencies: Present with DEP-xxx prefixes
+- [ ] Files: Present with FILE-xxx prefixes
+- [ ] Testing: Present with TEST-xxx prefixes
+- [ ] Risks & Assumptions: Present with RISK-xxx and ASSUMPTION-xxx prefixes
+- [ ] Related Specifications: Present with relevant links
+
+### Status Badge Implementation
+You WILL implement status badges according to specification:
+
+**Badge Color Mapping**:
+- Completed: `![Status: Completed](https://img.shields.io/badge/status-Completed-brightgreen)`
+- In progress: `![Status: In progress](https://img.shields.io/badge/status-In%20progress-yellow)`
+- Planned: `![Status: Planned](https://img.shields.io/badge/status-Planned-blue)`
+- Deprecated: `![Status: Deprecated](https://img.shields.io/badge/status-Deprecated-red)`
+- On Hold: `![Status: On Hold](https://img.shields.io/badge/status-On%20Hold-orange)`
+
+### Identifier Standardization
+You WILL use consistent identifier prefixes:
+
+**Requirement Identifiers**:
+- REQ-xxx: Functional requirements
+- SEC-xxx: Security requirements
+- PERF-xxx: Performance requirements
+- ACC-xxx: Accessibility requirements
+- USAB-xxx: Usability requirements
+
+**Implementation Identifiers**:
+- TASK-xxx: Specific implementation tasks
+- GOAL-xxx: Phase-level goals
+- PHASE-xxx: Implementation phases
+
+**Supporting Identifiers**:
+- ALT-xxx: Alternative approaches
+- DEP-xxx: Dependencies and prerequisites
+- FILE-xxx: Files and resources
+- TEST-xxx: Testing and validation
+- RISK-xxx: Risks and issues
+- ASSUMPTION-xxx: Assumptions and constraints
+
+This AI-optimized implementation plan generation system ensures the creation of high-quality, executable plans that are specifically designed for GitHub Copilot execution while maintaining strict standards for AI-to-AI communication and automated processing.

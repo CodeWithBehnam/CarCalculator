@@ -1,0 +1,459 @@
+---
+globs: *.prompt.md, prompts/*.md
+description: Prompt quality and validation criteria for GitHub Copilot
+---
+# Prompt Quality and Validation Criteria
+
+## Quality Assessment Framework
+
+### Core Quality Dimensions
+You WILL evaluate prompts across these critical dimensions:
+
+**Clarity and Precision**:
+- Instructions are unambiguous and specific
+- Language is clear and professional
+- Technical terms are properly defined
+- No ambiguous pronouns or references
+
+**Completeness and Comprehensiveness**:
+- All necessary context is provided
+- No missing steps or information
+- Edge cases are addressed
+- Prerequisites are clearly stated
+
+**Actionability and Executability**:
+- Instructions can be followed without interpretation
+- All required tools and resources are specified
+- File paths and locations are exact
+- Success criteria are measurable
+
+**AI Optimization**:
+- Content is structured for AI consumption
+- Token usage is optimized
+- Context is focused and relevant
+- Examples are effective for learning
+
+## Validation Criteria Standards
+
+### Functional Validation
+You WILL ensure prompts meet functional requirements:
+
+**Task Completion**:
+- Primary task is clearly defined and achievable
+- Success criteria are specific and measurable
+- All necessary steps are included
+- No critical gaps in the process
+
+**Tool Integration**:
+- All required tools are properly specified
+- Tool configurations are correct
+- Tool dependencies are handled
+- Error handling for tool failures is included
+
+**Variable Handling**:
+- All variables are properly defined
+- Placeholders are meaningful and helpful
+- Input validation is specified
+- Variable scope is clear
+
+### Technical Validation
+You WILL verify technical accuracy and completeness:
+
+**Syntax and Structure**:
+- Markdown syntax is correct and consistent
+- Front matter is properly formatted
+- Code blocks have correct language tags
+- Links and references are valid
+
+**Code Quality**:
+- Code examples are syntactically correct
+- Examples follow best practices
+- Security considerations are included
+- Performance implications are addressed
+
+**File System Operations**:
+- File paths are correct and valid
+- Directory structures are appropriate
+- Permission requirements are specified
+- Backup and rollback procedures exist
+
+### Quality Validation
+You WILL assess overall quality and effectiveness:
+
+**User Experience**:
+- Instructions are easy to understand
+- Error messages are helpful and actionable
+- Process flow is logical and intuitive
+- Documentation is comprehensive
+
+**Maintainability**:
+- Prompt is easy to update and modify
+- Changes are easy to identify and implement
+- Version control is supported
+- Future evolution is considered
+
+**Reliability**:
+- Process handles common failure modes
+- Error recovery is specified
+- Edge cases are addressed
+- Validation steps are included
+
+## Validation Process Implementation
+
+### Pre-Execution Validation
+You WILL validate prompts before use:
+
+**Front Matter Validation**:
+```markdown
+✅ VALID:
+---
+description: "Generate React component with TypeScript"
+mode: "agent"
+tools: ["editFiles", "search"]
+---
+
+❌ INVALID:
+---
+desc: "Make component"  # Too vague
+mode: "magic"           # Invalid mode
+tools: "all tools"      # Not an array
+---
+```
+
+**Structure Validation**:
+- All mandatory sections present
+- Section headers match template exactly
+- No placeholder text remaining
+- Consistent formatting throughout
+
+**Content Validation**:
+- Persona definition is specific and realistic
+- Task description is clear and measurable
+- Instructions are step-by-step and actionable
+- Examples are realistic and helpful
+
+### Runtime Validation
+You WILL include validation steps in prompts:
+
+**Execution Validation**:
+```markdown
+## Quality and Validation
+
+### Runtime Checks
+1. **Syntax Validation**: Verify generated code compiles
+2. **Functionality Test**: Run basic functionality tests
+3. **Integration Test**: Ensure compatibility with existing code
+4. **Performance Check**: Validate performance requirements
+
+### Success Criteria
+- [ ] Code generates without syntax errors
+- [ ] All specified features are implemented
+- [ ] Integration with existing components works
+- [ ] Performance meets specified benchmarks
+```
+
+**Error Handling Validation**:
+```markdown
+### Error Scenarios and Handling
+- **File Not Found**: Create directory structure if needed
+- **Permission Denied**: Request appropriate permissions
+- **Network Timeout**: Retry with exponential backoff
+- **API Rate Limit**: Implement queuing and retry logic
+```
+
+### Post-Execution Validation
+You WILL validate prompt effectiveness after use:
+
+**Output Quality Assessment**:
+- Generated code meets quality standards
+- Documentation is complete and accurate
+- Tests pass with appropriate coverage
+- Security requirements are satisfied
+
+**User Feedback Integration**:
+- Collect feedback on prompt effectiveness
+- Identify areas for improvement
+- Update prompt based on usage patterns
+- Refine examples and instructions
+
+## Success Measurement Standards
+
+### Quantitative Metrics
+You WILL define measurable success criteria:
+
+**Completion Metrics**:
+- **Task Completion Rate**: Percentage of successful executions
+- **Error Rate**: Frequency of execution failures
+- **Retry Rate**: How often users need to retry or modify
+- **Success Time**: Average time to successful completion
+
+**Quality Metrics**:
+- **Code Quality Score**: Based on linting and style compliance
+- **Test Coverage**: Percentage of generated code covered by tests
+- **Performance Score**: Meeting specified performance benchmarks
+- **Security Score**: Compliance with security requirements
+
+**User Experience Metrics**:
+- **Ease of Use Score**: User feedback on clarity and usability
+- **Learning Curve**: Time for new users to become proficient
+- **Error Recovery**: Effectiveness of error messages and recovery
+- **Documentation Quality**: Completeness and usefulness of guidance
+
+### Qualitative Assessment
+You WILL evaluate subjective quality factors:
+
+**Instruction Clarity**:
+- Language is precise and unambiguous
+- Technical concepts are properly explained
+- Steps are logically ordered and easy to follow
+- Examples are relevant and helpful
+
+**Professional Standards**:
+- Code follows industry best practices
+- Security considerations are included
+- Performance optimizations are applied
+- Documentation standards are met
+
+**Maintainability Factors**:
+- Code is readable and well-structured
+- Error handling is comprehensive
+- Future modifications are easy to implement
+- Dependencies are clearly documented
+
+## Common Failure Mode Prevention
+
+### Input Validation Issues
+You WILL prevent common input-related failures:
+
+**Variable Validation**:
+```markdown
+### Input Validation Requirements
+- `${input:componentName}`: Must be valid PascalCase identifier
+- `${input:dataType}`: Must be valid TypeScript interface name
+- `${selection}`: Must contain valid TypeScript/JavaScript code
+```
+
+**Missing Input Handling**:
+```markdown
+### Missing Input Scenarios
+- If `${input:componentName}` is empty: Use default "GeneratedComponent"
+- If `${selection}` is empty: Provide template with placeholder content
+- If required files don't exist: Create them with appropriate structure
+```
+
+### Tool Integration Failures
+You WILL handle tool-related failures gracefully:
+
+**Tool Availability Checks**:
+```markdown
+### Tool Prerequisites
+- **editFiles**: Requires write permissions in target directory
+- **search**: Requires read permissions in search directories
+- **runCommands**: Requires appropriate shell and command availability
+- **fetch**: Requires network connectivity and valid URLs
+```
+
+**Tool Failure Recovery**:
+```markdown
+### Tool Failure Handling
+1. **Permission Denied**: Attempt to request permissions or use alternative location
+2. **Network Timeout**: Retry with exponential backoff or provide offline alternative
+3. **Command Not Found**: Check PATH or provide installation guidance
+4. **File System Error**: Validate paths and create missing directories
+```
+
+### Logic and Flow Issues
+You WILL prevent execution logic failures:
+
+**Step Dependency Validation**:
+```markdown
+### Step Dependencies
+- **Step 3** requires completion of **Step 1** (file creation)
+- **Step 5** requires successful execution of **Step 4** (API call)
+- **Step 7** requires both **Step 2** and **Step 6** (parallel processes)
+```
+
+**Conditional Logic Handling**:
+```markdown
+### Conditional Execution Paths
+- If `${input:features}` includes "routing": Execute routing setup steps
+- If `${input:features}` includes "testing": Generate test files
+- If `${input:features}` includes "documentation": Create README files
+```
+
+## Best Practices Integration
+
+### AI-Optimized Design Patterns
+You WILL implement AI-friendly design patterns:
+
+**Token Efficiency**:
+- Use concise language without unnecessary verbosity
+- Structure information hierarchically for easy parsing
+- Include only essential context and examples
+- Minimize redundant explanations
+
+**Structured Communication**:
+- Use consistent section headers and formatting
+- Provide clear visual separation between sections
+- Use standard templates and patterns
+- Include metadata for better AI understanding
+
+**Contextual Relevance**:
+- Provide complete but focused context
+- Include relevant background information
+- Reference related files and dependencies
+- Use variables for dynamic content
+
+### Few-Shot Learning Optimization
+You WILL create effective learning examples:
+
+**Example Quality Standards**:
+```markdown
+### Example Structure Requirements
+
+#### Input Specification
+- **Variables**: Clearly specify all required input variables
+- **Selection**: Show what code should be selected (if applicable)
+- **Context**: Provide necessary environmental context
+
+#### Output Specification
+- **Format**: Specify exact output format and structure
+- **Content**: Include realistic, production-quality code
+- **Comments**: Add explanatory comments for complex logic
+- **Error Handling**: Demonstrate proper error handling patterns
+
+#### Learning Value
+- **Best Practices**: Show industry-standard approaches
+- **Edge Cases**: Include handling for unusual scenarios
+- **Performance**: Demonstrate efficient implementation patterns
+- **Maintainability**: Show clean, readable code structure
+```
+
+## Continuous Quality Improvement
+
+### Feedback Integration Process
+You WILL incorporate feedback for continuous improvement:
+
+**Usage Analytics**:
+- Track which prompts are used most frequently
+- Monitor success rates and failure patterns
+- Identify common user issues and questions
+- Measure user satisfaction and engagement
+
+**Performance Monitoring**:
+- Monitor execution times and resource usage
+- Track error rates and failure modes
+- Measure output quality and consistency
+- Identify performance bottlenecks
+
+**User Feedback Collection**:
+- Implement feedback mechanisms in prompts
+- Collect user suggestions and improvement requests
+- Monitor issue reports and bug submissions
+- Track feature requests and enhancement suggestions
+
+### Quality Improvement Cycle
+You WILL implement systematic quality improvements:
+
+**Issue Identification**:
+- Analyze usage patterns for common problems
+- Review error logs and failure reports
+- Monitor performance metrics and thresholds
+- Collect user feedback and suggestions
+
+**Improvement Planning**:
+- Prioritize issues by impact and frequency
+- Design solutions that address root causes
+- Plan updates that maintain backward compatibility
+- Schedule improvements based on urgency
+
+**Implementation and Testing**:
+- Implement improvements with comprehensive testing
+- Validate changes against existing use cases
+- Ensure no regression in existing functionality
+- Test with realistic scenarios and edge cases
+
+**Deployment and Monitoring**:
+- Deploy improvements with proper version tracking
+- Monitor impact of changes on usage patterns
+- Collect feedback on improvements
+- Iterate based on results and feedback
+
+## Template Compliance and Standards
+
+### Prompt Template Standards
+You WILL ensure prompts follow established templates:
+
+**Mandatory Sections**:
+```markdown
+---
+description: "[Clear, concise description]"
+mode: "[agent|ask|edit]"
+tools: ["[appropriate tools]"]
+---
+
+# [Descriptive Title]
+
+[Specific persona definition]
+
+## [Primary Task Section]
+
+[Clear task description]
+
+## [Instructions Section]
+
+[Step-by-step instructions]
+
+## [Context/Input Section]
+
+[Variable definitions]
+
+## [Output Section]
+
+[Output specifications]
+
+## [Quality/Validation Section]
+
+[Success criteria and validation]
+```
+
+**Section Quality Requirements**:
+- **Front Matter**: Complete and properly formatted
+- **Title**: Descriptive and action-oriented
+- **Persona**: Specific expertise and realistic experience
+- **Task**: Clear, measurable, and achievable
+- **Instructions**: Step-by-step, unambiguous, executable
+- **Variables**: Well-defined with validation
+- **Output**: Specific format and structure requirements
+- **Quality**: Measurable success criteria and validation steps
+
+### Quality Assurance Checklist
+You WILL use this comprehensive quality checklist:
+
+**Pre-Validation**:
+- [ ] Front matter complete and properly formatted
+- [ ] All mandatory sections present
+- [ ] No placeholder text remaining
+- [ ] Variables properly defined with placeholders
+- [ ] Tool selections appropriate for task
+
+**Content Validation**:
+- [ ] Instructions clear and actionable
+- [ ] Examples realistic and helpful
+- [ ] Error handling comprehensive
+- [ ] Performance considerations included
+- [ ] Security requirements addressed
+
+**Technical Validation**:
+- [ ] Code examples syntactically correct
+- [ ] File paths valid and accessible
+- [ ] API references current and valid
+- [ ] Tool configurations correct
+
+**AI Optimization**:
+- [ ] Content structured for AI parsing
+- [ ] Token usage optimized
+- [ ] Few-shot examples effective
+- [ ] Context focused and relevant
+
+This comprehensive quality and validation framework ensures GitHub Copilot prompts are reliable, effective, and maintain the highest standards of AI-assisted development.

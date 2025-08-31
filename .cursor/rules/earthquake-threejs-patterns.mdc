@@ -1,0 +1,408 @@
+---
+globs: public/main.js,public/3d.html,*.js
+description: Three.js specific patterns for 3D earthquake globe visualization
+---
+
+# Three.js Earthquake Globe Patterns
+
+## Three.js Module Integration
+
+### Module Loading Pattern
+```javascript
+// Server-side Three.js module proxy (in server.ts)
+if (req.url === "/three.mjs") {
+  try {
+    const p = join(process.cwd(), "node_modules/three/build/three.module.js");
+    const buf = await readFile(p);
+    res.setHeader("content-type", "text/javascript; charset=utf-8");
+    res.end(buf);
+  } catch {
+    res.statusCode = 404;
+    res.end("Not Found");
+  }
+  return;
+}
+
+// Frontend Three.js import
+import * as THREE from "/three.mjs";
+```
+
+### Error Handling for Module Loading
+```javascript
+console.log("main.js: Starting import");
+import * as THREE from "/three.mjs";
+console.log("main.js: THREE imported", typeof THREE);
+
+// Global error handlers for module issues
+window.addEventListener("error", (e) => showError(e.message));
+window.addEventListener("unhandledrejection", (e) => showError(`Promise rejection: ${e.reason}`));
+```
+
+## 3D Scene Architecture
+
+### Scene Setup with Space Theme
+```javascript
+async function start() {
+  const scene = new THREE.Scene();
+  const bg = 0x0b0d12; // Dark space background
+  const renderer = new THREE.WebGLRenderer({ antialias: true });
+  renderer.setClearColor(new THREE.Color(bg), 1);
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // Cap for performance
+  
+  // Append to specific container
+  const appEl = document.getElementById("app");
+  if (!appEl) throw new Error("No #app element found");
+  appEl.appendChild(renderer.domElement);
+}
+```
+
+### Camera Configuration
+```javascript
+// Perspective camera for realistic 3D view
+const camera = new THREE.PerspectiveCamera(
+  60,                                    // Field of view
+  window.innerWidth / window.innerHeight, // Aspect ratio  
+  0.1,                                   // Near clipping
+  100                                    // Far clipping
+);
+camera.position.set(0, 0, 3);            // Position for optimal globe view
+```
+
+### Lighting Setup for Globe
+```javascript
+// Directional light for realistic Earth lighting
+const light = new THREE.DirectionalLight(0xffffff, 1.0);
+light.position.set(5, 3, 5); // Position like sun lighting Earth
+
+// Ambient light for visibility of dark side
+scene.add(light);
+scene.add(new THREE.AmbientLight(0x6688aa, 0.6)); // Soft blue ambient
+```
+
+## Earth Globe Implementation
+
+### Globe Geometry and Material
+```javascript
+// High-resolution sphere for smooth globe
+const globe = new THREE.Mesh(
+  new THREE.SphereGeometry(1, 64, 64), // Radius 1, 64x64 segments for smoothness
+  new THREE.MeshBasicMaterial(texture ? { map: texture } : { color: 0x1c3b6f })
+);
+scene.add(globe);
+```
+
+### Texture Loading with Fallback
+```javascript
+// Async texture loading with graceful fallback
+setHud("Initializing globe...");
+let texture = null;
+try {
+  const earthUrl = "https://unpkg.com/three-globe/example/img/earth-dark.jpg";
+  texture = await new Promise((resolve, reject) => {
+    new THREE.TextureLoader().load(earthUrl, resolve, undefined, reject);
+  });
+} catch {
+  // Silent fallback - use solid color material instead
+}
+
+// Material with conditional texture or color
+const material = new THREE.MeshBasicMaterial(
+  texture ? { map: texture } : { color: 0x1c3b6f }
+);
+```
+
+### Atmospheric Effect
+```javascript
+// Slightly larger sphere for atmosphere effect
+const atmosphere = new THREE.Mesh(
+  new THREE.SphereGeometry(1.02, 64, 64), // 2% larger than Earth
+  new THREE.MeshBasicMaterial({ 
+    color: 0x2e7bff,      // Blue atmospheric color
+    transparent: true, 
+    opacity: 0.08         // Very subtle effect
+  })
+);
+scene.add(atmosphere);
+```
+
+## Earthquake Visualization with Instanced Rendering
+
+### Instanced Mesh for Performance
+```javascript
+async function loadQuakes() {
+  const rows = await api.quakes();
+  
+  // Remove previous earthquake visualization
+  if (quakesMesh) scene.remove(quakesMesh);
+  
+  // Create instanced mesh for thousands of markers
+  const geometry = new THREE.SphereGeometry(1, 10, 10); // Lower detail for instances
+  const material = new THREE.MeshBasicMaterial({ 
+    toneMapped: false,  // Prevent tone mapping for consistent colors
+    vertexColors: true  // Enable per-instance coloring
+  });
+  
+  const mesh = new THREE.InstancedMesh(geometry, material, rows.length);
+  mesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage); // For updates
+  
+  quakesMesh = mesh;
+  scene.add(quakesMesh);
+}
+```
+
+### Geographic Coordinate Conversion
+```javascript
+function latLonToVector3(lat, lon, radius = 1.003) {
+  // Convert WGS84 coordinates to 3D Cartesian
+  const phi = (90 - lat) * (Math.PI / 180);     // Latitude to phi
+  const theta = (lon + 180) * (Math.PI / 180);  // Longitude to theta
+  
+  // Spherical to Cartesian coordinate transformation
+  const x = -radius * Math.sin(phi) * Math.cos(theta);
+  const z = radius * Math.sin(phi) * Math.sin(theta);  
+  const y = radius * Math.cos(phi);
+  
+  return new THREE.Vector3(x, y, z);
+}
+```
+
+### Instance Matrix and Color Setup
+```javascript
+const tempObj = new THREE.Object3D(); // Temporary object for matrix calculations
+const color = new THREE.Color();      // Reusable color object
+
+for (let i = 0; i < rows.length; i++) {
+  const r = rows[i];
+  const pos = latLonToVector3(r.latitude, r.longitude);
+  const s = magnitudeToSize(r.magnitude);
+  
+  // Set position and scale
+  tempObj.position.copy(pos);
+  tempObj.scale.setScalar(s);
+  tempObj.lookAt(new THREE.Vector3(0, 0, 0)); // Orient toward globe center
+  tempObj.updateMatrix();
+  mesh.setMatrixAt(i, tempObj.matrix);
+  
+  // Set color based on magnitude
+  const c = r.magnitude >= 6 ? 0xff4444 : 
+            r.magnitude >= 4 ? 0xff8844 : 0xffcc66;
+  color.setHex(c);
+  mesh.setColorAt(i, color);
+}
+```
+
+### Magnitude Scaling
+```javascript
+function magnitudeToSize(mag) {
+  // Scale earthquake markers proportionally to magnitude
+  const m = Math.max(0, Math.min(8, mag ?? 0)); // Clamp magnitude 0-8
+  return 0.008 + (m / 8) * 0.05;                // Base size + proportional scaling
+}
+```
+
+## Interactive Controls
+
+### Mouse/Touch Rotation
+```javascript
+let isPointerDown = false;
+let lastX = 0, lastY = 0;
+let rotationY = 0, rotationX = 0;
+
+// Unified pointer events for mouse and touch
+renderer.domElement.addEventListener("pointerdown", (e) => {
+  isPointerDown = true; 
+  lastX = e.clientX; 
+  lastY = e.clientY;
+});
+
+window.addEventListener("pointerup", () => { 
+  isPointerDown = false; 
+});
+
+window.addEventListener("pointermove", (e) => {
+  if (!isPointerDown) return;
+  
+  const dx = e.clientX - lastX; 
+  const dy = e.clientY - lastY;
+  lastX = e.clientX; 
+  lastY = e.clientY;
+  
+  // Apply rotation with sensitivity scaling
+  rotationY += dx * 0.005; // Horizontal rotation (unlimited)
+  rotationX += dy * 0.005; // Vertical rotation (constrained)
+  
+  // Constrain vertical rotation to prevent flipping
+  rotationX = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, rotationX));
+});
+```
+
+### Auto-rotation When Idle
+```javascript
+let autoRotate = 0.02; // Auto-rotation speed
+
+function animate() {
+  requestAnimationFrame(animate);
+  
+  // Auto-rotate when not manually controlling
+  if (!isPointerDown) rotationY += autoRotate * 0.016; // ~60fps normalized
+  
+  // Apply rotation to globe and earthquake markers
+  globe.rotation.y = rotationY;
+  globe.rotation.x = rotationX * 0.5; // Damped vertical rotation
+  
+  // Synchronize earthquake markers with globe
+  if (quakesMesh) quakesMesh.rotation.copy(globe.rotation);
+  
+  renderer.render(scene, camera);
+}
+```
+
+## Environmental Elements
+
+### Star Field Background
+```javascript
+// Create star field with random positions
+const stars = new THREE.Points(
+  new THREE.BufferGeometry().setAttribute(
+    "position",
+    new THREE.Float32BufferAttribute(
+      new Float32Array(3 * 2000).map(() => (Math.random() - 0.5) * 50), // 2000 stars
+      3 // 3 components per vertex (x, y, z)
+    )
+  ),
+  new THREE.PointsMaterial({ 
+    color: 0x88aaff,     // Light blue star color
+    size: 0.01,          // Small star size
+    transparent: true, 
+    opacity: 0.6         // Subtle opacity
+  })
+);
+scene.add(stars);
+```
+
+### Debug Elements (Development)
+```javascript
+// Test cube for visual reference during development
+const testCube = new THREE.Mesh(
+  new THREE.BoxGeometry(0.05, 0.05, 0.05),
+  new THREE.MeshBasicMaterial({ color: 0xffffff, wireframe: true })
+);
+testCube.position.set(0, 0, 1.6); // Position above globe
+scene.add(testCube);
+
+// Animate test cube for visual confirmation
+testCube.rotation.y += 0.03;
+```
+
+## Responsive Design and Window Management
+
+### Resize Handling
+```javascript
+window.addEventListener("resize", () => {
+  // Update camera aspect ratio
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  
+  // Update renderer size
+  renderer.setSize(window.innerWidth, window.innerHeight);
+});
+```
+
+### Performance Monitoring
+```javascript
+// Frame rate monitoring for performance debugging
+let frames = 0, lastReport = performance.now();
+
+function animate() {
+  requestAnimationFrame(animate);
+  frames++;
+  
+  const now = performance.now();
+  if (now - lastReport > 1000) { // Report every second
+    lastReport = now;
+    const hud = document.getElementById("hud");
+    if (hud && !hud.textContent?.startsWith("Error")) {
+      hud.textContent = `Rendering... ${frames} fps-ish`;
+    }
+    frames = 0;
+  }
+  
+  // Render frame
+  renderer.render(scene, camera);
+}
+```
+
+## Error Handling and Debugging
+
+### Comprehensive Error Handling
+```javascript
+try {
+  await start(); // Main initialization
+} catch (e) {
+  showError(e); // Display error to user
+}
+
+// Start wrapper with error catching
+start().catch((e) => {
+  console.error("start() failed:", e);
+  showError(`Startup failed: ${e.message || e}`);
+});
+```
+
+### Debug Utilities
+```javascript
+// User feedback functions
+const setHud = (msg) => {
+  const hud = document.getElementById("hud");
+  if (hud) hud.textContent = String(msg);
+  console.log("HUD:", msg);
+};
+
+const showError = (msg) => { 
+  setHud(`Error: ${msg}`); 
+  console.error("ERROR:", msg);
+  document.body.style.background = "#330000"; // Red background for errors
+};
+```
+
+### Console Logging for Development
+```javascript
+// Structured logging for debugging
+console.log("main.js: Starting import");
+console.log("main.js: THREE imported", typeof THREE);
+console.log("Creating WebGL renderer");
+console.log("Renderer created, setting size");
+console.log("main.js: Event listeners attached");
+```
+
+## Performance Optimization
+
+### Rendering Optimizations
+```javascript
+// Optimize renderer settings
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // Cap pixel ratio
+renderer.setSize(window.innerWidth, window.innerHeight);
+
+// Use efficient material settings
+const material = new THREE.MeshBasicMaterial({ 
+  toneMapped: false,    // Skip tone mapping for performance
+  vertexColors: true    // Per-instance colors instead of multiple materials
+});
+
+// Dynamic usage for instance matrices that update
+mesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+```
+
+### Memory Management
+```javascript
+// Clean up previous meshes before creating new ones
+if (quakesMesh) {
+  scene.remove(quakesMesh);
+  // Three.js handles geometry/material cleanup automatically
+}
+
+// Reuse objects to reduce garbage collection
+const tempObj = new THREE.Object3D(); // Reuse for matrix calculations
+const color = new THREE.Color();      // Reuse for color assignments
+```

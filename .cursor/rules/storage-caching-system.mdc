@@ -1,0 +1,124 @@
+---
+globs: src/utils/storage.js, src/background/index.js, src/options/App.jsx
+description: Chrome storage API and caching system patterns
+---
+# Storage and Caching System Guide
+
+## Chrome Storage API Usage
+
+### Storage Types
+- **chrome.storage.local**: Large capacity, extension-specific data
+- **chrome.storage.sync**: Cross-device sync, limited size (8KB per item)
+
+### Data Organization
+- **Settings**: API keys, model preferences, target language
+- **Cache**: Translation results with hash-based keys
+- **State**: Extension enabled/disabled status
+
+## Cache System Architecture
+
+### Cache Key Generation
+```javascript
+function hashText(str) {
+  return btoa(unescape(encodeURIComponent(str))).slice(0, 64);
+}
+```
+- **Purpose**: Create consistent, unique identifiers for text content
+- **Length**: 64 characters for optimal storage
+- **Encoding**: Base64 encoding of UTF-8 bytes
+
+### Cache Entry Structure
+```javascript
+const entry = {
+  t: "translated text",        // Translation result
+  ts: Date.now(),              // Timestamp
+  o: "original text",          // Original content
+  id: "request_id"             // Request identifier
+};
+```
+
+### Cache Management
+- **Storage Location**: `CACHE_T_${hash}` keys in local storage
+- **Index Management**: `CACHE_INDEX` array for LRU tracking
+- **Size Limits**: Maximum 1000 entries with automatic cleanup
+- **Eviction Policy**: Least Recently Used (LRU) algorithm
+
+## Storage Operations
+
+### Settings Storage
+```javascript
+// API Configuration
+OPENAI_API_KEY: "sk-..."           // Local storage only
+OPENAI_MODEL: "gpt-4.1"            // Default model
+DEFAULT_TARGET_LANG: "fa"          // Persian default
+
+// Translation Settings
+TRANSLATE_PROMPT: "Custom prompt"  // User-defined prompt
+```
+
+### Cache Operations
+- **CACHE_GET**: Retrieve cached translation by hash
+- **CACHE_SET**: Store new translation with metadata
+- **CACHE_LIST**: Get paginated list of cached entries
+
+### Extension State
+```javascript
+// Sync storage for cross-device consistency
+enabled: true/false  // Extension activation state
+```
+
+## Data Persistence Patterns
+
+### Settings Management
+1. **Load Settings**: Read from storage on extension startup
+2. **Validate Settings**: Ensure API keys and configurations are valid
+3. **Update Settings**: Persist changes immediately
+4. **Migrate Settings**: Handle version updates and new fields
+
+### Cache Lifecycle
+1. **Creation**: Generate hash → Check existing → Store new entry
+2. **Retrieval**: Hash lookup → Validate timestamp → Return result
+3. **Cleanup**: Remove expired entries → Maintain size limits
+4. **Indexing**: Update LRU index → Sort by access time
+
+## Performance Considerations
+
+### Storage Optimization
+- **Batch Operations**: Group multiple storage calls when possible
+- **Lazy Loading**: Load cache entries on-demand
+- **Memory Management**: Clear large objects after use
+- **Compression**: Consider compressing large translation results
+
+### Cache Hit Optimization
+- **Hash Calculation**: Cache frequently used hashes
+- **Index Preloading**: Load index once, keep in memory
+- **Parallel Lookups**: Batch cache checks for multiple items
+- **Invalidation Strategy**: Time-based vs. content-based invalidation
+
+## Error Handling
+
+### Storage Failures
+- **Quota Exceeded**: Implement cleanup before storing new data
+- **Corrupted Data**: Validate structure before using cached entries
+- **Access Denied**: Graceful fallback to non-cached operation
+- **Migration Issues**: Handle missing fields with defaults
+
+### Recovery Mechanisms
+- **Backup Strategy**: Keep critical settings in multiple locations
+- **Data Validation**: Verify integrity of cached translations
+- **Fallback Values**: Provide sensible defaults for missing data
+- **User Notification**: Alert when cache issues affect functionality
+
+## Security Considerations
+
+### Sensitive Data Protection
+- **API Keys**: Always store in local storage, never sync
+- **Access Control**: Validate permissions before storage operations
+- **Data Sanitization**: Clean user inputs before storage
+- **Encryption**: Consider encrypting sensitive cached data
+
+### Privacy Compliance
+- **Data Minimization**: Store only necessary translation data
+- **Retention Policies**: Implement automatic cleanup of old cache
+- **User Control**: Allow users to clear cache and settings
+- **Audit Trail**: Log storage operations for debugging

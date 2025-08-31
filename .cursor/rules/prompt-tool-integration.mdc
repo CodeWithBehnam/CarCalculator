@@ -1,0 +1,378 @@
+---
+alwaysApply: false
+description: Tool integration and usage patterns for prompt building and validation
+---
+# Tool Integration and Usage Patterns
+
+## Available Tools and Integration
+
+### Core Tool Categories
+You WILL use ANY available tools to enhance prompt building and validation:
+
+**File Analysis Tools:**
+- `read_file`: Analyze specific files and documentation
+- `file_search`: Find patterns across codebase
+- `semantic_search`: Understand context and relationships
+- `search_replace`: Implement research-based improvements
+
+**External Research Tools:**
+- `github_repo`: Research repository conventions and patterns
+- `fetch_webpage`: Gather latest official documentation
+- `context7`: Access current instructions and examples
+
+**Development Tools:**
+- `run_terminal_cmd`: Test implementations and commands
+- `list_dir`: Understand project structure
+- `grep`: Find specific patterns and implementations
+
+**Project Management Tools:**
+- `problems`: Identify and resolve issues
+- `editFiles`: Make targeted file modifications
+- `codebase`: Access comprehensive project information
+
+## Tool Selection Guidelines
+
+### Research Phase Tool Usage
+You WILL select tools based on research requirements:
+
+**Documentation Analysis:**
+```markdown
+You WILL use read_file to analyze README.md files:
+1. Extract deployment and build instructions
+2. Identify key requirements and dependencies
+3. Document step-by-step processes
+4. Transform into actionable prompt instructions
+```
+
+**Repository Research:**
+```markdown
+You WILL use github_repo to research coding standards:
+1. Search for popular repositories in target technology
+2. Analyze coding conventions and patterns
+3. Extract best practices from well-maintained projects
+4. Identify common implementation approaches
+```
+
+**Code Pattern Analysis:**
+```markdown
+You WILL use file_search and semantic_search to understand patterns:
+1. Find recurring implementation patterns
+2. Analyze architectural decisions
+3. Extract working examples from existing code
+4. Identify error handling and validation approaches
+```
+
+**Documentation Retrieval:**
+```markdown
+You WILL use fetch_webpage for official documentation:
+1. Prioritize official project documentation
+2. Check for version-specific information
+3. Validate against multiple sources
+4. Extract practical examples and code snippets
+```
+
+### Validation Phase Tool Usage
+You WILL use tools during Prompt Tester validation:
+
+**File Verification:**
+```markdown
+Prompt Tester WILL use read_file to verify outputs:
+1. Check if generated files match specifications
+2. Validate file structure and organization
+3. Verify content accuracy against requirements
+4. Confirm proper formatting and syntax
+```
+
+**Codebase Integration:**
+```markdown
+Prompt Tester WILL use file_search to check integration:
+1. Verify compatibility with existing codebase
+2. Check for naming convention consistency
+3. Validate import and dependency usage
+4. Ensure proper error handling patterns
+```
+
+**External Validation:**
+```markdown
+Prompt Tester WILL use fetch_webpage for standards validation:
+1. Cross-reference outputs with official documentation
+2. Verify compliance with current best practices
+3. Check for deprecated patterns or approaches
+4. Validate security and performance recommendations
+```
+
+**Command Testing:**
+```markdown
+Prompt Tester WILL use run_terminal_cmd to test execution:
+1. Verify commands work as documented
+2. Check for proper error handling
+3. Validate output format and content
+4. Test edge cases and failure scenarios
+```
+
+## Tool Integration Best Practices
+
+### Sequential Tool Usage Patterns
+You WILL follow logical tool usage sequences:
+
+**Research Workflow:**
+1. Start with broad analysis using `github_repo` or `fetch_webpage`
+2. Use `list_dir` to understand project structure
+3. Apply `read_file` for specific documentation analysis
+4. Use `file_search` to find implementation patterns
+5. Use `semantic_search` for deeper context understanding
+
+**Validation Workflow:**
+1. Use `read_file` to examine existing prompt content
+2. Apply `search_replace` to implement improvements
+3. Use `run_terminal_cmd` to test command execution
+4. Use `problems` to identify and resolve issues
+5. Use `codebase` for comprehensive validation
+
+### Tool Output Integration
+You WILL properly integrate tool outputs into prompts:
+
+**Code Examples from Tools:**
+```markdown
+You WILL include working examples extracted from codebase:
+```javascript
+// Example from file_search results in src/utils/translation.js
+const translateText = async (text, targetLang) => {
+  const response = await fetch('/api/translate', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ text, targetLang })
+  });
+  return response.json();
+};
+```
+```
+
+**Documentation from Web Sources:**
+```markdown
+You WILL integrate official documentation with examples:
+According to the [official React documentation](https://react.dev/learn/thinking-in-react):
+1. Break the UI into a component hierarchy
+2. Build a static version in React
+3. Identify the minimal state representation
+4. Determine where state should live
+```
+
+**Repository Patterns:**
+```markdown
+You WILL incorporate common patterns from popular repositories:
+Based on analysis of [popular React projects on GitHub](https://github.com/facebook/react):
+- Use functional components with hooks by default
+- Implement error boundaries for robust error handling
+- Follow the container/presentational component pattern
+- Use custom hooks for shared logic
+```
+
+## Advanced Tool Usage Patterns
+
+### Multi-Tool Research Strategies
+You WILL combine tools for comprehensive analysis:
+
+**Comprehensive Research Example:**
+```markdown
+## Research Process for React Component Creation
+
+**Step 1: Repository Analysis**
+Using github_repo, I analyzed the top 10 React component libraries to identify:
+- Common component structure patterns
+- Popular styling approaches
+- Testing methodologies
+- Documentation standards
+
+**Step 2: Documentation Review**
+Using fetch_webpage, I reviewed the latest React documentation for:
+- Component composition patterns
+- Hooks usage guidelines
+- Performance optimization techniques
+- Accessibility requirements
+
+**Step 3: Codebase Pattern Extraction**
+Using file_search across the existing codebase, I found:
+- 15 different component implementation patterns
+- 8 different styling approaches
+- 12 different testing patterns
+- 5 different documentation approaches
+
+**Step 4: Standards Integration**
+Using context7, I accessed current best practices for:
+- TypeScript integration with React
+- Modern CSS-in-JS solutions
+- Component testing strategies
+- Performance monitoring approaches
+
+**Integration Result:**
+The prompt now includes comprehensive guidance covering all identified patterns and standards.
+```
+
+### Tool-Based Validation Strategies
+You WILL use tools for thorough validation:
+
+**Code Validation:**
+```markdown
+Prompt Tester WILL use multiple tools for comprehensive validation:
+
+1. **File Structure Validation:**
+   Using list_dir and read_file to verify generated file structure matches requirements
+
+2. **Code Quality Validation:**
+   Using file_search to check adherence to coding standards found in research
+
+3. **Integration Validation:**
+   Using semantic_search to ensure proper integration with existing codebase
+
+4. **Documentation Validation:**
+   Using grep to verify all components have proper documentation
+```
+
+**Standards Compliance:**
+```markdown
+Prompt Tester WILL validate against multiple standards:
+
+1. **Official Standards:**
+   Using fetch_webpage to cross-reference with official documentation
+
+2. **Community Standards:**
+   Using github_repo to verify alignment with popular implementations
+
+3. **Internal Standards:**
+   Using file_search to ensure consistency with existing codebase patterns
+```
+
+## Tool-Specific Usage Guidelines
+
+### File Analysis Tools
+**read_file Usage:**
+- Use for analyzing specific files and documentation
+- Extract key information and examples
+- Verify file contents and structure
+- Document important patterns and approaches
+
+**file_search Usage:**
+- Find specific patterns across the codebase
+- Identify common implementation approaches
+- Extract working examples for inclusion
+- Analyze consistency across similar files
+
+**semantic_search Usage:**
+- Understand contextual relationships
+- Find related concepts and implementations
+- Identify underlying patterns and principles
+- Discover implicit requirements and constraints
+
+### External Research Tools
+**github_repo Usage:**
+- Research popular repository patterns
+- Analyze coding conventions and standards
+- Extract best practices from successful projects
+- Identify common architectural approaches
+
+**fetch_webpage Usage:**
+- Gather official documentation and specifications
+- Access current best practices and guidelines
+- Verify information accuracy and currency
+- Extract authoritative examples and patterns
+
+**context7 Usage:**
+- Access latest instructions and examples
+- Get current best practices and standards
+- Identify recent updates and changes
+- Find modern approaches and techniques
+
+### Development and Testing Tools
+**run_terminal_cmd Usage:**
+- Test actual command execution
+- Verify tool availability and compatibility
+- Check command outputs and error handling
+- Validate environment-specific requirements
+
+**search_replace Usage:**
+- Implement research-based improvements
+- Make targeted modifications to existing prompts
+- Apply consistent changes across multiple files
+- Ensure proper formatting and syntax
+
+**problems Usage:**
+- Identify issues in implementation
+- Resolve syntax and logical errors
+- Ensure code quality and functionality
+- Validate against project requirements
+
+## Tool Integration Quality Standards
+
+### Research Quality with Tools
+You WILL ensure tool-based research meets quality standards:
+
+**Source Authority:**
+- Prioritize official documentation from `fetch_webpage`
+- Use well-maintained repositories from `github_repo`
+- Cross-validate findings across multiple tools
+- Document source authority and credibility
+
+**Information Currency:**
+- Use `context7` for latest information
+- Check `github_repo` for recent activity
+- Verify `fetch_webpage` content freshness
+- Update research when tools indicate changes
+
+**Practical Applicability:**
+- Test `run_terminal_cmd` for real-world feasibility
+- Verify `file_search` results in actual context
+- Use `read_file` to check implementation details
+- Validate with `problems` for issue resolution
+
+### Validation Quality with Tools
+You WILL ensure comprehensive validation using tools:
+
+**Complete Coverage:**
+- Use `list_dir` to verify all required files exist
+- Apply `read_file` to check file contents thoroughly
+- Use `file_search` to validate across entire codebase
+- Apply `semantic_search` for contextual validation
+
+**Standards Compliance:**
+- Use `fetch_webpage` for official standards validation
+- Apply `github_repo` for community standards checking
+- Use `context7` for current best practices validation
+- Implement `run_terminal_cmd` for practical testing
+
+**Error Detection:**
+- Use `problems` to identify implementation issues
+- Apply `search_replace` to test fix implementations
+- Use `read_file` to verify corrections
+- Implement `run_terminal_cmd` for error scenario testing
+
+## Tool Usage Documentation
+You WILL document tool usage in research and validation:
+
+```markdown
+## Tool Usage Summary
+
+### Research Tools Used:
+1. **github_repo**: Analyzed 15 popular React projects for component patterns
+2. **fetch_webpage**: Retrieved latest React documentation and TypeScript guidelines
+3. **context7**: Accessed current best practices for React 18 and TypeScript 5
+4. **file_search**: Found 23 different component implementation patterns in codebase
+
+### Validation Tools Used:
+1. **read_file**: Verified 12 generated component files for accuracy
+2. **run_terminal_cmd**: Tested 8 different command sequences for functionality
+3. **search_replace**: Applied 15 research-based improvements to prompt
+4. **problems**: Identified and resolved 5 syntax and logical issues
+
+### Tool Effectiveness:
+- **High Impact**: github_repo and fetch_webpage provided most valuable research
+- **Medium Impact**: file_search and semantic_search helped with context
+- **Validation Success**: 95% of validation issues detected and resolved using tools
+
+**Recommendations for Future Use:**
+- Continue using github_repo for broad pattern research
+- Increase fetch_webpage usage for official documentation
+- Implement automated tool usage tracking for optimization
+```
+
+This comprehensive tool integration system ensures thorough research, accurate validation, and effective prompt improvement through systematic use of all available development and analysis tools.

@@ -1,0 +1,35 @@
+---
+alwaysApply: true
+description: Enforce following existing conventions, verifying library usage, and security best practices before making changes.
+---
+
+# Follow Existing Conventions When Making Changes — Always Apply
+
+- Understand the file context before editing
+  - Read surrounding code and imports to infer framework, libraries, style, and module patterns.
+  - Match existing patterns, naming conventions, file structure, and typing style.
+
+- Use existing libraries and utilities
+  - Prefer existing helpers and utilities already present in the codebase.
+  - Do not introduce a new library if equivalent functionality exists.
+
+- Never assume a library is available
+  - Verify by checking neighboring files and [package.json](mdc:package.json) and [bun.lock](mdc:bun.lock).
+  - Only use libraries already in use unless explicitly requested to add new dependencies.
+  - If a new dependency is needed, pause and ask for confirmation.
+
+- Component and module creation
+  - Review similar components/modules to mirror framework choice, naming, props/state patterns, typing, and folder layout.
+
+- Implementation discipline
+  - Keep changes idiomatic to the surrounding code.
+  - Minimize surface area and permissions. Keep APIs small and cohesive.
+
+- Security best practices
+  - Do not expose or hardcode secrets or keys. Never commit secrets to the repository.
+  - Use environment configurations; redact secrets in logs and examples.
+  - Avoid insecure patterns such as eval; validate inputs.
+
+- Build and platform alignment
+  - Use Bun for scripts and builds.
+  - Update [manifest.json](mdc:manifest.json) version when user-visible behavior changes.

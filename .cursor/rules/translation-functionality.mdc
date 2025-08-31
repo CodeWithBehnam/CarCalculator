@@ -1,0 +1,95 @@
+---
+globs: src/utils/translate.js, src/background/index.js, src/content/*.js
+description: Translation functionality and LangChain integration patterns
+---
+# Translation Functionality Guide
+
+## LangChain Integration Patterns
+
+### ChatOpenAI Configuration
+```javascript
+const chat = new ChatOpenAI({
+  apiKey,
+  model,
+  temperature: 0  // Always use 0 for consistent translations
+});
+```
+
+### Prompt Template Structure
+- **System Prompt**: Expert Persian translator with cultural knowledge
+- **User Prompt**: Translation instructions with structure preservation
+- **Template Format**: Use `{text}` placeholder for dynamic content
+
+### Translation Features
+- **Structure Preservation**: Maintains paragraph breaks, lists, and formatting
+- **RTL Support**: Automatic right-to-left text direction for Persian
+- **Streaming**: Real-time translation updates with progress callbacks
+- **Placeholders**: Handles non-translatable content (code, math, etc.)
+
+## Translation Workflow
+
+### Standard Translation Process
+1. **Input Validation**: Check API key, text presence, target language
+2. **Cache Check**: Hash text and lookup in [CACHE_T_*](mdc:src/utils/storage.js)
+3. **API Call**: Send to OpenAI via LangChain with structured prompts
+4. **Response Processing**: Sanitize and format output
+5. **Cache Storage**: Store result for future use
+6. **UI Update**: Display translated content with proper direction
+
+### Streaming Translation Process
+1. **Initialize Stream**: Set up real-time connection
+2. **Progress Callbacks**: Update UI as chunks arrive
+3. **Accumulate Response**: Build complete translation
+4. **Error Handling**: Graceful fallback on connection issues
+5. **Final Processing**: Apply sanitization and caching
+
+## Error Handling Patterns
+
+### API Error Recovery
+- **Temperature Issues**: Fallback to default ChatOpenAI instance
+- **Rate Limiting**: Implement exponential backoff
+- **Model Unavailability**: Try alternative models
+- **Network Issues**: Use cached responses when available
+
+### User-Friendly Error Messages
+- Map technical errors to understandable messages
+- Provide actionable guidance for resolution
+- Log detailed errors for debugging while showing simple messages to users
+
+## Text Processing Rules
+
+### Content Filtering
+- **No-Translate Elements**: Code blocks, mathematical expressions, URLs
+- **Placeholder System**: Replace with tokens during translation
+- **Restoration**: Re-insert original content after translation
+
+### Sanitization Process
+- Remove markdown code fences
+- Strip unnecessary quotes
+- Normalize whitespace and line breaks
+- Apply RTL formatting for Persian text
+
+## Image Description Workflow
+
+### Vision API Integration
+1. **Image Extraction**: Get src or currentSrc from img elements
+2. **API Request**: Send to GPT-4 Vision with Persian prompt
+3. **Response Processing**: Format description with RTL support
+4. **Caching**: Store image descriptions separately from text translations
+
+### Accessibility Considerations
+- **Alt Text Generation**: Create meaningful descriptions
+- **Cultural Context**: Include Persian cultural references when relevant
+- **Technical Details**: Describe visual elements accurately
+
+## Performance Optimization
+
+### Caching Strategy
+- **Hash Generation**: Consistent hashing for cache keys
+- **Cache Invalidation**: Time-based expiration
+- **Memory Management**: Limit cache size to prevent storage bloat
+
+### API Optimization
+- **Request Batching**: Group similar requests when possible
+- **Streaming Preference**: Use streaming for better perceived performance
+- **Connection Reuse**: Maintain persistent connections where possible

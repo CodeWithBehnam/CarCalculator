@@ -1,0 +1,384 @@
+---
+alwaysApply: false
+description: GitHub Copilot prompt engineering best practices and methodology
+---
+# GitHub Copilot Prompt Engineering
+
+## Core Prompt Engineering Principles
+
+### Professional Prompt Development Standards
+You WILL follow expert-level prompt engineering practices for GitHub Copilot:
+
+**Prompt Identity & Purpose**:
+- Create clear, descriptive filenames (e.g., `generate-react-component.prompt.md`)
+- Write concise, one-sentence descriptions of prompt purpose
+- Categorize prompts appropriately: code generation, analysis, documentation, testing, refactoring, architecture
+- Ensure filenames match functionality for easy discovery
+
+**Persona Definition Requirements**:
+- Specify exact role/expertise level (junior, senior, expert, specialist)
+- Define domain knowledge (languages, frameworks, tools)
+- Include years of experience or specific qualifications
+- Create realistic, authoritative personas that match task complexity
+
+### Task Specification Standards
+You WILL create precise, measurable task specifications:
+
+**Primary Task Definition**:
+- State exact task to be performed with clear success criteria
+- Include secondary/optional tasks if applicable
+- Specify user input requirements (selection, file, parameters)
+- Define mandatory constraints and requirements
+
+**Context and Variable Usage**:
+- Use `${selection}` for user's selected code when applicable
+- Use `${file}` for current file reference when needed
+- Implement `${input:variableName}` or `${input:variableName:placeholder}` for user inputs
+- Leverage `${workspaceFolder}` and other workspace variables appropriately
+- Reference other files or prompt dependencies when required
+
+## Prompt Structure and Organization
+
+### Mandatory Prompt File Structure
+You WILL create `.prompt.md` files following this exact structure:
+
+```markdown
+---
+description: "[Clear, concise description from requirements]"
+mode: "[agent|ask|edit based on task type]"
+tools: ["[appropriate tools based on functionality]"]
+model: "[only if specific model required]"
+---
+
+# [Prompt Title]
+
+[Persona definition - specific role and expertise]
+
+## [Primary Task Section]
+[Clear task description with specific requirements]
+
+## [Instructions Section]
+[Step-by-step instructions following established patterns]
+
+## [Context/Input Section]
+[Variable usage and context requirements]
+
+## [Output Section]
+[Expected output format and structure]
+
+## [Quality/Validation Section]
+[Success criteria and validation steps]
+```
+
+### Front Matter Configuration
+You WILL properly configure front matter for optimal Copilot behavior:
+
+**Mode Selection**:
+- `agent`: For complex, multi-step tasks requiring planning and execution
+- `ask`: For simple questions or information gathering
+- `edit`: For direct code modifications and transformations
+
+**Tool Selection Strategy**:
+- **File Operations**: `codebase`, `editFiles`, `search`, `problems`
+- **Execution**: `runCommands`, `runTasks`, `runTests`, `terminalLastCommand`
+- **External**: `fetch`, `githubRepo`, `openSimpleBrowser`
+- **Specialized**: `playwright`, `usages`, `vscodeAPI`, `extensions`
+- **Analysis**: `changes`, `findTestFiles`, `testFailure`, `searchResults`
+
+**Model Requirements**:
+- Use specific models only when absolutely necessary
+- Let Copilot auto-detect appropriate models by default
+- Specify model only for specialized requirements
+
+## Detailed Instructions and Standards
+
+### Step-by-Step Process Design
+You WILL create comprehensive, executable instruction sequences:
+
+**Process Clarity**:
+- Write unambiguous, actionable instructions
+- Use imperative language: "Create this", "Implement that", "Follow these steps"
+- Include measurable checkpoints and validation points
+- Provide clear success/failure criteria
+
+**Coding Standards Integration**:
+- Reference specific coding standards, frameworks, libraries
+- Enforce established patterns and best practices
+- Include style guides and naming conventions
+- Specify technology stack requirements
+
+**Pattern Enforcement**:
+- Define architectural patterns to follow
+- Specify design patterns for implementation
+- Include security patterns and best practices
+- Reference existing instruction files (`.instructions.md`)
+
+### Constraints and Limitations
+You WILL clearly define what should be avoided:
+
+**Prohibited Actions**:
+- Specify deprecated APIs, libraries, or approaches to avoid
+- Define security vulnerabilities to prevent
+- List performance anti-patterns to eliminate
+- Identify maintainability issues to prevent
+
+**Resource Constraints**:
+- Define memory, CPU, or storage limitations
+- Specify time complexity requirements
+- Include scalability constraints
+- Set performance benchmarks
+
+## Output Requirements and Formatting
+
+### Output Format Specifications
+You WILL define precise output requirements:
+
+**Format Types**:
+- `code`: Programming language with syntax highlighting
+- `markdown`: Documentation with proper structure
+- `json`: Structured data with schema validation
+- `structured data`: Custom format with parsing rules
+
+**File Creation Guidelines**:
+- Specify exact file locations and naming conventions
+- Define file structure and organization requirements
+- Include template files or boilerplate code
+- Set up directory structure requirements
+
+**File Modification Rules**:
+- Define which files can be modified vs. created
+- Specify modification boundaries and constraints
+- Include backup and rollback procedures
+- Define conflict resolution strategies
+
+### Few-Shot Learning Integration
+You WILL include examples for better AI understanding:
+
+**Example Structure**:
+```markdown
+### Example Input
+```typescript
+// User input example
+const userInput = "example";
+```
+
+### Expected Output
+```typescript
+// AI should generate this
+const processedOutput = transform(userInput);
+```
+
+### Explanation
+Why this output is correct and what principles it demonstrates.
+```
+
+**Quality Examples**:
+- Use real-world, production-quality examples
+- Include edge cases and error handling
+- Demonstrate best practices and patterns
+- Show proper formatting and structure
+
+## Tool and Capability Integration
+
+### Tool Selection Best Practices
+You WILL choose appropriate tools based on task requirements:
+
+**File Operations Tools**:
+- `codebase`: For comprehensive project analysis and understanding
+- `editFiles`: For direct file modifications and code generation
+- `search`: For finding patterns, functions, or specific code elements
+- `problems`: For identifying and resolving code issues
+
+**Execution Tools**:
+- `runCommands`: For terminal command execution and automation
+- `runTasks`: For VS Code task execution and build processes
+- `runTests`: For automated testing and quality assurance
+- `terminalLastCommand`: For building on previous terminal operations
+
+**External Integration Tools**:
+- `fetch`: For API calls and external data retrieval
+- `githubRepo`: For repository analysis and integration
+- `openSimpleBrowser`: For web content access and scraping
+- `vscodeAPI`: For VS Code extension and IDE integration
+
+**Specialized Analysis Tools**:
+- `playwright`: For web automation and testing
+- `usages`: For code dependency and usage analysis
+- `vscodeAPI`: For deep IDE integration and customization
+- `extensions`: For VS Code extension interaction
+
+### Tool Configuration Guidelines
+You WILL configure tools for optimal performance:
+
+**Tool Dependencies**:
+- Specify prerequisite tools or extensions
+- Define version requirements and compatibility
+- Include installation and setup instructions
+- Document known limitations or issues
+
+**Tool Integration Patterns**:
+- Create logical tool execution sequences
+- Handle tool failures and error conditions
+- Implement retry logic for unstable operations
+- Use appropriate timeouts and resource limits
+
+## Quality and Validation Standards
+
+### Success Measurement Criteria
+You WILL define clear success metrics:
+
+**Functional Success**:
+- Task completion with all requirements met
+- Code functionality matches specifications
+- Integration with existing systems works correctly
+- Performance meets defined benchmarks
+
+**Quality Success**:
+- Code follows established standards and patterns
+- Documentation is complete and accurate
+- Tests pass with appropriate coverage
+- Security and performance requirements satisfied
+
+**User Experience Success**:
+- Output format matches user expectations
+- Error messages are helpful and actionable
+- Process is intuitive and easy to follow
+- Results are immediately usable
+
+### Validation and Error Handling
+You WILL implement comprehensive validation:
+
+**Input Validation**:
+- Validate all user inputs and parameters
+- Check file existence and accessibility
+- Verify permissions and resource availability
+- Handle malformed or malicious inputs
+
+**Process Validation**:
+- Include checkpoints throughout execution
+- Validate intermediate results
+- Implement rollback procedures
+- Handle partial failures gracefully
+
+**Output Validation**:
+- Verify output format and structure
+- Check syntax and compilation errors
+- Validate against acceptance criteria
+- Perform automated quality checks
+
+### Common Failure Mode Prevention
+You WILL address typical failure scenarios:
+
+**Environment Issues**:
+- Handle missing dependencies or tools
+- Provide fallback options for missing resources
+- Include environment detection and adaptation
+- Document system requirements clearly
+
+**User Error Prevention**:
+- Provide clear input validation and feedback
+- Include helpful error messages and suggestions
+- Offer interactive guidance for complex inputs
+- Implement progressive disclosure for complex tasks
+
+**Technical Failure Recovery**:
+- Include retry logic for transient failures
+- Provide alternative approaches for blocked paths
+- Implement graceful degradation
+- Create recovery procedures for data loss scenarios
+
+## Best Practices Integration
+
+### AI-Optimized Prompt Design
+You WILL optimize prompts for AI consumption:
+
+**Token Efficiency**:
+- Use concise, clear language without redundancy
+- Structure information hierarchically for easy parsing
+- Include only relevant context and examples
+- Minimize verbose explanations
+
+**Structured Content**:
+- Use clear headings and sections for navigation
+- Implement consistent formatting and structure
+- Include metadata for better AI understanding
+- Use standard templates and patterns
+
+**Context Management**:
+- Provide complete but focused context
+- Include relevant background information
+- Reference related files and dependencies
+- Use variables for dynamic content
+
+### Maintainability and Extensibility
+You WILL design prompts for long-term use:
+
+**Modular Design**:
+- Break complex prompts into logical sections
+- Create reusable prompt components
+- Use includes for common instructions
+- Implement version control for prompt evolution
+
+**Documentation Standards**:
+- Include comprehensive inline documentation
+- Document all variables, parameters, and options
+- Provide usage examples and common scenarios
+- Include troubleshooting and FAQ sections
+
+**Version Management**:
+- Track prompt versions and changes
+- Document breaking changes and migration paths
+- Maintain changelog for updates
+- Plan for deprecation and replacement
+
+## Prompt Discovery and Creation Process
+
+### Systematic Requirements Gathering
+You WILL follow the 9-step discovery process:
+
+1. **Prompt Identity & Purpose**
+   - Define filename and category
+   - Create clear description
+   - Identify primary use case
+
+2. **Persona Definition**
+   - Specify expertise level and domain knowledge
+   - Define years of experience and qualifications
+   - Create realistic, authoritative persona
+
+3. **Task Specification**
+   - Define primary and secondary tasks
+   - Specify input requirements and constraints
+   - Create measurable success criteria
+
+4. **Context & Variable Requirements**
+   - Identify variable usage patterns
+   - Define input parameters and placeholders
+   - Specify file and workspace references
+
+5. **Detailed Instructions & Standards**
+   - Create step-by-step execution process
+   - Define coding standards and best practices
+   - Specify constraints and things to avoid
+
+6. **Output Requirements**
+   - Define output format and structure
+   - Specify file creation and modification rules
+   - Include examples for few-shot learning
+
+7. **Tool & Capability Requirements**
+   - Select appropriate tools for the task
+   - Configure tool integration patterns
+   - Define tool dependencies and prerequisites
+
+8. **Technical Configuration**
+   - Choose appropriate mode (agent/ask/edit)
+   - Specify model requirements if needed
+   - Define special requirements or constraints
+
+9. **Quality & Validation Criteria**
+   - Define success measurement criteria
+   - Create validation and error handling steps
+   - Address common failure modes
+
+This comprehensive GitHub Copilot prompt engineering system ensures the creation of high-quality, effective prompts that leverage Copilot's capabilities while maintaining professional standards and best practices for AI-assisted development.

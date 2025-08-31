@@ -1,0 +1,451 @@
+---
+globs: *.prompt.md, prompts/*.md
+description: Tool integration and capability requirements for GitHub Copilot prompts
+---
+# GitHub Copilot Tool Integration
+
+## Tool Categories and Capabilities
+
+### File Operations Tools
+You WILL understand and properly integrate file operation tools:
+
+**codebase**:
+- **Purpose**: Comprehensive project analysis and navigation
+- **Use Cases**: Understanding project structure, finding patterns, analyzing dependencies
+- **Integration Pattern**: Use early in process to understand context and existing code
+- **Best Practices**: Combine with search for targeted analysis
+
+**editFiles**:
+- **Purpose**: Direct file creation, modification, and updates
+- **Use Cases**: Creating new components, modifying existing code, updating configurations
+- **Integration Pattern**: Use after analysis phase for implementation
+- **Best Practices**: Always include file paths and specify exact changes
+
+**search**:
+- **Purpose**: Pattern matching, code discovery, and analysis
+- **Use Cases**: Finding similar implementations, locating specific functions, analyzing usage patterns
+- **Integration Pattern**: Use during analysis and implementation phases
+- **Best Practices**: Use specific search terms, include file type filters
+
+**problems**:
+- **Purpose**: Issue identification and resolution guidance
+- **Use Cases**: Identifying compilation errors, linting issues, type errors
+- **Integration Pattern**: Use after implementation to validate and fix issues
+- **Best Practices**: Include specific error patterns to detect
+
+### Execution Tools
+You WILL properly configure execution and automation tools:
+
+**runCommands**:
+- **Purpose**: Terminal command execution and automation
+- **Use Cases**: Building projects, running tests, deploying code, executing scripts
+- **Integration Pattern**: Use for build processes, test execution, deployment
+- **Best Practices**: Include error handling and success validation
+
+**runTasks**:
+- **Purpose**: VS Code task integration and build processes
+- **Use Cases**: Running predefined tasks, build configurations, test suites
+- **Integration Pattern**: Use for complex multi-step processes
+- **Best Practices**: Reference existing tasks.json configurations
+
+**runTests**:
+- **Purpose**: Test execution and result integration
+- **Use Cases**: Unit tests, integration tests, end-to-end tests
+- **Integration Pattern**: Use after implementation for validation
+- **Best Practices**: Include test coverage requirements and reporting
+
+**terminalLastCommand**:
+- **Purpose**: Building on previous terminal operations
+- **Use Cases**: Continuing from previous command results, chaining operations
+- **Integration Pattern**: Use when building on existing terminal state
+- **Best Practices**: Check for command success before proceeding
+
+### External Integration Tools
+You WILL leverage external services and integrations:
+
+**fetch**:
+- **Purpose**: API calls, web service integration, data retrieval
+- **Use Cases**: Calling REST APIs, fetching documentation, retrieving data
+- **Integration Pattern**: Use for external data requirements
+- **Best Practices**: Include error handling and timeout management
+
+**githubRepo**:
+- **Purpose**: Repository analysis, issue integration, PR management
+- **Use Cases**: Analyzing similar projects, checking issues, managing pull requests
+- **Integration Pattern**: Use for research and collaboration features
+- **Best Practices**: Include proper authentication and rate limiting
+
+**openSimpleBrowser**:
+- **Purpose**: Web content access and documentation retrieval
+- **Use Cases**: Reading online documentation, accessing web APIs
+- **Integration Pattern**: Use for documentation and research tasks
+- **Best Practices**: Include fallback for network issues
+
+### Specialized Tools
+You WILL understand advanced and specialized capabilities:
+
+**playwright**:
+- **Purpose**: Web automation and end-to-end testing
+- **Use Cases**: Browser automation, UI testing, web scraping
+- **Integration Pattern**: Use for web application testing and automation
+- **Best Practices**: Include browser configuration and error handling
+
+**usages**:
+- **Purpose**: Code dependency analysis and impact assessment
+- **Use Cases**: Finding function usage, analyzing refactoring impact
+- **Integration Pattern**: Use before refactoring or major changes
+- **Best Practices**: Include scope limitations for large codebases
+
+**vscodeAPI**:
+- **Purpose**: Deep IDE integration and workspace manipulation
+- **Use Cases**: Extension development, workspace configuration, IDE customization
+- **Integration Pattern**: Use for advanced IDE automation
+- **Best Practices**: Include permission checks and user confirmation
+
+**extensions**:
+- **Purpose**: VS Code extension interaction and management
+- **Use Cases**: Extension configuration, plugin management
+- **Integration Pattern**: Use for tool and extension setup
+- **Best Practices**: Check extension availability and versions
+
+### Analysis Tools
+You WILL utilize code analysis and debugging tools:
+
+**changes**:
+- **Purpose**: Git change analysis and diff generation
+- **Use Cases**: Understanding code changes, generating changelogs
+- **Integration Pattern**: Use for version tracking and change documentation
+- **Best Practices**: Include commit range specifications
+
+**findTestFiles**:
+- **Purpose**: Test file discovery and structure analysis
+- **Use Cases**: Finding test files, analyzing test coverage
+- **Integration Pattern**: Use for test-related tasks and quality assurance
+- **Best Practices**: Include test framework specifications
+
+**testFailure**:
+- **Purpose**: Test failure analysis and debugging support
+- **Use Cases**: Analyzing failed tests, providing debugging guidance
+- **Integration Pattern**: Use after test execution failures
+- **Best Practices**: Include stack trace analysis and error categorization
+
+**searchResults**:
+- **Purpose**: Advanced search result processing and filtering
+- **Use Cases**: Processing large search results, filtering by criteria
+- **Integration Pattern**: Use for complex search and analysis tasks
+- **Best Practices**: Include result filtering and sorting options
+
+## Tool Selection Strategy
+
+### Task-Based Tool Selection
+You WILL select tools based on specific task requirements:
+
+**Code Generation Tasks**:
+```markdown
+tools: ["editFiles", "search", "codebase"]
+# Create new files, find similar patterns, understand project structure
+```
+
+**Analysis and Refactoring Tasks**:
+```markdown
+tools: ["codebase", "search", "usages", "problems"]
+# Comprehensive analysis, dependency tracking, issue identification
+```
+
+**Testing and Validation Tasks**:
+```markdown
+tools: ["runTests", "findTestFiles", "testFailure", "runCommands"]
+# Test execution, test discovery, failure analysis, test setup
+```
+
+**Integration and Deployment Tasks**:
+```markdown
+tools: ["runCommands", "runTasks", "githubRepo", "fetch"]
+# Build processes, deployment, repository management, API integration
+```
+
+**Documentation and Research Tasks**:
+```markdown
+tools: ["fetch", "openSimpleBrowser", "search", "editFiles"]
+# Research, documentation retrieval, content analysis, documentation generation
+```
+
+### Tool Combination Patterns
+You WILL use effective tool combinations for complex tasks:
+
+**Full-Stack Development**:
+```markdown
+tools: ["editFiles", "search", "runCommands", "runTests", "codebase"]
+# Complete development workflow with testing and validation
+```
+
+**Research and Implementation**:
+```markdown
+tools: ["fetch", "githubRepo", "codebase", "search", "editFiles"]
+# Research similar solutions, understand context, implement improvements
+```
+
+**Quality Assurance**:
+```markdown
+tools: ["runTests", "findTestFiles", "testFailure", "problems", "search"]
+# Comprehensive testing with issue identification and resolution
+```
+
+**DevOps and Deployment**:
+```markdown
+tools: ["runCommands", "runTasks", "githubRepo", "vscodeAPI", "changes"]
+# Build, deploy, monitor, and track changes across environments
+```
+
+## Tool Configuration and Optimization
+
+### Tool Parameter Optimization
+You WILL configure tools for optimal performance:
+
+**search Tool Configuration**:
+```markdown
+# Use specific patterns for better results
+search: "interface.*Props" in:*.ts,*.tsx
+search: "export.*Component" before_context:2 after_context:5
+```
+
+**runCommands Tool Configuration**:
+```markdown
+# Include working directory and environment setup
+runCommands: "npm run build" in: ${workspaceFolder}
+runCommands: "docker build -t myapp ." with: { "shell": "/bin/bash" }
+```
+
+**editFiles Tool Configuration**:
+```markdown
+# Specify exact file locations and modification scope
+editFiles: "src/components/NewComponent.tsx" insert: "// New component code"
+editFiles: "config/settings.json" replace: "oldSetting" with: "newSetting"
+```
+
+### Tool Dependency Management
+You WILL handle tool prerequisites and dependencies:
+
+**Extension Dependencies**:
+```markdown
+## Required Extensions
+- **ESLint**: Code linting and style enforcement
+- **Prettier**: Code formatting
+- **Jest**: Test execution and coverage
+- **GitLens**: Git history and blame information
+```
+
+**Tool Version Requirements**:
+```markdown
+## Tool Versions
+- **Node.js**: 18.0.0 or higher
+- **TypeScript**: 5.0.0 or higher
+- **VS Code**: 1.80.0 or higher
+- **GitHub Copilot**: Latest version
+```
+
+**Environment Setup**:
+```markdown
+## Environment Requirements
+- **Operating System**: Windows 10+, macOS 12+, Linux Ubuntu 20.04+
+- **Memory**: 8GB RAM minimum, 16GB recommended
+- **Storage**: 10GB free space for tools and dependencies
+- **Network**: Stable internet connection for external integrations
+```
+
+## Tool Integration Best Practices
+
+### Sequential Tool Usage
+You WILL design logical tool execution sequences:
+
+**Code Generation Workflow**:
+1. `codebase` - Understand project structure and patterns
+2. `search` - Find similar existing code
+3. `editFiles` - Create new files with proper structure
+4. `runCommands` - Build and validate the new code
+5. `runTests` - Execute tests to ensure functionality
+
+**Refactoring Workflow**:
+1. `usages` - Understand current usage patterns
+2. `search` - Find all instances to refactor
+3. `problems` - Identify issues that need resolution
+4. `editFiles` - Make systematic changes
+5. `runTests` - Validate refactoring didn't break functionality
+
+**Research Workflow**:
+1. `fetch` - Get external documentation and examples
+2. `githubRepo` - Analyze similar projects and implementations
+3. `search` - Find existing patterns in current codebase
+4. `codebase` - Understand overall architecture and context
+
+### Error Handling and Recovery
+You WILL implement robust error handling for tool failures:
+
+**Tool Failure Patterns**:
+```markdown
+## Common Tool Failures and Recovery
+
+### File Not Found Error
+**Detection**: editFiles tool cannot locate specified file
+**Recovery**: Create parent directories first, validate file paths
+**Prevention**: Always check file existence before modification
+
+### Command Execution Failure
+**Detection**: runCommands returns non-zero exit code
+**Recovery**: Log error output, provide alternative commands
+**Prevention**: Include command validation and prerequisites
+
+### Network Timeout Error
+**Detection**: fetch or githubRepo requests timeout
+**Recovery**: Retry with exponential backoff, provide offline alternatives
+**Prevention**: Set reasonable timeout values, check network connectivity
+
+### Permission Denied Error
+**Detection**: Tools lack required file or system permissions
+**Recovery**: Request elevated permissions, use alternative approaches
+**Prevention**: Check permissions before tool execution
+```
+
+### Tool Output Processing
+You WILL handle and process tool outputs effectively:
+
+**Search Result Processing**:
+```markdown
+# Process search results for analysis
+search: "TODO|FIXME|HACK" in:*.ts,*.tsx,*.js,*.jsx
+# Extract and categorize found issues
+# Generate prioritized action items
+```
+
+**Test Result Processing**:
+```markdown
+# Analyze test results for quality metrics
+runTests: "npm run test -- --coverage"
+# Parse coverage reports
+# Identify failing tests and root causes
+# Generate quality improvement recommendations
+```
+
+**Command Output Processing**:
+```markdown
+# Process build output for errors and warnings
+runCommands: "npm run build"
+# Extract compilation errors
+# Identify warnings and deprecated usage
+# Generate fix recommendations
+```
+
+## Tool Capability Documentation
+
+### Tool Capability Matrix
+You WILL document tool capabilities for different task types:
+
+**Code Analysis Tasks**:
+- `codebase`: ✅ Excellent - Comprehensive project understanding
+- `search`: ✅ Good - Specific pattern matching
+- `usages`: ✅ Good - Dependency and usage analysis
+- `problems`: ⚠️ Limited - Only compilation issues
+
+**File Modification Tasks**:
+- `editFiles`: ✅ Excellent - Direct file manipulation
+- `runCommands`: ✅ Good - File system operations via commands
+- `vscodeAPI`: ✅ Good - Advanced file operations
+- `search`: ❌ Not applicable
+
+**External Integration Tasks**:
+- `fetch`: ✅ Excellent - HTTP API integration
+- `githubRepo`: ✅ Good - GitHub API integration
+- `openSimpleBrowser`: ⚠️ Limited - Basic web access
+- `runCommands`: ⚠️ Limited - curl/wget alternatives
+
+**Testing and Validation Tasks**:
+- `runTests`: ✅ Excellent - Test execution and reporting
+- `findTestFiles`: ✅ Good - Test file discovery
+- `testFailure`: ✅ Good - Failure analysis and debugging
+- `problems`: ⚠️ Limited - Only compilation issues
+
+### Tool Limitation Awareness
+You WILL understand and work around tool limitations:
+
+**Tool Scope Limitations**:
+- `search`: Cannot search binary files or compressed content
+- `codebase`: May not understand very large or complex codebases
+- `fetch`: Limited by network connectivity and API rate limits
+- `githubRepo`: Restricted by GitHub API permissions and rate limits
+
+**Performance Considerations**:
+- `usages`: Can be slow on large codebases with many dependencies
+- `search`: Performance degrades with very broad search patterns
+- `runCommands`: Execution time varies based on command complexity
+- `editFiles`: Large file modifications may impact performance
+
+**Security Constraints**:
+- `runCommands`: Limited by system security policies
+- `vscodeAPI`: Restricted by VS Code extension permissions
+- `fetch`: Subject to CORS and network security policies
+- `githubRepo`: Limited by GitHub authentication and permissions
+
+## Advanced Tool Integration Patterns
+
+### Multi-Tool Workflows
+You WILL design sophisticated multi-tool workflows:
+
+**Comprehensive Code Review**:
+```markdown
+1. codebase - Understand overall architecture
+2. search - Find specific patterns or anti-patterns
+3. usages - Analyze how code is used across the project
+4. problems - Identify compilation and linting issues
+5. runTests - Execute relevant test suites
+6. editFiles - Apply fixes and improvements
+7. runCommands - Validate fixes with build process
+```
+
+**Automated Documentation Generation**:
+```markdown
+1. codebase - Analyze project structure and components
+2. search - Find documentation comments and patterns
+3. usages - Understand API usage patterns
+4. fetch - Get external documentation standards
+5. editFiles - Generate comprehensive documentation
+6. runCommands - Format and validate documentation
+```
+
+**Performance Optimization Workflow**:
+```markdown
+1. runTests - Establish performance baselines
+2. search - Find performance-critical code patterns
+3. usages - Identify frequently used functions
+4. problems - Detect performance-related warnings
+5. editFiles - Implement performance optimizations
+6. runCommands - Run performance benchmarks
+7. runTests - Validate performance improvements
+```
+
+### Tool Chain Optimization
+You WILL optimize tool usage for efficiency:
+
+**Parallel Tool Execution**:
+```markdown
+# Execute independent tools in parallel
+tools: ["search", "findTestFiles", "problems"]
+# These can run simultaneously for faster results
+```
+
+**Conditional Tool Execution**:
+```markdown
+# Execute tools based on previous results
+if (search results contain "TODO") {
+  tools: ["problems", "usages"]
+  # Only run if search finds issues
+}
+```
+
+**Tool Result Caching**:
+```markdown
+# Cache expensive tool results
+cache: codebase-analysis-result
+# Reuse analysis results across multiple prompts
+```
+
+This comprehensive tool integration system ensures effective use of GitHub Copilot's capabilities while maintaining optimal performance, reliability, and integration with the broader development ecosystem.

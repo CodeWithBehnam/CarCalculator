@@ -1,0 +1,372 @@
+---
+alwaysApply: false
+description: Systematic prompt discovery and creation process for GitHub Copilot
+---
+# Prompt Discovery and Creation Process
+
+## 9-Step Systematic Requirements Gathering
+
+### Phase 1: Prompt Identity & Purpose
+You WILL systematically gather prompt identity information:
+
+**Filename Definition**:
+- Create descriptive, action-oriented filenames (e.g., `generate-react-component.prompt.md`)
+- Use kebab-case for multi-word names
+- Include primary action verb in filename
+- Ensure filename reflects core functionality
+
+**Purpose Description**:
+- Write clear, one-sentence descriptions
+- Focus on what the prompt accomplishes
+- Include key benefits or outcomes
+- Use action-oriented language
+
+**Category Classification**:
+- **Code Generation**: Creating new code files or components
+- **Analysis**: Code review, performance analysis, security scanning
+- **Documentation**: README generation, API documentation, inline comments
+- **Testing**: Unit test generation, integration test creation
+- **Refactoring**: Code modernization, optimization, restructuring
+- **Architecture**: System design, component architecture, patterns
+- **Debugging**: Error diagnosis, logging enhancement, troubleshooting
+- **Deployment**: Build scripts, CI/CD configuration, deployment automation
+
+### Phase 2: Persona Definition
+You WILL create detailed, realistic personas:
+
+**Expertise Level Specification**:
+- **Junior**: 0-2 years experience, basic knowledge
+- **Mid-level**: 3-5 years experience, solid understanding
+- **Senior**: 6-10 years experience, deep expertise
+- **Expert**: 10+ years experience, thought leadership
+- **Specialist**: Domain-specific deep expertise
+
+**Domain Knowledge Definition**:
+- **Languages**: Programming languages and versions
+- **Frameworks**: Web frameworks, libraries, tools
+- **Tools**: Development tools, IDEs, platforms
+- **Methodologies**: Development practices, patterns, principles
+- **Standards**: Industry standards, best practices, compliance
+
+**Experience Quantification**:
+- **Years of Experience**: Realistic timeframes for expertise level
+- **Project Scale**: Types of projects worked on (small, enterprise, etc.)
+- **Industry Experience**: Specific industries or domains
+- **Technology Stack**: Current and historical technology exposure
+
+**Persona Examples**:
+```markdown
+✅ GOOD:
+"You are a senior React architect with 8+ years of experience in enterprise applications, specializing in React 18, TypeScript, and scalable component design patterns."
+
+❌ TOO VAGUE:
+"You are a good React developer."
+```
+
+### Phase 3: Task Specification
+You WILL define precise, measurable tasks:
+
+**Primary Task Definition**:
+- State exact task with specific, measurable outcomes
+- Use action verbs: create, generate, analyze, refactor, implement
+- Include success criteria and completion indicators
+- Specify what constitutes "done"
+
+**Secondary Task Identification**:
+- List optional or bonus tasks
+- Define when secondary tasks should be executed
+- Specify conditions for task inclusion
+- Include effort estimates for secondary tasks
+
+**Input Requirements**:
+- **Selection-Based**: Requires user to select code (`${selection}`)
+- **File-Based**: Operates on current file (`${file}`)
+- **Parameter-Based**: Requires user input (`${input:variableName}`)
+- **Context-Based**: Uses workspace or project context
+
+**Constraint Definition**:
+- **Technical Constraints**: Language versions, framework requirements
+- **Performance Constraints**: Speed, memory, resource limits
+- **Quality Constraints**: Code standards, testing requirements
+- **Security Constraints**: Authentication, authorization, data protection
+
+### Phase 4: Context & Variable Requirements
+You WILL identify all variable and context needs:
+
+**Selection Variable Usage**:
+- When to use `${selection}` for user-selected code
+- How to validate and process selected content
+- Error handling for missing or invalid selections
+- Integration with other variables
+
+**File Reference Patterns**:
+- `${file}` for current file operations
+- `${fileBasename}` for filename without extension
+- `${fileDirname}` for directory path
+- `${fileExtname}` for file extension
+
+**Input Variable Design**:
+- Simple variables: `${input:variableName}`
+- Placeholder variables: `${input:variableName:placeholder text}`
+- Validation requirements for each input
+- Default values and optional parameters
+
+**Workspace Variable Integration**:
+- `${workspaceFolder}` for project root
+- `${workspaceFolderBasename}` for project name
+- `${relativeFile}` for file path relative to workspace
+- `${fileWorkspaceFolder}` for workspace containing file
+
+### Phase 5: Detailed Instructions & Standards
+You WILL create comprehensive instruction sequences:
+
+**Step-by-Step Process Design**:
+1. **Preparation Phase**: Environment setup and validation
+2. **Analysis Phase**: Code analysis and requirements gathering
+3. **Implementation Phase**: Core functionality execution
+4. **Validation Phase**: Testing and quality assurance
+5. **Cleanup Phase**: Resource cleanup and finalization
+
+**Coding Standards Enforcement**:
+- **Language Standards**: Specific language versions and features
+- **Framework Standards**: Library usage patterns and conventions
+- **Architecture Standards**: Design patterns and structural requirements
+- **Performance Standards**: Optimization requirements and benchmarks
+
+**Pattern Implementation**:
+- **Architectural Patterns**: MVC, MVVM, microservices, etc.
+- **Design Patterns**: Factory, Observer, Strategy, etc.
+- **Security Patterns**: Authentication, authorization, encryption
+- **Performance Patterns**: Caching, lazy loading, optimization
+
+**Constraint Implementation**:
+- **Prohibited Actions**: Deprecated APIs, unsafe patterns
+- **Required Actions**: Logging, error handling, validation
+- **Performance Limits**: Time complexity, resource usage
+- **Security Requirements**: Input sanitization, access control
+
+### Phase 6: Output Requirements
+You WILL define precise output specifications:
+
+**Output Format Categories**:
+- **Code Generation**: New files with specific structure
+- **Code Modification**: Changes to existing files
+- **Documentation**: README, API docs, inline comments
+- **Configuration**: JSON, YAML, XML configuration files
+- **Reports**: Analysis results, performance metrics, logs
+
+**File Creation Specifications**:
+- **Location**: Exact directory paths and naming conventions
+- **Structure**: File organization and content templates
+- **Naming**: Consistent naming patterns and conventions
+- **Permissions**: File permissions and access requirements
+
+**File Modification Guidelines**:
+- **Scope**: Which files can be modified vs. created
+- **Boundaries**: What parts of files can be changed
+- **Backup**: Automatic backup creation before modifications
+- **Rollback**: Procedures for reverting changes
+
+**Few-Shot Learning Examples**:
+```markdown
+### Example 1: Basic Usage
+**Input:**
+```typescript
+interface User {
+  id: number;
+  name: string;
+}
+```
+
+**Expected Output:**
+```typescript
+// Generated API service
+export class UserService {
+  async getUser(id: number): Promise<User> {
+    const response = await fetch(`/api/users/${id}`);
+    return response.json();
+  }
+
+  async createUser(user: Omit<User, 'id'>): Promise<User> {
+    const response = await fetch('/api/users', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(user)
+    });
+    return response.json();
+  }
+}
+```
+
+**Example 2: Error Handling**
+**Input:**
+```typescript
+const data = fetchData();
+```
+
+**Expected Output:**
+```typescript
+// With proper error handling
+const data = await fetchData().catch(error => {
+  console.error('Failed to fetch data:', error);
+  throw new Error('Data fetch failed');
+});
+```
+```
+
+### Phase 7: Tool & Capability Requirements
+You WILL select appropriate tools for task execution:
+
+**File Operations Tools**:
+- `codebase`: Comprehensive project analysis and navigation
+- `editFiles`: Direct file creation, modification, and updates
+- `search`: Pattern matching, code discovery, and analysis
+- `problems`: Issue identification and resolution guidance
+
+**Execution Tools**:
+- `runCommands`: Terminal command execution and automation
+- `runTasks`: VS Code task integration and build processes
+- `runTests`: Test execution and result integration
+- `terminalLastCommand`: Building on previous command history
+
+**External Integration Tools**:
+- `fetch`: API calls, web service integration, data retrieval
+- `githubRepo`: Repository analysis, issue integration, PR management
+- `openSimpleBrowser`: Web content access and documentation retrieval
+- `vscodeAPI`: Deep IDE integration and workspace manipulation
+
+**Specialized Tools**:
+- `playwright`: Web automation and end-to-end testing
+- `usages`: Code dependency analysis and impact assessment
+- `vscodeAPI`: Extension development and IDE customization
+- `extensions`: VS Code extension interaction and management
+
+**Analysis Tools**:
+- `changes`: Git change analysis and diff generation
+- `findTestFiles`: Test file discovery and structure analysis
+- `testFailure`: Test failure analysis and debugging support
+- `searchResults`: Advanced search result processing and filtering
+
+### Phase 8: Technical Configuration
+You WILL configure technical parameters appropriately:
+
+**Mode Selection Criteria**:
+- **agent**: Complex multi-step tasks requiring planning and tool use
+- **ask**: Simple information gathering, questions, explanations
+- **edit**: Direct code modifications, transformations, refactoring
+
+**Model Requirements**:
+- **Auto-detection**: Let Copilot choose appropriate model (recommended)
+- **Specific Models**: Only when specialized capabilities are required
+- **Performance**: Consider model speed vs. capability trade-offs
+- **Cost**: Balance model capabilities with token usage costs
+
+**Special Requirements**:
+- **Memory Constraints**: Large file processing limitations
+- **Time Limits**: Execution timeout requirements
+- **Resource Limits**: CPU, memory, or network constraints
+- **Environment Requirements**: Specific OS or tool dependencies
+
+### Phase 9: Quality & Validation Criteria
+You WILL establish comprehensive quality standards:
+
+**Success Measurement**:
+- **Functional Success**: All requirements implemented correctly
+- **Performance Success**: Meets speed, memory, and scalability targets
+- **Quality Success**: Follows coding standards and best practices
+- **Integration Success**: Works with existing systems and components
+
+**Validation Steps**:
+1. **Syntax Validation**: Code compiles without errors
+2. **Functional Testing**: Core functionality works as expected
+3. **Integration Testing**: Works with existing system components
+4. **Performance Testing**: Meets performance benchmarks
+5. **Security Testing**: No security vulnerabilities introduced
+
+**Common Failure Mode Prevention**:
+- **Input Validation**: Handle malformed, missing, or malicious inputs
+- **Error Handling**: Graceful degradation and recovery procedures
+- **Resource Management**: Proper cleanup and resource disposal
+- **Edge Case Handling**: Consider boundary conditions and unusual scenarios
+
+**Error Recovery Procedures**:
+- **Retry Logic**: Automatic retry for transient failures
+- **Fallback Options**: Alternative approaches when primary fails
+- **User Feedback**: Clear error messages and recovery guidance
+- **Logging**: Comprehensive error logging for debugging
+
+## Template Generation and Validation
+
+### Complete Prompt Template
+You WILL generate prompts following this validated structure:
+
+```markdown
+---
+description: "[Clear, concise description from requirements]"
+mode: "[agent|ask|edit based on task type]"
+tools: ["[appropriate tools based on functionality]"]
+model: "[only if specific model required]"
+---
+
+# [Prompt Title]
+
+[Persona definition - specific role and expertise]
+
+## [Primary Task Section]
+[Clear task description with specific requirements]
+
+## [Instructions Section]
+[Step-by-step instructions following established patterns]
+
+## [Context/Input Section]
+[Variable usage and context requirements]
+
+## [Output Section]
+[Expected output format and structure]
+
+## [Quality/Validation Section]
+[Success criteria and validation steps]
+```
+
+### Template Validation Checklist
+You WILL validate generated prompts against this checklist:
+
+- [ ] **Front Matter Complete**: All required fields present and valid
+- [ ] **Mode Appropriate**: Correct mode selected for task type
+- [ ] **Tools Relevant**: All selected tools serve specific purposes
+- [ ] **Persona Realistic**: Expertise level matches task complexity
+- [ ] **Instructions Clear**: Step-by-step process is unambiguous
+- [ ] **Variables Defined**: All input variables have placeholders
+- [ ] **Output Specified**: Clear format and structure requirements
+- [ ] **Validation Included**: Success criteria and error handling defined
+- [ ] **Examples Provided**: Few-shot learning examples included
+- [ ] **Constraints Documented**: Limitations and requirements specified
+
+### Quality Assurance Process
+You WILL implement multi-level quality checks:
+
+**Syntax and Structure Validation**:
+- Front matter properly formatted
+- Markdown syntax correct
+- All variables properly defined
+- No broken links or references
+
+**Content Quality Assessment**:
+- Instructions are clear and actionable
+- Examples are realistic and helpful
+- Error handling is comprehensive
+- Performance considerations included
+
+**Technical Accuracy Verification**:
+- Tool selections are appropriate
+- Code examples are syntactically correct
+- API references are current and valid
+- Security considerations are addressed
+
+**User Experience Evaluation**:
+- Prompt is easy to understand and use
+- Error messages are helpful and actionable
+- Success criteria are clear and measurable
+- Documentation is complete and accessible
+
+This systematic prompt discovery and creation process ensures the development of high-quality, effective GitHub Copilot prompts that leverage AI capabilities while maintaining professional standards and user experience excellence.

@@ -1,0 +1,563 @@
+---
+globs: Docs/*.md, *.md
+description: Documentation templates and structure guidelines
+---
+# Documentation Templates and Guidelines
+
+## Template Categories
+
+### Project Documentation Templates
+
+#### README.md Template
+```markdown
+---
+title: "Project README"
+description: "Main project documentation and overview"
+author: "Project Team"
+date: "2024-01-01"
+tags: ["documentation", "overview"]
+category: "project"
+status: "published"
+---
+
+# Project Name
+
+[![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Version](https://img.shields.io/badge/Version-1.0.0-green.svg)](package.json)
+
+> Brief, compelling project description (1-2 sentences)
+
+## 🚀 Features
+
+- **Feature 1**: Description of key feature
+- **Feature 2**: Description of another feature
+- **Feature 3**: Description of third feature
+
+## 📋 Prerequisites
+
+- Node.js 18+ or Bun
+- Chrome browser (for extension)
+- OpenAI API key
+
+## 🛠️ Installation
+
+### Quick Start
+```bash
+# Clone repository
+git clone <repository-url>
+cd project-name
+
+# Install dependencies
+bun install
+
+# Build extension
+bun run build
+```
+
+### Development Setup
+```bash
+# Install dependencies
+bun install
+
+# Start development server
+bun run dev
+
+# Build for production
+bun run build
+```
+
+## 📖 Usage
+
+### Basic Usage
+1. Load the extension in Chrome
+2. Select text on any webpage
+3. Right-click and choose "Translate Selection to Persian"
+4. View the translation in the popup box
+
+### Advanced Features
+- **Streaming Translation**: Real-time translation updates
+- **Image Description**: Describe images in Persian
+- **Translation Cache**: Instant translations for repeated text
+
+## 🔧 Configuration
+
+### API Setup
+1. Get OpenAI API key from [OpenAI Platform](https://platform.openai.com)
+2. Open extension options page
+3. Enter your API key and configure settings
+4. Save changes
+
+### Translation Settings
+- **Target Language**: Default Persian (fa)
+- **Model Selection**: GPT-4, GPT-4.1, or GPT-3.5-turbo
+- **Custom Prompts**: Personalized translation instructions
+
+## 📁 Project Structure
+
+```
+src/
+├── background/          # Service worker and background processes
+├── content/            # Content scripts for web pages
+├── popup/             # Extension popup interface
+├── options/           # Settings and configuration page
+└── utils/             # Shared utilities and services
+```
+
+## 🤝 Contributing
+
+### Development Workflow
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+### Code Standards
+- Follow ESLint configuration
+- Use TypeScript for type safety
+- Write tests for new features
+- Update documentation
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🙏 Acknowledgments
+
+- OpenAI for providing the translation API
+- LangChain for the AI integration framework
+- Contributors and users for feedback and support
+
+## 📞 Support
+
+- **Issues**: [GitHub Issues](https://github.com/user/project/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/user/project/discussions)
+- **Email**: support@example.com
+
+---
+
+*Last updated: 2024-01-01*
+```
+
+#### API Documentation Template
+```markdown
+---
+title: "API Reference"
+description: "Complete API documentation for the translation extension"
+author: "Development Team"
+date: "2024-01-01"
+tags: ["api", "reference", "technical"]
+category: "technical"
+status: "published"
+---
+
+# API Reference
+
+## Overview
+
+This document provides detailed information about the extension's API endpoints, message passing system, and integration points.
+
+## Message Passing API
+
+### Translation Messages
+
+#### TRANSLATE_TEXT
+Translates text using the configured AI model.
+
+**Message Format:**
+```json
+{
+  "type": "TRANSLATE_TEXT",
+  "payload": {
+    "text": "Text to translate",
+    "targetLang": "fa",
+    "requestId": "unique-request-id"
+  }
+}
+```
+
+**Response Format:**
+```json
+{
+  "translated": "Translated text in Persian",
+  "requestId": "unique-request-id"
+}
+```
+
+**Parameters:**
+- `text` (string, required): The text to translate
+- `targetLang` (string, optional): Target language code (default: "fa")
+- `requestId` (string, optional): Unique identifier for the request
+
+**Error Response:**
+```json
+{
+  "error": "Error message description",
+  "code": "ERROR_CODE"
+}
+```
+
+#### TRANSLATE_TEXT_STREAM
+Translates text with real-time streaming updates.
+
+**Message Format:**
+```json
+{
+  "type": "TRANSLATE_TEXT_STREAM",
+  "payload": {
+    "text": "Text to translate",
+    "targetLang": "fa",
+    "requestId": "unique-request-id"
+  }
+}
+```
+
+**Streaming Updates:**
+```json
+{
+  "type": "TRANSLATE_PROGRESS",
+  "requestId": "unique-request-id",
+  "delta": "Partial translation chunk",
+  "full": "Complete translation so far"
+}
+```
+
+### Cache Management
+
+#### CACHE_GET
+Retrieves cached translation by key.
+
+#### CACHE_SET
+Stores translation in cache.
+
+### Image Processing
+
+#### DESCRIBE_IMAGE
+Generates description for image in Persian.
+
+## Storage API
+
+### Settings Storage
+Extension settings are stored using Chrome's storage API.
+
+**Settings Structure:**
+```typescript
+interface ExtensionSettings {
+  apiKey: string;           // OpenAI API key
+  model: string;            // AI model selection
+  targetLang: string;       // Target language
+  prompt: string;           // Custom prompt
+  enabled: boolean;         // Extension state
+}
+```
+
+### Cache Storage
+Translations are cached for performance.
+
+**Cache Entry Structure:**
+```typescript
+interface CacheEntry {
+  t: string;              // Translated text
+  ts: number;             // Timestamp
+  o: string;              // Original text
+  id: string;             // Request ID
+}
+```
+
+## Error Codes
+
+### Translation Errors
+- `API_KEY_MISSING`: No OpenAI API key configured
+- `API_RATE_LIMIT`: OpenAI API rate limit exceeded
+- `API_AUTH_FAILED`: Invalid API key
+- `NETWORK_ERROR`: Network connectivity issues
+- `MODEL_UNAVAILABLE`: Selected model not available
+
+### Storage Errors
+- `STORAGE_QUOTA_EXCEEDED`: Storage limit reached
+- `CACHE_CORRUPTED`: Cache data corrupted
+- `SETTINGS_INVALID`: Invalid settings format
+
+## Examples
+
+### Basic Translation
+```javascript
+chrome.runtime.sendMessage({
+  type: 'TRANSLATE_TEXT',
+  payload: {
+    text: 'Hello World',
+    targetLang: 'fa'
+  }
+}, response => {
+  if (response.error) {
+    console.error('Translation failed:', response.error);
+  } else {
+    console.log('Translation:', response.translated);
+  }
+});
+```
+
+### Streaming Translation
+```javascript
+chrome.runtime.sendMessage({
+  type: 'TRANSLATE_TEXT_STREAM',
+  payload: {
+    text: 'Long text to translate',
+    targetLang: 'fa',
+    requestId: 'my-translation-123'
+  }
+});
+
+// Listen for streaming updates
+chrome.runtime.onMessage.addListener((message) => {
+  if (message.type === 'TRANSLATE_PROGRESS' &&
+      message.requestId === 'my-translation-123') {
+    console.log('Partial translation:', message.delta);
+    console.log('Full translation:', message.full);
+  }
+});
+```
+
+## Rate Limits
+
+- **OpenAI API**: Follow OpenAI's rate limiting policies
+- **Extension Cache**: No rate limiting (cached responses)
+- **UI Updates**: Debounced to prevent excessive updates
+
+## Security Considerations
+
+- API keys are stored locally only
+- All external requests use HTTPS
+- Content Security Policy restricts script sources
+- User data is minimized and not transmitted
+
+## Troubleshooting
+
+### Common Issues
+- **No translations appearing**: Check API key configuration
+- **Slow performance**: Verify internet connection and API limits
+- **Extension not working**: Reload extension from chrome://extensions/
+
+### Debug Information
+Enable debug logging by opening browser console and setting:
+```javascript
+localStorage.setItem('DEBUG_TRANSLATION', 'true');
+```
+
+This will provide detailed logging for troubleshooting.
+
+---
+
+*API Version: 1.0.0 | Last Updated: 2024-01-01*
+```
+
+## Specialized Templates
+
+### Architecture Documentation
+```markdown
+---
+title: "System Architecture"
+description: "Technical architecture and system design documentation"
+author: "Architecture Team"
+date: "2024-01-01"
+tags: ["architecture", "technical", "design"]
+category: "technical"
+status: "published"
+---
+
+# System Architecture
+
+## Overview
+
+High-level system architecture and component interactions.
+
+## Component Diagram
+
+```mermaid
+flowchart TB
+    A[User Interface] --> B[Background Service]
+    B --> C[Translation API]
+    B --> D[Storage System]
+    C --> E[OpenAI API]
+    D --> F[Chrome Storage]
+```
+
+## Data Flow
+
+### Translation Request Flow
+1. User selects text on webpage
+2. Content script captures selection
+3. Background service processes request
+4. Translation API handles the request
+5. Result cached and displayed
+
+## Security Architecture
+
+### Security Layers
+- **Content Security Policy**: Restricts script execution
+- **Permission System**: Minimal required permissions
+- **Data Protection**: Local storage with encryption
+- **API Security**: Secure API key management
+
+## Performance Architecture
+
+### Caching Strategy
+- **Translation Cache**: Hash-based caching system
+- **Settings Cache**: Persistent configuration storage
+- **LRU Eviction**: Automatic cache cleanup
+
+### Optimization Techniques
+- **Lazy Loading**: Components loaded on demand
+- **Code Splitting**: Modular JavaScript bundles
+- **Streaming**: Real-time translation updates
+```
+
+### User Guide Template
+```markdown
+---
+title: "User Guide"
+description: "Complete user guide for the translation extension"
+author: "Documentation Team"
+date: "2024-01-01"
+tags: ["guide", "user", "tutorial"]
+category: "user"
+status: "published"
+---
+
+# User Guide
+
+## Getting Started
+
+### Installation
+1. Download the extension from Chrome Web Store
+2. Click "Add to Chrome" to install
+3. The extension icon will appear in your browser toolbar
+
+### Initial Setup
+1. Click the extension icon
+2. Click "Open Options"
+3. Enter your OpenAI API key
+4. Configure your preferred settings
+5. Save your changes
+
+## Basic Usage
+
+### Translating Text
+1. Select text on any webpage
+2. Right-click the selected text
+3. Choose "Translate Selection to Persian"
+4. View the translation in the popup box
+
+### Using the Popup
+1. Click the extension icon in your toolbar
+2. Toggle the extension on/off
+3. Access options and settings
+4. View translation history
+
+## Advanced Features
+
+### Image Descriptions
+1. Find an image on a webpage
+2. Right-click the image
+3. Choose "Describe Image" from the context menu
+4. View the Persian description
+
+### Custom Prompts
+1. Open extension options
+2. Scroll to "Translation Settings"
+3. Modify the translation prompt
+4. Save your changes
+
+## Troubleshooting
+
+### Common Issues
+
+#### Extension Not Working
+- **Problem**: No translation options appear
+- **Solution**:
+  1. Check if extension is enabled
+  2. Reload the webpage
+  3. Restart your browser
+
+#### Translation Not Appearing
+- **Problem**: Text selection doesn't show translation
+- **Solution**:
+  1. Verify API key is configured
+  2. Check internet connection
+  3. Clear browser cache
+
+#### Poor Translation Quality
+- **Problem**: Translations are inaccurate
+- **Solution**:
+  1. Try different AI models
+  2. Customize the translation prompt
+  3. Provide more context in selected text
+
+## Best Practices
+
+### Text Selection
+- Select complete sentences or paragraphs
+- Include context for better translations
+- Avoid selecting very long texts
+
+### Performance Tips
+- Use cached translations when available
+- Close unused tabs to save memory
+- Regularly clear translation cache if needed
+
+## FAQ
+
+**Q: Is my data secure?**
+A: Yes, all translations are processed locally and your API key is stored securely.
+
+**Q: Which languages are supported?**
+A: Currently supports translation to Persian (Farsi) with plans for more languages.
+
+**Q: How much does it cost?**
+A: Costs depend on your OpenAI API usage. The extension itself is free.
+```
+
+## Template Usage Guidelines
+
+### When to Use Each Template
+- **README.md**: Main project documentation
+- **API Reference**: Technical API documentation
+- **Architecture**: System design and technical overview
+- **User Guide**: End-user instructions and tutorials
+- **Troubleshooting**: Common issues and solutions
+
+### Template Customization
+1. **Replace Placeholders**: Update all placeholder values
+2. **Add Project-Specific Content**: Include relevant details
+3. **Update Examples**: Use real code and configurations
+4. **Verify Links**: Ensure all links are working
+5. **Test Instructions**: Verify all steps work as described
+
+### Content Standards
+- **Consistency**: Use same style across all documents
+- **Accuracy**: Verify all technical information
+- **Completeness**: Cover all aspects of the topic
+- **Clarity**: Write for the intended audience
+- **Maintainability**: Structure for easy updates
+
+## Documentation Maintenance
+
+### Review Process
+1. **Content Review**: Verify accuracy and completeness
+2. **Technical Review**: Check code examples and technical details
+3. **Editorial Review**: Ensure clarity and readability
+4. **User Testing**: Validate instructions with actual users
+
+### Update Procedures
+1. **Version Updates**: Update version numbers and dates
+2. **Content Changes**: Modify based on user feedback
+3. **Technical Updates**: Reflect changes in functionality
+4. **Link Verification**: Check and update broken links
+
+### Quality Metrics
+- **Readability Score**: Aim for grade 8-10 reading level
+- **Completion Rate**: Track if users can complete tasks
+- **User Feedback**: Monitor issue reports and suggestions
+- **Update Frequency**: Regular reviews and updates
+
+This comprehensive template system ensures consistent, high-quality documentation that meets both technical and user needs.

@@ -1,0 +1,317 @@
+---
+alwaysApply: false
+description: GitHub project management best practices and automated issue tracking
+---
+# GitHub Project Management Best Practices
+
+## Project Board Configuration
+
+### Kanban Column Structure
+1. **Backlog**: Prioritized work ready for planning
+   - Groomed and estimated items
+   - Clear business value defined
+   - Dependencies identified
+
+2. **Sprint Ready**: Detailed items ready for development
+   - Acceptance criteria complete
+   - Technical approach defined
+   - Story points assigned
+
+3. **In Progress**: Currently being worked on
+   - Assigned to specific team member
+   - Work started and actively progressing
+   - Status updates provided
+
+4. **In Review**: Code review, testing, or stakeholder review
+   - Pull request created and linked
+   - Code review in progress
+   - Feedback being addressed
+
+5. **Testing**: QA validation and acceptance testing
+   - Automated tests running
+   - Manual testing in progress
+   - User acceptance testing
+
+6. **Done**: Completed and accepted
+   - All acceptance criteria met
+   - Code merged and deployed
+   - Documentation updated
+
+### Custom Fields Configuration
+- **Priority**: P0, P1, P2, P3
+- **Value**: High, Medium, Low
+- **Component**: Frontend, Backend, Infrastructure, Testing
+- **Estimate**: Story points or t-shirt size
+- **Sprint**: Current sprint assignment
+- **Assignee**: Responsible team member
+- **Epic**: Parent epic reference
+
+## Priority and Value Matrix
+
+### Priority Levels
+| Priority | Description | Criteria | Response Time |
+|----------|-------------|----------|---------------|
+| P0 | Critical path, blocking release | System down, security issue | Immediate |
+| P1 | Core functionality, user-facing | Major feature, customer impact | Within 1 sprint |
+| P2 | Important but not blocking | Enhancement, technical debt | Within 2 sprints |
+| P3 | Nice to have, technical debt | Minor improvement, cleanup | Backlog prioritized |
+
+### Value Tiers
+| Value | Description | Business Impact |
+|-------|-------------|-----------------|
+| High | Critical business value | Revenue impact, customer retention |
+| Medium | Important business value | Productivity improvement, user satisfaction |
+| Low | Minimal business value | Minor improvement, technical benefit |
+
+### Label Strategy
+```markdown
+## Priority Labels
+- `priority-critical` (P0)
+- `priority-high` (P1)
+- `priority-medium` (P2)
+- `priority-low` (P3)
+
+## Value Labels
+- `value-high`
+- `value-medium`
+- `value-low`
+
+## Type Labels
+- `epic`
+- `feature`
+- `user-story`
+- `enabler`
+- `test`
+- `task`
+- `bug`
+
+## Component Labels
+- `frontend`
+- `backend`
+- `infrastructure`
+- `api`
+- `database`
+- `testing`
+
+## Status Labels
+- `blocked`
+- `in-review`
+- `needs-testing`
+- `documentation`
+```
+
+## Issue Creation Automation
+
+### GitHub Actions for Issue Creation
+```yaml
+name: Create Feature Issues
+on:
+  workflow_dispatch:
+    inputs:
+      feature_name:
+        description: 'Feature name'
+        required: true
+      epic_issue:
+        description: 'Epic issue number'
+        required: true
+
+jobs:
+  create-issues:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create Feature Issue
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { data: epic } = await github.rest.issues.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: ${{ github.event.inputs.epic_issue }}
+            });
+
+            const featureIssue = await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `Feature: ${{ github.event.inputs.feature_name }}`,
+              body: `# Feature: ${{ github.event.inputs.feature_name }}\n\n...`,
+              labels: ['feature', 'priority-medium'],
+              milestone: epic.data.milestone?.number
+            });
+```
+
+### Automated Status Updates
+```yaml
+name: Update Issue Status
+on:
+  pull_request:
+    types: [opened, closed]
+
+jobs:
+  update-status:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Move to In Review
+        if: github.event.action == 'opened'
+        uses: actions/github-script@v7
+        # Move related issues to "In Review" column
+
+      - name: Move to Done
+        if: github.event.action == 'closed' && github.event.pull_request.merged
+        uses: actions/github-script@v7
+        # Move related issues to "Done" column
+```
+
+## Sprint Planning and Management
+
+### Sprint Planning Template
+```markdown
+## Sprint {N} Goal
+**Primary Objective**: {Main deliverable for this sprint}
+**Stories in Sprint**:
+- #{issue} - {Story title} ({points} pts)
+- #{issue} - {Story title} ({points} pts)
+**Total Commitment**: {points} story points
+**Success Criteria**: {Measurable outcomes}
+```
+
+### Capacity Planning
+- **Team Velocity**: Average story points per sprint
+- **Sprint Duration**: 2-week sprints recommended
+- **Buffer Allocation**: 20% for unexpected work and bug fixes
+- **Focus Factor**: 70-80% of total time on planned work
+
+### Sprint Tracking
+- **Daily Standups**: Progress tracking and blocker identification
+- **Sprint Burndown**: Visual progress tracking
+- **Sprint Retrospective**: Process improvement identification
+- **Sprint Review**: Stakeholder feedback and acceptance
+
+## Milestone and Release Management
+
+### Milestone Creation
+- **Release Milestones**: Version-based releases (v1.0, v1.1, v2.0)
+- **Epic Milestones**: Large feature completion
+- **Sprint Milestones**: Sprint goal completion
+- **Date-Based Milestones**: Time-sensitive deliverables
+
+### Milestone Template
+```markdown
+## Milestone: {Release Version} - {Release Date}
+
+### Goals
+- [ ] {Primary goal 1}
+- [ ] {Primary goal 2}
+
+### Features
+- [ ] #{feature-issue} - {Feature name}
+- [ ] #{feature-issue} - {Feature name}
+
+### Success Criteria
+- [ ] All planned features completed
+- [ ] End-to-end testing passed
+- [ ] Performance benchmarks met
+- [ ] Documentation updated
+- [ ] Security review completed
+
+### Risks and Mitigations
+- **Risk**: {Potential issue}
+- **Mitigation**: {Action to prevent or address}
+```
+
+## Dependency Management
+
+### Issue Linking Best Practices
+- **Blocks/Blocked By**: Clear blocking relationships
+- **Related Issues**: Contextual connections
+- **Parent/Child Relationships**: Epic → Feature → Story hierarchy
+- **Cross-Repository Links**: External dependency tracking
+
+### Dependency Visualization
+```mermaid
+graph LR
+    A[Epic: Translation API] --> B[Feature: Persian Translation]
+    B --> C[Story: Translate Selected Text]
+    B --> D[Enabler: OpenAI Integration]
+    C --> E[Task: UI Implementation]
+    C --> F[Task: API Integration]
+    D --> G[Task: Authentication Setup]
+    D --> H[Task: Error Handling]
+```
+
+### Critical Path Analysis
+- **Identify Critical Path**: Sequence of tasks that determine project duration
+- **Resource Dependencies**: Team members or tools required
+- **Risk Assessment**: Potential delays in critical path items
+- **Buffer Management**: Contingency time for critical path items
+
+## Quality Gates and Validation
+
+### Definition of Ready (DoR)
+Issues must meet these criteria before being worked on:
+- [ ] Business value clearly identified
+- [ ] Acceptance criteria defined and testable
+- [ ] Dependencies identified and resolved
+- [ ] Estimated and sized appropriately
+- [ ] Technical approach agreed upon
+- [ ] UX/design requirements complete
+
+### Definition of Done (DoD)
+Issues are complete when all criteria are met:
+- [ ] Code implemented and functional
+- [ ] Unit tests written and passing
+- [ ] Integration tests passing
+- [ ] Code review approved
+- [ ] Documentation updated
+- [ ] UX requirements implemented
+- [ ] Accessibility requirements met
+- [ ] Performance requirements met
+
+### Code Review Process
+- **Automated Checks**: Linting, testing, security scans
+- **Peer Review**: Technical code review by team members
+- **Stakeholder Review**: Business logic and requirements validation
+- **Documentation Review**: README and API documentation updates
+
+## Metrics and Reporting
+
+### Key Performance Indicators (KPIs)
+- **Sprint Predictability**: >80% of committed work completed per sprint
+- **Cycle Time**: Average time from "In Progress" to "Done" <5 business days
+- **Lead Time**: Average time from "Backlog" to "Done" <2 weeks
+- **Defect Escape Rate**: <5% of stories require post-release fixes
+
+### Process Efficiency Metrics
+- **Issue Creation Time**: <1 hour to create full feature breakdown
+- **Dependency Resolution**: <24 hours to resolve blocking dependencies
+- **Status Update Accuracy**: >95% automated status transitions working
+- **Documentation Completeness**: 100% of issues have required template fields
+
+### Team Performance Metrics
+- **Team Velocity**: Consistent story point delivery across sprints
+- **Cross-Team Collaboration**: <2 business days for external dependency resolution
+- **Sprint Goal Achievement**: >90% of sprint goals successfully delivered
+- **Stakeholder Satisfaction**: >90% stakeholder approval for completed features
+
+## Issue Creation Checklist
+
+### Pre-Creation Preparation
+- [ ] Feature artifacts complete (PRD, UX design, technical breakdown, testing plan)
+- [ ] Epic exists with proper labels and milestone
+- [ ] Project board configured with columns, custom fields, automation rules
+- [ ] Team capacity assessed for sprint planning
+
+### Issue Creation Process
+1. **Epic Level**: Create comprehensive epic with acceptance criteria
+2. **Feature Level**: Link to parent epic with dependencies
+3. **Story/Enabler Level**: Break down into actionable work items
+4. **Test Level**: Create quality assurance requirements
+5. **Task Level**: Detailed implementation breakdown
+
+### Post-Creation Validation
+- [ ] All issues have proper labels and estimates
+- [ ] Dependencies correctly linked and documented
+- [ ] Acceptance criteria defined and testable
+- [ ] Work items added to appropriate project board columns
+- [ ] Automation rules configured for status updates
+
+This comprehensive GitHub project management system ensures complete traceability from epic-level planning down to individual implementation tasks, with automated tracking and clear accountability for all team members.

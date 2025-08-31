@@ -1,0 +1,354 @@
+---
+globs: public/*.html,public/*.js,*.html,*.js
+description: Earthquake visualization patterns for 2D canvas and 3D Three.js implementations
+---
+
+# Earthquake Visualization Patterns
+
+## 2D Canvas Visualization ([public/index.html](mdc:public/index.html))
+
+### Canvas Setup and Responsive Design
+```javascript
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+
+function resizeCanvas() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  draw(); // Redraw after resize
+}
+
+// Maintain aspect ratio and responsive behavior
+window.addEventListener('resize', resizeCanvas);
+```
+
+### Geographic Projection (Equirectangular)
+```javascript
+function worldToScreen(lat, lon) {
+  // Simple equirectangular projection with zoom and pan support
+  const x = (lon + 180) * (canvas.width / 360) * zoom + offsetX;
+  const y = (90 - lat) * (canvas.height / 180) * zoom + offsetY;
+  return { x, y };
+}
+```
+
+### Magnitude-Based Visualization
+```javascript
+function getMagnitudeColor(mag) {
+  // Color coding based on earthquake magnitude
+  if (mag >= 6) return '#ff4444';    // Red for major earthquakes
+  if (mag >= 4) return '#ff8844';    // Orange for moderate
+  if (mag >= 3) return '#ffcc44';    // Yellow for light
+  return '#44ff88';                   // Green for minor
+}
+
+function getMagnitudeSize(mag) {
+  // Scale marker size proportionally to magnitude
+  return Math.max(2, Math.min(20, (mag || 0) * 3));
+}
+```
+
+### Interactive Controls Pattern
+```javascript
+let zoom = 1;
+let offsetX = 0;
+let offsetY = 0;
+let isDragging = false;
+let lastMouseX = 0;
+let lastMouseY = 0;
+
+// Mouse event handling for pan and zoom
+canvas.addEventListener('mousedown', (e) => {
+  isDragging = true;
+  lastMouseX = e.clientX;
+  lastMouseY = e.clientY;
+});
+
+canvas.addEventListener('mousemove', (e) => {
+  if (isDragging) {
+    offsetX += e.clientX - lastMouseX;
+    offsetY += e.clientY - lastMouseY;
+    lastMouseX = e.clientX;
+    lastMouseY = e.clientY;
+    draw(); // Redraw during interaction
+  }
+});
+
+// Zoom with mouse wheel
+canvas.addEventListener('wheel', (e) => {
+  e.preventDefault();
+  const zoomFactor = e.deltaY > 0 ? 0.9 : 1.1;
+  zoom *= zoomFactor;
+  zoom = Math.max(0.1, Math.min(10, zoom)); // Constrain zoom levels
+  draw();
+});
+```
+
+## 3D Three.js Visualization ([public/main.js](mdc:public/main.js))
+
+### Scene Setup and Lighting
+```javascript
+const scene = new THREE.Scene();
+const bg = 0x0b0d12; // Dark space background
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setClearColor(new THREE.Color(bg), 1);
+
+// Lighting setup for realistic globe appearance
+const light = new THREE.DirectionalLight(0xffffff, 1.0);
+light.position.set(5, 3, 5);
+scene.add(light);
+scene.add(new THREE.AmbientLight(0x6688aa, 0.6)); // Ambient for global illumination
+```
+
+### Earth Globe with Texture Loading
+```javascript
+// Globe creation with fallback material
+let texture = null;
+try {
+  const earthUrl = "https://unpkg.com/three-globe/example/img/earth-dark.jpg";
+  texture = await new Promise((resolve, reject) => {
+    new THREE.TextureLoader().load(earthUrl, resolve, undefined, reject);
+  });
+} catch {
+  // Silently handle texture loading failure
+}
+
+const globe = new THREE.Mesh(
+  new THREE.SphereGeometry(1, 64, 64),
+  new THREE.MeshBasicMaterial(texture ? { map: texture } : { color: 0x1c3b6f })
+);
+
+// Atmospheric effect
+const atmosphere = new THREE.Mesh(
+  new THREE.SphereGeometry(1.02, 64, 64),
+  new THREE.MeshBasicMaterial({ color: 0x2e7bff, transparent: true, opacity: 0.08 })
+);
+```
+
+### Coordinate Transformation for Globe
+```javascript
+function latLonToVector3(lat, lon, radius = 1.003) {
+  // Convert geographic coordinates to 3D sphere positions
+  const phi = (90 - lat) * (Math.PI / 180);
+  const theta = (lon + 180) * (Math.PI / 180);
+  
+  // Spherical to Cartesian conversion
+  const x = -radius * Math.sin(phi) * Math.cos(theta);
+  const z = radius * Math.sin(phi) * Math.sin(theta);
+  const y = radius * Math.cos(phi);
+  
+  return new THREE.Vector3(x, y, z);
+}
+```
+
+### Instanced Rendering for Performance
+```javascript
+async function loadQuakes() {
+  const rows = await api.quakes();
+  
+  // Remove previous earthquake visualization
+  if (quakesMesh) scene.remove(quakesMesh);
+  
+  // Create instanced mesh for thousands of earthquake markers
+  const geometry = new THREE.SphereGeometry(1, 10, 10);
+  const material = new THREE.MeshBasicMaterial({ 
+    toneMapped: false, 
+    vertexColors: true 
+  });
+  const mesh = new THREE.InstancedMesh(geometry, material, rows.length);
+  mesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+  
+  const tempObj = new THREE.Object3D();
+  const color = new THREE.Color();
+  
+  // Set position, scale, and color for each earthquake
+  for (let i = 0; i < rows.length; i++) {
+    const r = rows[i];
+    const pos = latLonToVector3(r.latitude, r.longitude);
+    const s = magnitudeToSize(r.magnitude);
+    
+    tempObj.position.copy(pos);
+    tempObj.scale.setScalar(s);
+    tempObj.lookAt(new THREE.Vector3(0, 0, 0)); // Orient toward globe center
+    tempObj.updateMatrix();
+    mesh.setMatrixAt(i, tempObj.matrix);
+    
+    // Color coding by magnitude
+    const c = r.magnitude >= 6 ? 0xff4444 : r.magnitude >= 4 ? 0xff8844 : 0xffcc66;
+    color.setHex(c);
+    mesh.setColorAt(i, color);
+  }
+  
+  quakesMesh = mesh;
+  scene.add(quakesMesh);
+}
+```
+
+### Interactive Camera Controls
+```javascript
+let isPointerDown = false;
+let lastX = 0, lastY = 0;
+let rotationY = 0, rotationX = 0;
+
+// Mouse/touch interaction for globe rotation
+renderer.domElement.addEventListener("pointerdown", (e) => {
+  isPointerDown = true; 
+  lastX = e.clientX; 
+  lastY = e.clientY;
+});
+
+window.addEventListener("pointermove", (e) => {
+  if (!isPointerDown) return;
+  
+  const dx = e.clientX - lastX; 
+  const dy = e.clientY - lastY;
+  lastX = e.clientX; 
+  lastY = e.clientY;
+  
+  rotationY += dx * 0.005; // Horizontal rotation
+  rotationX += dy * 0.005; // Vertical rotation (constrained)
+  rotationX = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, rotationX));
+});
+```
+
+## Performance Optimization Patterns
+
+### Culling and LOD for 2D Canvas
+```javascript
+// Only render earthquakes visible in current viewport
+earthquakes.forEach(quake => {
+  const pos = worldToScreen(quake.latitude, quake.longitude);
+  const size = getMagnitudeSize(quake.magnitude);
+  
+  // Viewport culling
+  if (pos.x >= -size && pos.x <= canvas.width + size && 
+      pos.y >= -size && pos.y <= canvas.height + size) {
+    
+    // Render earthquake marker
+    ctx.fillStyle = getMagnitudeColor(quake.magnitude);
+    ctx.beginPath();
+    ctx.arc(pos.x, pos.y, size, 0, Math.PI * 2);
+    ctx.fill();
+    
+    // Add glow effect for significant earthquakes
+    if (quake.magnitude >= 4) {
+      ctx.shadowBlur = size;
+      ctx.shadowColor = getMagnitudeColor(quake.magnitude);
+      ctx.beginPath();
+      ctx.arc(pos.x, pos.y, size * 0.5, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.shadowBlur = 0; // Reset shadow
+    }
+  }
+});
+```
+
+### Three.js Performance Patterns
+```javascript
+// Optimize renderer settings
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // Cap pixel ratio
+renderer.setSize(window.innerWidth, window.innerHeight);
+
+// Use instanced rendering for large datasets
+const mesh = new THREE.InstancedMesh(geometry, material, rows.length);
+mesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+
+// Auto-rotation when not interacting
+let autoRotate = 0.02;
+if (!isPointerDown) rotationY += autoRotate * 0.016;
+```
+
+## Data Loading and Error Handling
+
+### Async Data Loading with Progress
+```javascript
+async function loadEarthquakes() {
+  try {
+    info.textContent = 'Loading earthquake data...';
+    const response = await fetch('/api/quakes?sinceHours=48&limit=2000');
+    earthquakes = await response.json();
+    
+    // Update UI with data statistics
+    info.innerHTML = `
+      <strong>${earthquakes.length} earthquakes loaded</strong><br>
+      Drag to pan • Mouse wheel to zoom<br>
+      Colors: magnitude-based<br>
+      Size: proportional to magnitude
+    `;
+    
+    draw(); // Render new data
+  } catch (error) {
+    info.textContent = `Error loading data: ${error.message}`;
+    console.error('Load error:', error);
+  }
+}
+```
+
+### Real-time Data Updates
+```javascript
+// Periodic data refresh (every 5 minutes)
+setInterval(loadEarthquakes, 5 * 60 * 1000);
+
+// Three.js version
+setInterval(() => loadQuakes().catch(() => {}), 5 * 60 * 1000);
+```
+
+## UI/UX Patterns
+
+### HUD and Control Overlays
+```css
+#hud { 
+  position: absolute; 
+  top: 12px; 
+  left: 12px; 
+  background: rgba(0,0,0,0.7); 
+  padding: 12px; 
+  border-radius: 8px; 
+  z-index: 100; 
+}
+
+#controls { 
+  position: absolute; 
+  top: 12px; 
+  right: 12px; 
+  background: rgba(0,0,0,0.7); 
+  padding: 12px; 
+  border-radius: 8px; 
+}
+```
+
+### Visual Legend and Color Coding
+```javascript
+// Draw magnitude legend
+const legendItems = [
+  { color: '#44ff88', text: '< 3.0', size: 6 },
+  { color: '#ffcc44', text: '3.0-4.0', size: 9 },
+  { color: '#ff8844', text: '4.0-6.0', size: 12 },
+  { color: '#ff4444', text: '6.0+', size: 15 }
+];
+
+legendItems.forEach((item, i) => {
+  const y = canvas.height - 80 + i * 18;
+  ctx.fillStyle = item.color;
+  ctx.beginPath();
+  ctx.arc(canvas.width - 135, y, item.size / 2, 0, Math.PI * 2);
+  ctx.fill();
+  
+  ctx.fillStyle = '#e6edf3';
+  ctx.fillText(item.text, canvas.width - 120, y + 4);
+});
+```
+
+## Cross-Platform Considerations
+
+### Responsive Design
+- Canvas automatically resizes to viewport dimensions
+- Touch-friendly controls for mobile devices
+- Pointer events for unified mouse/touch handling
+- Viewport meta tag for proper mobile scaling
+
+### Performance Scaling
+- Limit maximum earthquake count for mobile devices
+- Reduce particle count and effects on lower-end devices
+- Progressive loading for large datasets
+- Frame rate monitoring and adaptive quality adjustment
